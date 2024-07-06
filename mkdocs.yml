@@ -19,8 +19,22 @@ extra:
     - icon: fontawesome/brands/github
       link: https://github.com/tna76874/notentransparenz
       name: "tna76874"
+  urls:
+    bildungsplan:
+      mathe: https://www.bildungsplaene-bw.de/site/bildungsplan/bpExport/3221757/Lde/index.html?_page=0&requestMode=PDF&_finish=Erstellen
+      physik: https://www.bildungsplaene-bw.de/site/bildungsplan/bpExport/3260781/Lde/index.html?_page=0&requestMode=PDF&_finish=Erstellen
+      info: https://www.bildungsplaene-bw.de/site/bildungsplan/bpExport/5705621/Lde/index.html?_page=0&requestMode=PDF&_finish=Erstellen
+    operatoren:
+      mathe: https://www.bildungsplaene-bw.de/,Lde/LS/BP2016BW/ALLG/GYM/M/OP
+      physik: https://www.bildungsplaene-bw.de/,Lde/LS/BP2016BW/ALLG/GYM/PH/OP
+      info: https://www.bildungsplaene-bw.de/,Lde/LS/BP2016BW/ALLG/GYM/INF/OP
+    korrekturrichtlinien: https://km.baden-wuerttemberg.de/fileadmin/redaktion/m-km/intern/PDF/Dateien/Gymnasium/Dokumente_Abitur/Abitur_2025/Beurteilungs__und_Korrekturrichtlinienerlass_2025.pdf
+  
 
 copyright: !ENV build_doc_date
 
 nav:
   - Notentransparenz: index.md
+  - Korrekturzeichen: korrektur.md
+  - Verbesserungen: verbesserung.md
+  - Python: python.md

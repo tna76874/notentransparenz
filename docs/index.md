@@ -1,3 +1,4 @@
+Alle Änderungen dieser Website sind öffentlich unter [https://github.com/tna76874/notentransparenz/commits/main](https://github.com/tna76874/notentransparenz/commits/main/) dokumentiert.
 
 <object data="files/notentransparenz.pdf" type="application/pdf" width="700px" height="700px">
     <embed src="files/notentransparenz.pdf">
