@@ -17,10 +17,23 @@ jobs:
       - uses: actions/checkout@v4
         with:
           fetch-depth: 0
+
+      - name: Check for changes in LaTeX file
+        id: check_changes
+        run: echo ::set-output name=changed::$(git diff --name-only HEAD^ HEAD | grep './docs/files/notentransparenz.tex')
+
+      - name: Compile LaTeX document
+        if: steps.check_changes.outputs.changed
+        uses: xu-cheng/latex-action@v3
+        with:
+          root_file: notentransparenz.tex
+          working_directory: ./docs/files
+
       - name: Configure Git Credentials
         run: |
           git config user.name github-actions[bot]
           git config user.email 41898282+github-actions[bot]@users.noreply.github.com
+          
       - uses: actions/setup-python@v5
         with:
           python-version: 3.x
