@@ -23,11 +23,9 @@ jobs:
         run: |
           echo "changed=$(git diff --name-only HEAD^ HEAD | grep -Eq 'docs/files/(notentransparenz.tex|references.bib)' && echo 'true' || echo 'false')" >> $GITHUB_OUTPUT
 
-      - name: Create changed.txt with last modification timestamp
+      - name: Create temporary tex ./docs/files
         run: |
-          TEX_DIR='docs/files'
-          timestamp=$(git log -1 --format=%cd --date=format-local:%d.%m.%Y ${TEX_DIR}/notentransparenz.tex)
-          echo "$timestamp" > ${TEX_DIR}/changed.tex
+          ./generate_latex_metadata.sh
         shell: bash
 
       - name: Compile LaTeX document

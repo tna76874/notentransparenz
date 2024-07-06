@@ -7,6 +7,7 @@
 \usepackage{fancyhdr}
 \usepackage{datetime}
 \usepackage{hyperref}
+\usepackage{catchfilebetweentags}
 
 \usepackage{helvet}
 \renewcommand{\familydefault}{\sfdefault}
@@ -15,7 +16,7 @@
 	\fancyhf{}
 	\fancyhead[L]{\large Notentransparenz}
 	\fancyhead[R]{Hilberg}
-	\fancyfoot[L]{Stand \input{changed.tex}}
+	\fancyfoot[L]{\input{commit.tex} \input{changed.tex} }
 	\fancyfoot[R]{\href{https://url.hilberg.eu/nt}{url.hilberg.eu/nt}}
 }
 \pagestyle{meinpagestyle}
