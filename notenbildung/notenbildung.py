@@ -122,7 +122,7 @@ class Notenberechnung:
 
         # Randfall: nur mündliche Noten
         if (n_KA + n_KT==0) and n_m>0:
-            result.update( gesamtnote=m_m )
+            result.update( gesamtnote=m_m, m_m=m_m )
             return result
         # Randfall: keine Noten
         elif (n_KA + n_KT + n_m == 0):
@@ -155,7 +155,7 @@ class Notenberechnung:
         # Berechnung der Gesamtnote
         gesamtnote = (self.w_sm * m_s + m_m) / (self.w_sm + w_m)
                 
-        result.update(m_s1=m_s1, m_s=m_s, gesamtnote=gesamtnote, m_m = m_m)
+        result.update(m_s1=m_s1, m_s=m_s, gesamtnote=gesamtnote, m_m = self.mittelwert(noten_muendlich))
 
         return result
     
@@ -182,7 +182,6 @@ class Notenberechnung:
                         'bbox_inches'   : 'tight',
                         'pad_inches'    : 0.05/2.54,
                         'dpi'           : 500,
-                        'format'        : 'pdf',
                         }
         cvars.update(kwargs)
         
