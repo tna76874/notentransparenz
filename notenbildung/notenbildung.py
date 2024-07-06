@@ -27,7 +27,7 @@ class Note:
         return self._print()
 
 class Notenberechnung:
-    def __init__(self, w_s0 = 1, w_sm = 3, system = 'N', schranke = 0.25, SJ=None):        
+    def __init__(self, w_s0 = 1, w_sm = 3, system = 'N', schranke = 0.25, SJ=None, v_enabled = True):        
         if system not in ['N', 'NP']:
             raise ValueError("Das System muss entweder 'N' oder 'NP' sein.")
         if not 0 <= schranke < 0.5:
@@ -42,6 +42,7 @@ class Notenberechnung:
         self.system = system
         self.noten = []
         self.sj_start, self.sj_ende = self._set_zeitraum(SJ=SJ)
+        self._v_enabled = v_enabled
         
     def _set_zeitraum(self, SJ=None):
         if SJ!=None:
@@ -95,7 +96,7 @@ class Notenberechnung:
 
     def berechne_gesamtnote(self):
         result = Note(datum=self.noten[-1].get('datum'))
-        verbesserung_enabled = any(note['status'] != '---' for note in self.noten)
+        verbesserung_enabled = any(note['status'] != '---' for note in self.noten) and self._v_enabled
         
         # Filtern der Noten nach Art
         noten_ka = [note for note in self.noten if note.get('art') in ['KA', 'GFS']]
@@ -145,14 +146,14 @@ class Notenberechnung:
             w_v2 = 0 if w_d > 1 else np.ceil(m_s1) if w_d <= 1 else 0
         w_v3 = 0 if w_d >= 1 else 10 if w_d < 1 else 0
         
-        if n_v_g != 0:
-            diskretisierung = (n_v_1 * w_v1 + n_v_o * m_s1 + n_v_2 * w_v2)/n_v_g
-        else:
-            diskretisierung = 0
+        if (not verbesserung_enabled) or (n_v_g == 0):
+            w_v4 = 0
             w_v3 = 0
+        else:
+            w_v4 = (n_v_1 * w_v1 + n_v_o * m_s1 + n_v_2 * w_v2)/n_v_g
         
         # Berechnung der schriftlichen Note
-        m_s = (n_KA * m_KA + w_s * m_KT + w_v3 * diskretisierung ) / (n_KA + w_s + w_v3)
+        m_s = (n_KA * m_KA + w_s * m_KT + w_v3 * w_v4 ) / (n_KA + w_s + w_v3)
 
         # Berechnung der Gesamtnote
         gesamtnote = (self.w_sm * m_s + m_m) / (self.w_sm + w_m)
@@ -244,10 +245,10 @@ class Notenberechnung:
 
 if __name__ == "__main__":
     # Beispiel
-    self = Notenberechnung(w_s0=1, w_sm=3, system = 'N')
-    self.note_hinzufuegen(art='KA', date = '2024-04-10', note=2, status='fertig')
+    self = Notenberechnung(w_s0=1, w_sm=3, system = 'N', v_enabled=True)
+    self.note_hinzufuegen(art='KA', date = '2024-04-10', note=3, status='fertig')
     self.note_hinzufuegen(art='KA', date = '2024-04-15', note=2.5, status='fertig')
-    self.note_hinzufuegen(art='KA', date = '2024-03-01', note=3, status='fertig')
+    self.note_hinzufuegen(art='KA', date = '2024-03-01', note=4, status='fertig')
     self.note_hinzufuegen(art='KA', date = '2024-03-15', note=5, status='fertig')
     self.note_hinzufuegen(art='KT', date = '2024-02-01', note=4)
     self.note_hinzufuegen(art='KT', date = '2024-01-01', note=2.75, status='fertig')
@@ -257,3 +258,4 @@ if __name__ == "__main__":
     
     gesamtnote = self.berechne_gesamtnote()
     print(gesamtnote)
+    self.plot_time_series()
