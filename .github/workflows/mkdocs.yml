@@ -23,12 +23,12 @@ jobs:
         run: |
           echo "changed=$(git diff --name-only HEAD^ HEAD | grep -Eq 'docs/files/(notentransparenz.tex|references.bib)' && echo 'true' || echo 'false')" >> $GITHUB_OUTPUT
 
-    - name: Create changed.txt with last modification timestamp
-      run: |
-        TEX_DIR='docs/files'
-        timestamp=$(git log -1 --format=%cd --date=format-local:%d.%m.%Y ${TEX_DIR}/notentransparenz.tex)
-        echo "$timestamp" > ${TEX_DIR}/changed.tex
-      shell: bash
+      - name: Create changed.txt with last modification timestamp
+        run: |
+          TEX_DIR='docs/files'
+          timestamp=$(git log -1 --format=%cd --date=format-local:%d.%m.%Y ${TEX_DIR}/notentransparenz.tex)
+          echo "$timestamp" > ${TEX_DIR}/changed.tex
+        shell: bash
 
       - name: Compile LaTeX document
         uses: xu-cheng/latex-action@v3
