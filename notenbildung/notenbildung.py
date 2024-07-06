@@ -5,6 +5,7 @@ Notenberechnung
 """
 import os
 import numpy as np
+import pandas as pd
 from datetime import datetime
 import copy
 import matplotlib.pyplot as plt
@@ -71,6 +72,11 @@ class Notenberechnung:
             return datetime.strptime(date_str, "%Y-%m-%d")
         except (ValueError, TypeError):
             raise ValueError("Ungültiges Datumsformat")
+            
+    def add_from_excel(self, path):
+        df = pd.read_excel(path)
+        for _,row in df.iterrows():
+            self.note_hinzufuegen(**row)
 
     def note_hinzufuegen(self, **kwargs):
         mandatory_keys = ['art', 'note', 'date']
