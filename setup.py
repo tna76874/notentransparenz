@@ -16,6 +16,7 @@ setup(
     install_requires=[
         "numpy",
         "datetime",
+        "matplotlib",
     ],
     classifiers=[
         'Development Status :: 1 - Planning',

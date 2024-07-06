@@ -3,9 +3,11 @@
 """
 Notenberechnung
 """
+import os
 import numpy as np
 from datetime import datetime
 import copy
+import matplotlib.pyplot as plt
 
 class Note:
     def __init__(self, **kwargs):
@@ -25,7 +27,7 @@ class Note:
         return self._print()
 
 class Notenberechnung:
-    def __init__(self, w_s0 = 1, w_sm = 3, system = 'N', schranke = 0.25):
+    def __init__(self, w_s0 = 1, w_sm = 3, system = 'N', schranke = 0.25, SJ=None):        
         if system not in ['N', 'NP']:
             raise ValueError("Das System muss entweder 'N' oder 'NP' sein.")
         if not 0 <= schranke < 0.5:
@@ -39,6 +41,24 @@ class Notenberechnung:
         self.schranke = schranke
         self.system = system
         self.noten = []
+        self.sj_start, self.sj_ende = self._set_zeitraum(SJ=SJ)
+        
+    def _set_zeitraum(self, SJ=None):
+        if SJ!=None:
+            sj_start = datetime(int(SJ), 9, 1)
+            sj_ende = datetime(int(SJ)+1, 7, 31)
+            return sj_start, sj_ende
+            
+        heutiges_datum = datetime.now()
+        stichtag_start = datetime(heutiges_datum.year, 7, 31)
+        stichtag_ende = datetime(heutiges_datum.year, 9, 1)
+        if (stichtag_start <= heutiges_datum < stichtag_ende) or (heutiges_datum >= stichtag_ende):
+            sj_start = datetime(heutiges_datum.year, 9, 1)
+            sj_ende = datetime(heutiges_datum.year+1, 7, 31)
+        else:
+            sj_start = datetime(heutiges_datum.year-1, 9, 1)
+            sj_ende = datetime(heutiges_datum.year, 7, 31)
+        return sj_start, sj_ende
         
     def _sort_grade_after_date(self):
         self.noten.sort(key=lambda x: x['datum'])
@@ -156,6 +176,70 @@ class Notenberechnung:
                 print(f"Fehler beim Hinzufügen der Note: {str(e)}")
         
         return ergebnisse
+    
+    def plot_time_series(self, save=None, formats = ['jpg'], **kwargs):
+        cvars =         {
+                        'bbox_inches'   : 'tight',
+                        'pad_inches'    : 0.05/2.54,
+                        'dpi'           : 500,
+                        'format'        : 'pdf',
+                        }
+        cvars.update(kwargs)
+        
+        result = self.time_series()
+        
+        # Extrahiere Daten für den Plot
+        dates = [entry.datum for entry in result]
+        gesamtnoten = [entry.gesamtnote for entry in result]
+        schriftlich = [entry.m_s for entry in result]
+        muendlich = [entry.m_m for entry in result]
+
+        # Erstelle die Figure und Subplots
+        fig, ax = plt.subplots(figsize=(10, 6))
+        
+        # Erstelle Plots
+        ax.plot(dates, gesamtnoten, marker='o', linestyle='-', color='r', label='Gesamtnote')
+        ax.plot(dates, schriftlich, marker='.', linestyle='--', color='b', label='schriftlich')
+        ax.plot(dates, muendlich, marker='+', linestyle=':', color='g', label='mündlich')
+
+
+        # Setze die Zeitachsen-Begrenzungen
+        ax.set_xlim(self.sj_start, self.sj_ende)
+        
+        # Y-Achsen Skalierung basierend auf noten.system
+        if self.system == 'N':
+            ax.set_ylim(1, 6)
+            ax.invert_yaxis()
+        elif self.system == 'NP':
+            ax.set_ylim(0, 15)
+        
+        # Datumsformatierung der x-Achse
+        fig.autofmt_xdate()
+        
+        # Achsenbeschriftungen und Titel
+        ax.set_xlabel('Datum')
+        ax.set_ylabel('Gesamtnote')
+        ax.set_title(f'Entwicklung der Leistungen in dem Schuljahr {self.sj_start.year}/{self.sj_ende.year}')
+        
+        # Legende
+        ax.legend()
+        
+        # Zeige den Plot an
+        ax.grid(True)
+        fig.tight_layout()
+
+        # Speichern der Figur, falls save angegeben ist
+        if save is not None:
+            # Sicherstellen, dass der Ordner existiert
+            save = os.path.abspath(save)
+            os.makedirs(os.path.dirname(save), exist_ok=True)
+            # Speichern der Figur
+            for exp_format in list(set(['pdf','svg','jpg']).intersection(set(formats))):
+                cvars['format'] = exp_format
+                fig.savefig(save+'.'+exp_format, **cvars)
+        else:
+            # Anzeigen der Figur
+            plt.show()
 
 if __name__ == "__main__":
     # Beispiel
