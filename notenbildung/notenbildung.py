@@ -5,16 +5,18 @@ Notenberechnung
 """
 import numpy as np
 from datetime import datetime
+import copy
 
 class Note:
     def __init__(self, **kwargs):
-        self.m_s1, self.m_s, self.m_m, self.gesamtnote = (kwargs.get(key, None) for key in ['m_s1', 'm_s', 'm_m', 'gesamtnote'])
+        self._keys = ['m_s1', 'm_s', 'm_m', 'gesamtnote', 'datum']
+        self.m_s1, self.m_s, self.m_m, self.gesamtnote, self.datum = (kwargs.get(key, None) for key in self._keys)
 
     def _print(self):
-        return f'm_s1={self.m_s1}, m_s={self.m_s}, m_m={self.m_m}, gesamtnote={self.gesamtnote}'
+        return f'm_s1={self.m_s1}, m_s={self.m_s}, m_m={self.m_m}, gesamtnote={self.gesamtnote}, datum={self.datum.strftime("%d.%m.%Y")}'
 
     def update(self, **kwargs):
-        self.m_s1, self.m_s, self.m_m, self.gesamtnote = (kwargs.get(key, getattr(self, key)) for key in ['m_s1', 'm_s', 'm_m', 'gesamtnote'])
+        self.m_s1, self.m_s, self.m_m, self.gesamtnote, self.date = (kwargs.get(key, getattr(self, key)) for key in self._keys)
 
     def __str__(self):
         return self._print()
@@ -37,6 +39,9 @@ class Notenberechnung:
         self.schranke = schranke
         self.system = system
         self.noten = []
+        
+    def _sort_grade_after_date(self):
+        self.noten.sort(key=lambda x: x['datum'])
 
     def parse_date(self, date_str):
         if isinstance(date_str, datetime):
@@ -58,6 +63,7 @@ class Notenberechnung:
             if kwargs.get('art') in ['m', 'GFS']:
                 note_dict['status'] = '---'
             self.noten.append(note_dict)
+            self._sort_grade_after_date()
         else:
             raise ValueError(f'Fehlende Informationen. Bitte geben Sie {" und ".join(mandatory_keys)} an.')
 
@@ -68,7 +74,7 @@ class Notenberechnung:
         return np.mean(noten_werte)
 
     def berechne_gesamtnote(self):
-        result = Note()
+        result = Note(datum=self.noten[-1].get('datum'))
         
         # Filtern der Noten nach Art
         noten_ka = [note for note in self.noten if note.get('art') in ['KA', 'GFS']]
@@ -94,9 +100,15 @@ class Notenberechnung:
         # Gewichtung für mündliche Noten
         w_m = 0 if n_m==0 else 1
 
-        # Berechnung der Mittelwerte von KT und KA
-        if n_KA + n_KT==0:
+        # Randfall: nur mündliche Noten
+        if (n_KA + n_KT==0) and n_m>0:
+            result.update( gesamtnote=m_m )
+            return result
+        # Randfall: keine Noten
+        elif (n_KA + n_KT + n_m == 0):
             return None
+        
+        # Berechnung der Mittelwerte von KT und KA
         w_s = 0 if n_KT == 0 else self.w_s0/2 if n_KT == 1 else self.w_s0
         m_s1 = (n_KA * m_KA + w_s * m_KT) / (n_KA + w_s)
 
@@ -126,6 +138,24 @@ class Notenberechnung:
         result.update(m_s1=m_s1, m_s=m_s, gesamtnote=gesamtnote, m_m = m_m)
 
         return result
+    
+    def time_series(self):
+        kopie = copy.deepcopy(self)
+        kopie.noten = []
+        
+        # Liste für Ergebnisse
+        ergebnisse = []
+        
+        for note in self.noten:
+            try:
+                kopie.noten.append(note)
+                kopie._sort_grade_after_date()
+                ergebnis = kopie.berechne_gesamtnote()
+                ergebnisse.append(ergebnis)
+            except ValueError as e:
+                print(f"Fehler beim Hinzufügen der Note: {str(e)}")
+        
+        return ergebnisse
 
 if __name__ == "__main__":
     # Beispiel
