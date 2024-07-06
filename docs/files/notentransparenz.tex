@@ -1,0 +1,87 @@
+\documentclass{article}
+\usepackage[a4paper, margin=2cm]{geometry}
+\usepackage{amsmath}
+\usepackage{parskip}
+\usepackage{enumitem}
+\usepackage[german]{babel}
+\usepackage{fancyhdr}
+\usepackage{datetime}
+
+\usepackage{helvet}
+\renewcommand{\familydefault}{\sfdefault}
+
+\fancypagestyle{meinpagestyle}{
+	\fancyhf{}
+	\fancyhead[C]{\large Notentransparenz}
+	\fancyfoot[L]{Stand \today}
+	\fancyfoot[R]{Hilberg}
+}
+
+\pagestyle{meinpagestyle}
+
+\begin{document}
+
+\begin{enumerate}[label=\textbf{\textbullet}, align=left, leftmargin=*]
+	\item[\textbf{Definitionen}] KA: Klassenarbeit; GFS: GFS; KT: schr. Wiederholungsarbeit o. prak. Arbeit; m: mündlich; Notensysteme: Noten (N), Notenpunkte (NP)
+	\item[\textbf{Mittelwerte der Noten}] $\overline{m_{KT}}$ (KT); $\overline{m_{KA}}$ (KA und GFS); $\overline{m_{m}}$ (m)
+	\item[\textbf{Anzahl der Leistungen}] $n_{KT}$; $n_{KA}$; $n_{m}$
+	\item[\textbf{Anzahl von zu verbessernden Leisungen}] \mbox{} \
+	\begin{enumerate}[label=\textbf{\textbullet}, align=left, leftmargin=*]
+		\item[\textit{Gesamtanzahl}] $n_{v_g}$ (Verbesserungsstatus ist nicht \glqq ---\grqq{})
+		\item[\textit{fehlend}] $n_{v_1}$ (Verbesserungsstatus ist \glqq \textit{fehlt}\grqq{})
+		\item[\textit{fertig}] $n_{v_2}$ (Verbesserungsstatus ist \glqq \textit{fertig}\grqq{})
+		\item[\textit{nicht abgeschlossenen}] $n_{v_o}$ (Verbesserungsstatus ist nicht: \glqq\textit{---}\grqq{}, \glqq\textit{fehlt}\grqq{}, \glqq\textit{fertig}\grqq{})
+	\end{enumerate}
+	\item[\textbf{Gewichtungsfaktor KA/KT}] $w_{s_0}$ (Falls nicht anders mitgeteilt, ist $w_{s_0}=1$)
+	\[
+	w_s =
+	\begin{cases}
+		0 & \text{für }  n_{KT} = 0 \\
+		\frac{w_{s_0}}{2} & \text{für }    n_{KT} = 1 \\
+		w_{s_0} & \text{für }    n_{KT} > 1 \\
+	\end{cases}
+	\]	
+	\item[\textbf{Mittelwert KA und KT}] 
+	\[
+	\overline{m_{s_1}} = \frac{ n_{KA} \cdot \overline{m_{KA}} + w_s \cdot \overline{m_{KT}} }{n_{KA} + w_s}
+	\]
+	\item[\textbf{Diskretisierungsfaktor}] $w_{d}$ (Falls nicht anders mitgeteilt, ist $w_{th}=0{,}25$)
+	\[
+	w_{d} = \left| \frac{0{,}5 - (\overline{m_{s_1}} \mod 1)}{w_{th}} \right|
+	\]
+	\item[\textbf{Gewichtungsfaktoren Verbesserung}] $w_{v_1}$; $w_{v_2}$; $w_{v_3}$ \\
+	\[
+	w_{v_1} =
+	\begin{cases}
+		0 & \text{für }  w_{d} > 1 \\
+		\lceil \overline{m_{s_1}} \rceil & \text{für }    w_{d} \leq 1 \text{ und Notensystem N} \\
+		\lfloor \overline{m_{s_1}} \rfloor & \text{für }    w_{d} \leq 1 \text{ und Notensystem NP} \\
+	\end{cases}
+	\,\,\,\,
+	w_{v_2} =
+	\begin{cases}
+		0 & \text{für }  w_{d} > 1 \\
+		\lfloor \overline{m_{s_1}} \rfloor & \text{für }    w_{d} \leq 1 \text{ und Notensystem N} \\
+		\lceil \overline{m_{s_1}} \rceil & \text{für }    w_{d} \leq 1 \text{ und Notensystem NP} \\
+	\end{cases}
+	\]
+	
+	\[
+	w_{v_3} =
+	\begin{cases}
+		0 & \text{für }  w_{d} \geq 1 \\
+		10 & \text{für }    w_{d} < 1 \\
+	\end{cases}
+	\]	
+	\item[\textbf{Mittelwert schriftlich}]
+	\[
+	\overline{m_{s}} = \frac{ n_{KA} \cdot \overline{m_{KA}} + w_s \cdot \overline{m_{KT}} +w_{v_3} \cdot  \frac{n_{v_1} \cdot w_{v_1} + n_{v_o} \cdot \overline{m_{s_1}} + w_{v_2} + n_{v_2} \cdot w_{v_2}}{n_{v_g}}  }{n_{KA} + w_s + w_{v_3}}
+	\]
+	\item[\textbf{Gewichtungsfaktor schriftlich/mündlich}] $w_{sm}$ (Falls nicht anders mitgeteilt, ist $w_{sm}=3$)
+	\item[\textbf{Gesamtnote $GN$}]
+	\[
+	GN = \frac{w_{sm} \cdot \overline{m_{s}} + \overline{m_{m}}}{w_{sm}+1}
+	\]
+\end{enumerate}
+	
+\end{document}

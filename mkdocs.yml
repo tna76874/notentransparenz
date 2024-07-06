@@ -1,0 +1,26 @@
+site_name: Notentransparenz
+site_url: https://tna76874.github.io/notentransparenz
+theme:
+  name: material
+  language: de
+markdown_extensions:
+  - pymdownx.snippets
+plugins:
+  - macros
+  - search
+  - glightbox
+
+extra:
+  github_user: tna76874
+  github_repo: notentransparenz
+  build_doc_date: !ENV build_doc_date
+  generator: false
+  social:
+    - icon: fontawesome/brands/github
+      link: https://github.com/tna76874/notentransparenz
+      name: "tna76874"
+
+copyright: !ENV build_doc_date
+
+nav:
+  - Notentransparenz: index.md
