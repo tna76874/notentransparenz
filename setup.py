@@ -15,7 +15,7 @@ setup(
     packages=find_packages(),
     install_requires=[
         "numpy",
-        "pandas"
+        "pandas",
         "datetime",
         "matplotlib",
     ],
