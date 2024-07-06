@@ -16,7 +16,7 @@
 	\fancyhead[L]{\large Notentransparenz}
 	\fancyhead[R]{Hilberg}
 	\fancyfoot[L]{Stand \today}
-	\fancyfoot[R]{\href{https://url.hilberg.eu/notentransparenz}{url.hilberg.eu/notentransparenz}}
+	\fancyfoot[R]{\href{https://url.hilberg.eu/nt}{url.hilberg.eu/nt}}
 }
 
 \pagestyle{meinpagestyle}
@@ -24,9 +24,10 @@
 \begin{document}
 
 \begin{enumerate}[label=\textbf{\textbullet}, align=left, leftmargin=*]
-	\item[\textbf{Definitionen}] KA: Klassenarbeit; GFS: GFS; KT: schr. Wiederholungsarbeit o. prak. Arbeit; m: mündlich; Notensysteme: Noten (N), Notenpunkte (NP)
+	\item[\textbf{Definitionen}] KA: Klassenarbeit; GFS: GFS; KT: schriftliche Wiederholungsarbeit oder praktische Arbeit; m: mündlich; Notensysteme: Noten (N), Notenpunkte (NP)
 	\item[\textbf{Mittelwerte der Noten}] $\overline{m_{KT}}$ (KT); $\overline{m_{KA}}$ (KA und GFS); $\overline{m_{m}}$ (m)
 	\item[\textbf{Anzahl der Leistungen}] $n_{KT}$; $n_{KA}$; $n_{m}$
+	\item[\textbf{Verbesserungen}] Zu den Leistungen mit Verbesserungstatus ungleich \glqq ---\grqq{} müssen \textit{individuelle} Verbesserungen angefertigt werden. Diese beinhalten Fehleranalysen jedes mit einem Korrekturzeichen markierten persönlichen Fehlers und dessen Korrektur. Die Abgabe erfolgt innerhalb einer Wochenfrist nach der Rückgabe der Arbeit.
 	\item[\textbf{Anzahl von zu verbessernden Leisungen}] \mbox{} \
 	\begin{enumerate}[label=\textbf{\textbullet}, align=left, leftmargin=*]
 		\item[\textit{Gesamtanzahl}] $n_{v_g}$ (Verbesserungsstatus ist nicht \glqq ---\grqq{})
@@ -47,11 +48,11 @@
 	\[
 	\overline{m_{s_1}} = \frac{ n_{KA} \cdot \overline{m_{KA}} + w_s \cdot \overline{m_{KT}} }{n_{KA} + w_s}
 	\]
-	\item[\textbf{Diskretisierungsfaktor}] $w_{d}$ (Falls nicht anders mitgeteilt, ist $w_{th}=0{,}25$)
+	\item[\textbf{Diskretisierungsfaktor}] $w_{d}$ (Falls nicht anders mitgeteilt, ist $w_{th}=0{,}25$) \cite{wikimodulo,wikibetrag}
 	\[
 	w_{d} = \left| \frac{0{,}5 - (\overline{m_{s_1}} \mod 1)}{w_{th}} \right|
 	\]
-	\item[\textbf{Gewichtungsfaktoren Verbesserung}] $w_{v_1}$; $w_{v_2}$; $w_{v_3}$ \\
+	\item[\textbf{Gewichtungsfaktoren Verbesserung}] $w_{v_1}$; $w_{v_2}$; $w_{v_3}$\cite{wikigaussklammer} \\
 	\[
 	w_{v_1} =
 	\begin{cases}
@@ -85,5 +86,18 @@
 	GN = \frac{w_{sm} \cdot \overline{m_{s}} + \overline{m_{m}}}{w_{sm}+1}
 	\]
 \end{enumerate}
+
+
+
+\renewcommand\refname{\normalsize Quellen}
+\renewcommand{\bibname}{Quellen}
+
+\vfill
+
+\begingroup
+\scriptsize
+\bibliographystyle{plain}
+\bibliography{references}
+\endgroup
 	
 \end{document}
