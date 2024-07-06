@@ -20,7 +20,8 @@ jobs:
 
       - name: Check for changes in LaTeX file
         id: check_changes
-        run: echo ::set-output name=changed::$(git diff --name-only HEAD^ HEAD | grep './docs/files/notentransparenz.tex')
+        run: |
+          echo "changed=$(git diff --name-only HEAD^ HEAD | grep './docs/files/notentransparenz.tex')" >> $GITHUB_OUTPUT
 
       - name: Compile LaTeX document
         if: steps.check_changes.outputs.changed
@@ -33,7 +34,7 @@ jobs:
         run: |
           git config user.name github-actions[bot]
           git config user.email 41898282+github-actions[bot]@users.noreply.github.com
-          
+
       - uses: actions/setup-python@v5
         with:
           python-version: 3.x
