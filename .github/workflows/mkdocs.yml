@@ -21,10 +21,14 @@ jobs:
       - name: Check for changes in LaTeX file
         id: check_changes
         run: |
-          echo "changed=$(git diff --name-only HEAD^ HEAD | grep './docs/files/notentransparenz.tex')" >> $GITHUB_OUTPUT
+          if git diff --name-only HEAD^ HEAD | grep -q './docs/files/notentransparenz.tex'; then
+            echo "changed=true" >> $GITHUB_OUTPUT
+          else
+            echo "changed=false" >> $GITHUB_OUTPUT
+          fi
 
       - name: Compile LaTeX document
-        if: steps.check_changes.outputs.changed
+        if: steps.check_changes.outputs.changed == 'true'
         uses: xu-cheng/latex-action@v3
         with:
           root_file: notentransparenz.tex
