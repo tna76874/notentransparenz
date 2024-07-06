@@ -6,15 +6,17 @@
 \usepackage[german]{babel}
 \usepackage{fancyhdr}
 \usepackage{datetime}
+\usepackage{hyperref}
 
 \usepackage{helvet}
 \renewcommand{\familydefault}{\sfdefault}
 
 \fancypagestyle{meinpagestyle}{
 	\fancyhf{}
-	\fancyhead[C]{\large Notentransparenz}
+	\fancyhead[L]{\large Notentransparenz}
+	\fancyhead[R]{Hilberg}
 	\fancyfoot[L]{Stand \today}
-	\fancyfoot[R]{Hilberg}
+	\fancyfoot[R]{\href{https://url.hilberg.eu/notentransparenz}{url.hilberg.eu/notentransparenz}}
 }
 
 \pagestyle{meinpagestyle}
