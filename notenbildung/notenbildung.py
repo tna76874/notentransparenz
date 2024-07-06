@@ -95,6 +95,7 @@ class Notenberechnung:
 
     def berechne_gesamtnote(self):
         result = Note(datum=self.noten[-1].get('datum'))
+        verbesserung_enabled = any(note['status'] != '---' for note in self.noten)
         
         # Filtern der Noten nach Art
         noten_ka = [note for note in self.noten if note.get('art') in ['KA', 'GFS']]
@@ -148,6 +149,7 @@ class Notenberechnung:
             diskretisierung = (n_v_1 * w_v1 + n_v_o * m_s1 + n_v_2 * w_v2)/n_v_g
         else:
             diskretisierung = 0
+            w_v3 = 0
         
         # Berechnung der schriftlichen Note
         m_s = (n_KA * m_KA + w_s * m_KT + w_v3 * diskretisierung ) / (n_KA + w_s + w_v3)
@@ -242,13 +244,12 @@ class Notenberechnung:
 
 if __name__ == "__main__":
     # Beispiel
-    
     self = Notenberechnung(w_s0=1, w_sm=3, system = 'N')
-    self.note_hinzufuegen(art='KA', date = '2024-04-10', note=5, status='fertig')
-    self.note_hinzufuegen(art='KA', date = '2024-04-15', note=6, status='fertig')
+    self.note_hinzufuegen(art='KA', date = '2024-04-10', note=2, status='fertig')
+    self.note_hinzufuegen(art='KA', date = '2024-04-15', note=2.5, status='fertig')
     self.note_hinzufuegen(art='KA', date = '2024-03-01', note=3, status='fertig')
     self.note_hinzufuegen(art='KA', date = '2024-03-15', note=5, status='fertig')
-    self.note_hinzufuegen(art='KT', date = '2024-02-01', note=4, status='fertig')
+    self.note_hinzufuegen(art='KT', date = '2024-02-01', note=4)
     self.note_hinzufuegen(art='KT', date = '2024-01-01', note=2.75, status='fertig')
     self.note_hinzufuegen(art='m', date = '2023-09-01', note=3.0)
     self.note_hinzufuegen(art='m', date = '2023-10-01', note=3.25)
