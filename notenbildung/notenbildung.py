@@ -52,7 +52,7 @@ class Notenberechnung:
             note_dict = {
                 'art': kwargs.get('art'),
                 'note': kwargs.get('note'),
-                'status': kwargs.get('status'),
+                'status': kwargs.get('status', '---'),
                 'datum': self.parse_date(kwargs.get('date')),
             }
             if kwargs.get('art') in ['m', 'GFS']:

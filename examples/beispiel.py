@@ -4,7 +4,7 @@
 Beispiel
 """
 
-from notenbildung import *
+from notenbildung.notenbildung import *
 
 noten = Notenberechnung(w_s0=1, w_sm=3, system = 'N')
 noten.note_hinzufuegen(art='KA', date = '2024-04-10', note=5, status='fertig')
