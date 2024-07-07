@@ -9,6 +9,7 @@ plugins:
   - macros
   - search
   - glightbox
+  - pdf-export
 
 extra:
   github_user: tna76874
