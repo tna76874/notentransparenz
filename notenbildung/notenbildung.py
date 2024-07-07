@@ -28,18 +28,21 @@ class Note:
         return self._print()
 
 class Notenberechnung:
-    def __init__(self, w_s0 = 1, w_sm = 3, system = 'N', schranke = 0.25, SJ=None, v_enabled = True):        
+    def __init__(self, w_s0 = 1, w_sm = 3, system = 'N', w_th = 0.25, SJ=None, v_enabled = True, w_vw = 1):        
         if system not in ['N', 'NP']:
             raise ValueError("Das System muss entweder 'N' oder 'NP' sein.")
-        if not 0 <= schranke < 0.5:
-            raise ValueError("Die Schranke muss im Bereich  [0; 0.5) liegen.")
+        if not 0 <= float(w_th) <= 0.5:
+            raise ValueError("Die Schranke w_th muss im Bereich  [0; 0.5] liegen.")
         if not 0 <= float(w_s0) <= 2:
             raise ValueError("w_s0 muss in  [0; 2] liegen.")
         if not 1 <= float(w_sm) <= 4:
             raise ValueError("w_s0 muss in  [1; 4] liegen.")
+        if not 0.5 <= float(w_vw) <= 5:
+            raise ValueError("w_vw muss in [5; 50] liegen.")
         self.w_s0 = float(w_s0)
         self.w_sm = float(w_sm)
-        self.schranke = schranke
+        self.w_th = float(w_th)
+        self.w_vw = float(w_vw)
         self.system = system
         self.noten = []
         self.sj_start, self.sj_ende = self._set_zeitraum(SJ=SJ)
@@ -141,16 +144,16 @@ class Notenberechnung:
         m_s1 = (n_KA * m_KA + w_s * m_KT) / (n_KA + w_s)
 
         # Berechnung des Diskretisierungsfaktors
-        w_d = abs(0.5 - (m_s1 % 1)) / 0.25
+        w_d = abs((0.5 - (m_s1 % 1)) / self.w_th) 
         
         # Berechnen der Gewichte je nach Notensystem
         if self.system=='N':
-            w_v1 = 0 if w_d > 1 else np.ceil(m_s1) if w_d <= 1 else 0
-            w_v2 = 0 if w_d > 1 else np.floor(m_s1) if w_d <= 1 else 0
+            w_v1 = 0 if w_d >= 1 else np.ceil(m_s1) if w_d < 1 else 0
+            w_v2 = 0 if w_d >= 1 else np.floor(m_s1) if w_d < 1 else 0
         elif self.system=='NP':
-            w_v1 = 0 if w_d > 1 else np.floor(m_s1) if w_d <= 1 else 0
-            w_v2 = 0 if w_d > 1 else np.ceil(m_s1) if w_d <= 1 else 0
-        w_v3 = 0 if w_d >= 1 else 10 if w_d < 1 else 0
+            w_v1 = 0 if w_d >= 1 else np.floor(m_s1) if w_d < 1 else 0
+            w_v2 = 0 if w_d >= 1 else np.ceil(m_s1) if w_d < 1 else 0
+        w_v3 = 0 if w_d >= 1 else self.w_vw*10 if w_d < 1 else 0
         
         if (not verbesserung_enabled) or (n_v_g == 0):
             w_v4 = 0

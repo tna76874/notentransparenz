@@ -56,20 +56,20 @@
 	\[
 	w_{d} = \left| \frac{0{,}5 - (\overline{m_{s_1}} \mod 1)}{w_{th}} \right|
 	\]
-	\item[\textbf{Gewichtungsfaktoren Verbesserung}] $w_{v_1}$; $w_{v_2}$; $w_{v_3}$;$w_{v_4}$ \cite{wikigaussklammer} \\
+	\item[\textbf{Gewichtungsfaktoren Verbesserung}] $w_{v_1}$; $w_{v_2}$; $w_{v_3}$; $w_{v_4}$; $w_{v_w}$ (Falls nicht anders mitgeteilt, ist $w_{v_w}=1$) \cite{wikigaussklammer} \\
 	\[
 	w_{v_1} =
 	\begin{cases}
-		0 & \text{für }  w_{d} > 1 \\
-		\lceil \overline{m_{s_1}} \rceil & \text{für }    w_{d} \leq 1 \text{ und Notensystem N} \\
-		\lfloor \overline{m_{s_1}} \rfloor & \text{für }    w_{d} \leq 1 \text{ und Notensystem NP} \\
+		0 & \text{für }  w_{d} \geq 1 \\
+		\lceil \overline{m_{s_1}} \rceil & \text{für }    w_{d} < 1 \text{ und Notensystem N} \\
+		\lfloor \overline{m_{s_1}} \rfloor & \text{für }    w_{d} < 1 \text{ und Notensystem NP} \\
 	\end{cases}
 	\,\,\,\,
 	w_{v_2} =
 	\begin{cases}
-		0 & \text{für }  w_{d} > 1 \\
-		\lfloor \overline{m_{s_1}} \rfloor & \text{für }    w_{d} \leq 1 \text{ und Notensystem N} \\
-		\lceil \overline{m_{s_1}} \rceil & \text{für }    w_{d} \leq 1 \text{ und Notensystem NP} \\
+		0 & \text{für }  w_{d} \geq 1 \\
+		\lfloor \overline{m_{s_1}} \rfloor & \text{für }    w_{d} < 1 \text{ und Notensystem N} \\
+		\lceil \overline{m_{s_1}} \rceil & \text{für }    w_{d} < 1 \text{ und Notensystem NP} \\
 	\end{cases}
 	\]
 	
@@ -77,7 +77,7 @@
 	w_{v_3} =
 	\begin{cases}
 		0 & \text{für }  w_{d} \geq 1 \text{ oder } n_{v_g}=0 \\
-		10 & \text{für }    w_{d} < 1 \text{ und } n_{v_g} \neq 0 \\
+		10 w_{v_w} & \text{für }    w_{d} < 1 \text{ und } n_{v_g} \neq 0 \\
 	\end{cases}
 	\,\,\,\,\,\,\,\,
 	w_{v_4} =
