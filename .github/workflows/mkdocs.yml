@@ -35,6 +35,7 @@ jobs:
         with:
           root_file: notentransparenz.tex
           working_directory: ./docs/files
+          post_compile: pandoc -s notentransparenz.tex -o notentransparenz.md --mathjax
 
       - name: Configure Git Credentials
         run: |
@@ -55,5 +56,5 @@ jobs:
           restore-keys: |
             mkdocs-material-
       - run: |
-          pip install mkdocs-material mkdocs-macros-plugin mkdocs-glightbox mkdocs-pdf-export-plugin
+          pip install mkdocs-material mkdocs-macros-plugin mkdocs-glightbox python-markdown-math
       - run: mkdocs gh-deploy --force

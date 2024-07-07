@@ -5,11 +5,15 @@ theme:
   language: de
 markdown_extensions:
   - pymdownx.snippets
+  - mdx_math:
+      enable_dollar_delimiter: True
 plugins:
   - macros
   - search
   - glightbox
-  - pdf-export
+
+extra_javascript:
+  - https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.4/MathJax.js?config=TeX-AMS-MML_HTMLorMML
 
 extra:
   github_user: tna76874
@@ -37,6 +41,7 @@ copyright: !ENV build_doc_date
 
 nav:
   - Notentransparenz: index.md
+  - einfache Sprache: simple.md
   - Korrekturzeichen: korrektur.md
   - Verbesserungen: verbesserung.md
   - Anhang: python.md

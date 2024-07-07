@@ -3,5 +3,9 @@ Alle Änderungen dieser Website sind öffentlich unter [https://github.com/tna76
 <object data="files/notentransparenz.pdf" type="application/pdf" width="700px" height="700px">
     <embed src="files/notentransparenz.pdf">
         <p>Dieser Browser unterstützt die Anzeige von PDFs nicht. Bitte herunterladen: <a href="files/notentransparenz.pdf">Download: Notentransparenz</a>.</p>
+        {% include "files/notentransparenz.md" %}
     </embed>
 </object>
+
+
+
