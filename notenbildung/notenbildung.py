@@ -9,6 +9,8 @@ import pandas as pd
 from datetime import datetime
 import copy
 import matplotlib.pyplot as plt
+import matplotlib.patches as patches
+import matplotlib.dates as mdates
 
 class NoteEntity:
     def __init__(self, note, system=None):
@@ -109,7 +111,7 @@ class Note:
         return self._print()
 
 class Notenberechnung:
-    def __init__(self, w_s0 = 1, w_sm = 3, system = 'N', w_th = 0.25, SJ=None, v_enabled = True, w_vw = 1):        
+    def __init__(self, w_s0 = 1, w_sm = 3, system = 'N', w_th = 0.4, SJ=None, v_enabled = True):        
         if system not in ['N', 'NP']:
             raise ValueError("Das System muss entweder 'N' oder 'NP' sein.")
         if not 0 <= float(w_th) <= 0.5:
@@ -118,12 +120,9 @@ class Notenberechnung:
             raise ValueError("w_s0 muss in  [0; 2] liegen.")
         if not 1 <= float(w_sm) <= 4:
             raise ValueError("w_s0 muss in  [1; 4] liegen.")
-        if not 0.5 <= float(w_vw) <= 5:
-            raise ValueError("w_vw muss in [5; 50] liegen.")
         self.w_s0 = float(w_s0)
         self.w_sm = float(w_sm)
         self.w_th = float(w_th)
-        self.w_vw = float(w_vw)
         self.system = system
         self.noten = []
         self.sj_start, self.sj_ende = self._set_zeitraum(SJ=SJ)
@@ -310,8 +309,6 @@ class Notenberechnung:
         elif self.system == 'NP':
             ax.set_ylim(0, 15)
         
-        # Datumsformatierung der x-Achse
-        fig.autofmt_xdate()
         
         # Achsenbeschriftungen und Titel
         ax.set_xlabel('Datum')
@@ -324,6 +321,15 @@ class Notenberechnung:
         ax.yaxis.set_minor_locator(plt.MultipleLocator(0.5))
         ax.grid(which='minor', axis='y', linestyle=':', linewidth=0.5, color='black')
         fig.tight_layout()
+        
+        # Diskretisierungsbereich
+        baseline = (np.ceil(gesamtnoten[-1])+np.floor(gesamtnoten[-1]))/2
+        xlims = ax.get_xlim()
+        rect = patches.Rectangle((xlims[0], baseline - self.w_th), xlims[1]-xlims[0], 2*self.w_th, linewidth=1, edgecolor='none', facecolor='red', alpha=0.15)
+        ax.add_patch(rect)
+
+        # Datumsformatierung der x-Achse
+        fig.autofmt_xdate()
 
         # Speichern der Figur, falls save angegeben ist
         if save is not None:
@@ -340,7 +346,7 @@ class Notenberechnung:
 
 if __name__ == "__main__":
     # Beispiel
-    self = Notenberechnung(w_s0=1, w_sm=3, system = 'N', v_enabled=True)
+    self = Notenberechnung(w_s0=1, w_sm=3, system = 'N', v_enabled=True, w_th = 0.4)
     self.note_hinzufuegen(art='KA', date = '2024-04-10', note=3, status='fertig')
     self.note_hinzufuegen(art='KA', date = '2024-04-15', note=2.5, status='fertig')
     self.note_hinzufuegen(art='KA', date = '2024-03-01', note=4, status='fertig')
