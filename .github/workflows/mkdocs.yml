@@ -30,12 +30,17 @@ jobs:
           echo "transparenz.hilberg.eu" > ./docs/CNAME
         shell: bash
 
+      - name: Generate markdown version of notentransparenz
+        run: |
+          apt-get install pandoc
+          ./generate_markdown_from_latex.sh
+        shell: bash
+
       - name: Compile LaTeX document
         uses: xu-cheng/latex-action@v3
         with:
           root_file: notentransparenz.tex
           working_directory: ./docs/files
-          post_compile: pandoc -s notentransparenz.tex -o notentransparenz.md --mathjax
 
       - name: Configure Git Credentials
         run: |
