@@ -1,4 +1,4 @@
-Details in der folgenden Formulierung der Notentransparenz sind unscharf. Es wird ausdrücklich darauf hingewiesen, das dies nur eine Vereinfachung der exakten Formulierungen aus dem [Notentransparenz-Dokument]({{ extra.urls.docfile }}) sind und deswegen die folgende Darstellung ebenfalls nicht exakt ist.
+Details in der folgenden Formulierung der Notentransparenz sind unscharf. Es wird ausdrücklich darauf hingewiesen, das dies nur eine Vereinfachung der exakten Formulierungen aus dem [Notentransparenz-Dokument]({{ extra.urls.docfile }}) ist und deswegen die folgende Darstellung ebenfalls nicht exakt ist. Die vereinfachte Darstellung ist lediglich zur besseren Verständlichkeit hier abgedruckt.
 
 > Die schriftlichen und mündlichen Noten werden im Verhältnis $w_{sm}:1$ gewichtet. Verbesserungen werden in deine schriftliche Note einbezogen. Die Verbesserungen helfen dabei, wenn deine
 > schriftliche Durchschnittsnote zwischen zwei Noten liegt, die Tendenz zu einer dieser Noten zu bestimmen. Wenn du keine Verbesserungen abgibst, wird diese wie die
