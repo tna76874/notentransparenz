@@ -19,10 +19,11 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Check for changes in LaTeX file
+      - name: Check for changes in LaTeX file and set CNAME
         id: check_changes
         run: |
           echo "changed=$(git diff --name-only HEAD^ HEAD | grep -Eq 'docs/files/(notentransparenz.tex|references.bib)' && echo 'true' || echo 'false')" >> $GITHUB_OUTPUT
+          echo "transparenz.hilberg.eu" > CNAME
 
       - name: Create temporary tex ./docs/files
         run: |
@@ -55,5 +56,4 @@ jobs:
             mkdocs-material-
       - run: |
           pip install mkdocs-material mkdocs-macros-plugin mkdocs-glightbox mkdocs-pdf-export-plugin
-          echo "transparenz.hilberg.eu" > CNAME
       - run: mkdocs gh-deploy --force
