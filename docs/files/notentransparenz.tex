@@ -57,24 +57,32 @@
 	\[
 	\overline{m_{s_1}} = \frac{ n_{KA} \cdot \overline{m_{KA}} + w_s \cdot \overline{m_{KT}} }{n_{KA} + w_s}
 	\]
-	\item[\textbf{Diskretisierungsfaktor}] $w_{d}$ (Falls nicht anders mitgeteilt, ist $w_{th}=0{,}25$) \cite{wikimodulo,wikibetrag}
+	\item[\textbf{Diskretisierung}] $w_{d}$; $w_{th}$; $m_h$; $w_{0}$ (Falls nicht anders mitgeteilt, ist $w_{th}=0{,}25$) \cite{wikigaussklammer,wikibetrag,wikimodulo}
 	\[
 	w_{d} = \left| \frac{0{,}5 - (\overline{m_{s_1}} \mod 1)}{w_{th}} \right|
+	\,\hspace*{1cm}\,
+	m_{h} = \frac{\lceil \overline{m_{s_1}} \rceil + \lfloor \overline{m_{s_1}} \rfloor}{2}
+	\,\hspace*{1cm}\,
+	w_{0} =
+	\begin{cases}
+		6-1 & \text{ für Notensystem N} \\
+		15 - 0 & \text{ für Notensystem NP} \\
+	\end{cases}
 	\]
-	\item[\textbf{Gewichtungsfaktoren Verbesserung}] $w_{v_1}$; $w_{v_2}$; $w_{v_3}$; $w_{v_4}$; $w_{v_w}$ (Falls nicht anders mitgeteilt, ist $w_{v_w}=1$) \cite{wikigaussklammer} \\
+	\item[\textbf{Gewichtungsfaktoren Verbesserung}] $w_{v_1}$; $w_{v_2}$; $w_{v_3}$; $w_{v_4}$
 	\[
 	w_{v_1} =
 	\begin{cases}
 		0 & \text{für }  w_{d} \geq 1 \\
-		\lceil \overline{m_{s_1}} \rceil & \text{für }    w_{d} < 1 \text{ und Notensystem N} \\
-		\lfloor \overline{m_{s_1}} \rfloor & \text{für }    w_{d} < 1 \text{ und Notensystem NP} \\
+		m_{h} + w_{th} & \text{für }    w_{d} < 1 \text{ und Notensystem N} \\
+		m_{h} - w_{th} \rfloor & \text{für }    w_{d} < 1 \text{ und Notensystem NP} \\
 	\end{cases}
 	\,\,\,\,
 	w_{v_2} =
 	\begin{cases}
 		0 & \text{für }  w_{d} \geq 1 \\
-		\lfloor \overline{m_{s_1}} \rfloor & \text{für }    w_{d} < 1 \text{ und Notensystem N} \\
-		\lceil \overline{m_{s_1}} \rceil & \text{für }    w_{d} < 1 \text{ und Notensystem NP} \\
+		m_{h} - w_{th} & \text{für }    w_{d} < 1 \text{ und Notensystem N} \\
+		m_{h} + w_{th} & \text{für }    w_{d} < 1 \text{ und Notensystem NP} \\
 	\end{cases}
 	\]
 	
@@ -82,7 +90,7 @@
 	w_{v_3} =
 	\begin{cases}
 		0 & \text{für }  w_{d} \geq 1 \text{ oder } n_{v_g}=0 \\
-		10 w_{v_w} & \text{für }    w_{d} < 1 \text{ und } n_{v_g} \neq 0 \\
+		\frac{w_{0}}{w_{v_w}} & \text{für }    w_{d} < 1 \text{ und } n_{v_g} \neq 0 \\
 	\end{cases}
 	\,\,\,\,\,\,\,\,
 	w_{v_4} =

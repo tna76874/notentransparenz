@@ -228,13 +228,17 @@ class Notenberechnung:
         w_d = abs((0.5 - (m_s1 % 1)) / self.w_th) 
         
         # Berechnen der Gewichte je nach Notensystem
+        m_h = (np.ceil(m_s1)+np.floor(m_s1))/2
         if self.system=='N':
-            w_v1 = 0 if w_d >= 1 else np.ceil(m_s1) if w_d < 1 else 0
-            w_v2 = 0 if w_d >= 1 else np.floor(m_s1) if w_d < 1 else 0
+            w_v1 = 0 if w_d >= 1 else m_h + self.w_th if w_d < 1 else 0
+            w_v2 = 0 if w_d >= 1 else m_h - self.w_th if w_d < 1 else 0
+            w_0 = 6 - 1
         elif self.system=='NP':
-            w_v1 = 0 if w_d >= 1 else np.floor(m_s1) if w_d < 1 else 0
-            w_v2 = 0 if w_d >= 1 else np.ceil(m_s1) if w_d < 1 else 0
-        w_v3 = 0 if w_d >= 1 else self.w_vw*10 if w_d < 1 else 0
+            w_v1 = 0 if w_d >= 1 else m_h - self.w_th if w_d < 1 else 0
+            w_v2 = 0 if w_d >= 1 else m_h + self.w_th if w_d < 1 else 0
+            w_0 = 15 - 0
+            
+        w_v3 = 0 if w_d >= 1 else w_0/self.w_th if w_d < 1 else 0
         
         if (not verbesserung_enabled) or (n_v_g == 0):
             w_v4 = 0
