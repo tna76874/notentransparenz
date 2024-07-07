@@ -7,7 +7,7 @@
 \usepackage{fancyhdr}
 \usepackage{datetime}
 \usepackage{hyperref}
-\usepackage{catchfilebetweentags}
+\usepackage{multicol}
 
 \usepackage{helvet}
 \renewcommand{\familydefault}{\sfdefault}
@@ -25,20 +25,25 @@
 \pagestyle{meinpagestyle}
 
 \begin{document}
-
+\vspace*{-1cm}
 \begin{enumerate}[label=\textbf{\textbullet}, align=left, leftmargin=*]
-	\item[\textbf{Definitionen}] \textbf{KA}: Klassenarbeit; \textbf{GFS}: GFS; \textbf{KT}: schriftliche Wiederholungsarbeit oder praktische Arbeit; \textbf{m}: mündlich; Notensysteme: Noten (\textbf{N}), Notenpunkte (\textbf{NP})
+	\item[\textbf{Definitionen}] { \scriptsize \textbf{KA}: Klassenarbeit; \textbf{GFS}: GFS; \textbf{KT}: schriftliche Wiederholungsarbeit oder praktische Arbeit; \textbf{m}: mündlich; Notensysteme: Noten (\textbf{N}), Notenpunkte (\textbf{NP}) }
 	\item[\textbf{Mittelwerte der Noten}] $\overline{m_{KT}}$ (KT); $\overline{m_{KA}}$ (KA und GFS); $\overline{m_{m}}$ (m)
 	\item[\textbf{Anzahl der Leistungen}] $n_{KT}$; $n_{KA}$; $n_{m}$
-	\item[\textbf{Verbesserungen}] { \scriptsize Zu den Leistungen mit Verbesserungsstatus ungleich \glqq ---\grqq{} müssen \textit{individuelle} Verbesserungen angefertigt werden. Diese beinhalten Fehleranalysen jedes mit einem Korrekturzeichen markierten \textit{persönlichen} Fehlers und dessen Korrektur. }
-	\item[\textbf{Abgabe der Verbesserungen}] { \scriptsize Eine \glqq \textit{Abgabe}\grqq{} ist die Dokumentation des Standes der persönlichen Verbesserung eines Schülers / einer Schülerin. Für diese ist der Schüler / die Schülerin selber verantwortlich. Die Dokumentation kann digital als Scan/Foto des Originals über einen zugestellten Link erfolgen oder analog, indem von der Lehrkraft vor Ort die Verbesserung datiert wird. Da die Verbesserung Teil der persönlichen Lernunterlagen ist, verbleibt diese bei dem Schüler / der Schülerin und muss auf Nachfrage der Lehrkraft im Original, inklusive der Original-Dokumentation (digital: Link zu hochgeladener Datei; analog: von der Lehrkraft datiertes Papier) der Datierung, vorgelegt werden können. Die Abgabe erfolgt innerhalb einer Wochenfrist nach der Rückgabe der Arbeit. Abgaben auf anderem digitalen Weg (z.B. Email, Messenger, ... ) sind ausgeschlossen, da dort die Übertragung nicht gewährleistet ist. Falls die Vorlage der Original-Verbesserung inklusive Original-Dokumentation/Datierung nicht möglich ist, wird der jeweilige Abgabestatus als \glqq \textit{fehlt}\grqq{} gesetzt.} 
-	\item[\textbf{Anzahl von zu verbessernden Leisungen}] \mbox{} \
+	\item[\textbf{Verbesserungen}] { \scriptsize Definition: \glqq\textit{Zu den Leistungen mit Verbesserungsstatus ungleich \glqq ---\grqq{} müssen \textit{individuelle} Verbesserungen angefertigt werden. Diese beinhalten verbalisierte Fehleranalysen jedes mit einem Korrekturzeichen markierten \textit{persönlichen} Fehlers und dessen Korrektur. Zusätzlich zu der Fehleranalyse muss bei mehreren aufeinanderfolgenden Fehlern die fehlerhafte Aufgabe noch einmal vollständig richtig notiert werden.}\grqq{} Falls bei einer Abgabe kein Inhalt nach der Definition einer Verbesserungen erkennbar ist, dann wird der jeweilige Verbesserungsstatus als \glqq fehlt\grqq{} gesetzt.  Falls durch mündliche Nachfrage festgestellt werden kann, dass die Verbesserung nicht selbstständig angefertigt und verstanden wurde, dann wird der Verbesserungsstatus entsprechend als \glqq fehlt\grqq{} gesetzt bzw. geändert.}
+	\item[\textbf{Abgabe der Verbesserungen}] { \scriptsize Eine \glqq \textit{Abgabe}\grqq{} ist die Dokumentation des Standes der persönlichen Verbesserung eines Schülers / einer Schülerin. Für diese ist der Schüler / die Schülerin selber verantwortlich. Die Dokumentation kann digital als Scan/Foto des Originals über einen zugestellten Link erfolgen oder analog, indem von der Lehrkraft vor Ort die Verbesserung datiert wird. Da die Verbesserung Teil der persönlichen Lernunterlagen ist, verbleibt diese bei dem Schüler / der Schülerin und muss auf Nachfrage der Lehrkraft im Original, inklusive der Original-Dokumentation (\textit{digital}: Link zu hochgeladener Datei; \textit{analog}: von der Lehrkraft datiertes Papier) der Datierung, vorgelegt werden können. Die Abgabe erfolgt innerhalb einer Wochenfrist nach der Rückgabe der Arbeit. Abgaben auf anderem digitalen Weg (z.B. Email, Messenger, ... ) sind ausgeschlossen, da dort die Übertragung nicht gewährleistet ist. Falls die Vorlage der Original-Verbesserung inklusive Original-Dokumentation/Datierung nicht möglich ist, wird der jeweilige Verbesserungsstatus auf \glqq \textit{fehlt}\grqq{} gesetzt bzw. geändert.} 
+	\item[\textbf{Anzahl von zu verbessernden Leisungen}] { \scriptsize \mbox{} \
+	\setlength{\columnsep}{-20pt}
+	\begin{multicols}{2}
 	\begin{enumerate}[label=\textbf{\textbullet}, align=left, leftmargin=*]
 		\item[\textit{Gesamtanzahl}] $n_{v_g}$ (Verbesserungsstatus ist nicht \glqq ---\grqq{})
 		\item[\textit{fehlend}] $n_{v_1}$ (Verbesserungsstatus ist \glqq \textit{fehlt}\grqq{})
 		\item[\textit{fertig}] $n_{v_2}$ (Verbesserungsstatus ist \glqq \textit{fertig}\grqq{})
 		\item[\textit{nicht abgeschlossenen}] $n_{v_o}$ (Verbesserungsstatus ist nicht: \glqq\textit{---}\grqq{}, \glqq\textit{fehlt}\grqq{}, \glqq\textit{fertig}\grqq{})
 	\end{enumerate}
+	\end{multicols}
+	}
+	\vspace*{-12pt}
 	\item[\textbf{Gewichtungsfaktor KA/KT}] $w_{s_0}$ (Falls nicht anders mitgeteilt, ist $w_{s_0}=1$)
 	\[
 	w_s =
