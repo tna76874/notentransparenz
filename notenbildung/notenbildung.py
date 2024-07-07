@@ -10,16 +10,97 @@ from datetime import datetime
 import copy
 import matplotlib.pyplot as plt
 
-class Note:
-    def __init__(self, **kwargs):
-        self._keys = ['m_s1', 'm_s', 'm_m', 'gesamtnote', 'datum']
-        self.m_s1, self.m_s, self.m_m, self.gesamtnote, self.datum = (kwargs.get(key, None) for key in self._keys)
+class NoteEntity:
+    def __init__(self, note, system=None):
+        if system not in ['N', 'NP']:
+            raise ValueError("Das System muss entweder 'N' oder 'NP' sein.")
+        else:
+            self.system = system
+        self.note = note
+        self.system = system
+        
+    def gerundet(self):
+        result = dict()
+        Z = round(self.note)
+        if self.system == 'N':
+            HJ = round(self.note * 4) / 4
+            result.update({'HJ' : {'v' : HJ, 's' : self._num_to_string(HJ)} , 'Z' : {'v' : Z, 's' : self._num_to_string(Z, ints=True)} })
+        elif self.system == 'NP':
+            result.update({'Z' : {'v' : Z, 's' : self._num_to_string(Z)} })
+            result['HJ'] = result['Z']
+        return result
+    
+    def _get_Z(self, text=False):
+        if text:
+            return self.gerundet().get('Z',{}).get('s')
+        else:
+            return self.gerundet().get('Z',{}).get('v')
+        
+    def _get_HJ(self, text=False):
+        if text:
+            return self.gerundet().get('HJ',{}).get('s')
+        else:
+            return self.gerundet().get('HJ',{}).get('v')
 
+    def _num_to_string(self, note, ints=False):
+        if self.system == 'NP':
+            return str(int(round(note)))
+        elif self.system == 'N':
+            if (ints == True) or (note.is_integer()):
+                return str(int(round(note)))
+            else:
+                whole_number = int(note)
+                decimal = note % 1
+                if decimal <= 0.25:
+                    return str(whole_number) + '-'
+                elif decimal >= 0.75:
+                    return str(whole_number + 1) + '+'
+                elif 0.25 < decimal < 0.75:
+                    return f'{int(whole_number)}-{int(whole_number + 1)}'
+                else:
+                    return str(whole_number)
+
+    def __array__(self):
+        return np.array([float(self.note)])
+
+    def __str__(self):
+        return f"{self.note}"
+
+    def __repr__(self):
+        return self.__str__()
+    
+    def __add__(self, other):
+        if self.system == other.system:
+            return NoteEntity(self.note + other.note, self.system)
+        else:
+            raise ValueError("Systeme sind nicht gleich und können nicht addiert werden")
+
+class Note:
+    def __init__(self, system = 'N', **kwargs):
+        if system not in ['N', 'NP']:
+            raise ValueError("Das System muss entweder 'N' oder 'NP' sein.")
+        else:
+            self.system = system
+        
+        self._keys = ['m_s1', 'm_s', 'm_m', 'gesamtnote', 'datum']
+        
+
+        for key in self._keys:
+            value = kwargs.get(key, None)
+            if isinstance(value, (int, float)) or value==None:
+                setattr(self, key, NoteEntity(value, system=self.system))
+            else:
+                setattr(self, key, value)
+        
     def _print(self):
         return f'm_s1={self.m_s1}, m_s={self.m_s}, m_m={self.m_m}, gesamtnote={self.gesamtnote}, datum={self.datum.strftime("%d.%m.%Y")}'
 
     def update(self, **kwargs):
-        self.m_s1, self.m_s, self.m_m, self.gesamtnote, self.date = (kwargs.get(key, getattr(self, key)) for key in self._keys)
+        for key, value in kwargs.items():
+            if key in self._keys and isinstance(value, (int, float)):
+                setattr(self, key, NoteEntity(value, system=self.system))
+            else:
+                setattr(self, key, value)
 
     def __str__(self):
         return self._print()
@@ -201,9 +282,9 @@ class Notenberechnung:
         
         # Extrahiere Daten für den Plot
         dates = [entry.datum for entry in result]
-        gesamtnoten = [entry.gesamtnote for entry in result]
-        schriftlich = [entry.m_s for entry in result]
-        muendlich = [entry.m_m for entry in result]
+        gesamtnoten = [entry.gesamtnote.note for entry in result]
+        schriftlich = [entry.m_s.note for entry in result]
+        muendlich = [entry.m_m.note for entry in result]
 
         # Erstelle die Figure und Subplots
         fig, ax = plt.subplots(figsize=(10, 6))
@@ -212,6 +293,7 @@ class Notenberechnung:
         ax.plot(dates, gesamtnoten, marker='o', linestyle='-', color='r', label='Gesamtnote')
         ax.plot(dates, schriftlich, marker='.', linestyle='--', color='b', label='schriftlich')
         ax.plot(dates, muendlich, marker='+', linestyle=':', color='g', label='mündlich')
+        ax.plot(dates[-1], result[-1].gesamtnote._get_Z(), marker='x', color='k', linestyle='None', label='Stand')
 
 
         # Setze die Zeitachsen-Begrenzungen
@@ -235,8 +317,8 @@ class Notenberechnung:
         # Legende
         ax.legend()
         
-        # Zeige den Plot an
-        ax.grid(True)
+        ax.yaxis.set_minor_locator(plt.MultipleLocator(0.5))
+        ax.grid(which='minor', axis='y', linestyle=':', linewidth=0.5, color='black')
         fig.tight_layout()
 
         # Speichern der Figur, falls save angegeben ist
