@@ -5,7 +5,7 @@ Details in der folgenden Formulierung der Notentransparenz sind unscharf. Es wir
 > schlechtere Note gewertet. Wenn du eine richtige und vollständige Verbesserungen abgibst, wird diese wie die bessere Note gewertet. Wenn deine Verbesserungen fehlerhaft oder unvollständig
 > sind, wird diese wie der aktuelle Durchschnitt deiner schriftlichen Leistungen gewertet. Auf diese Weise wird niemand bestraft, der es nicht schafft, Fehler aus einer Klassenarbeit zu 
 > korrigieren. Kurztests (KT) werden je nach Anzahl der geschriebenen Tests gewichtet. Wenn nur ein Kurztest geschrieben wird, entspricht dieser $\frac{w_{s_0}}{2}$ Klassenarbeiten. Wenn
-> zwei oder mehr Kurztests geschrieben werden, entsprechen alle Kurztests zusammen dem Wert von $w_{s_0}$ Klassenarbeiten.
+> zwei oder mehr Kurztests geschrieben werden, entsprechen alle Kurztests zusammen $w_{s_0}$ Klassenarbeiten.
 
 > **Beispiel:** $w_{s_0}=1$. Wenn nur ein Kurztest geschrieben wird, dann entspricht dieser einer halben Klassenarbeit. Wenn fünf Kurztests geschrieben werden, entsprechen diese zusammen so 
 > viel wie einer Klassenarbeit.
