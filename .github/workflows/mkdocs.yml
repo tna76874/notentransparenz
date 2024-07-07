@@ -19,15 +19,15 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Check for changes in LaTeX file and set CNAME
+      - name: Check for changes in LaTeX file
         id: check_changes
         run: |
           echo "changed=$(git diff --name-only HEAD^ HEAD | grep -Eq 'docs/files/(notentransparenz.tex|references.bib)' && echo 'true' || echo 'false')" >> $GITHUB_OUTPUT
-          echo "transparenz.hilberg.eu" > CNAME
 
-      - name: Create temporary tex ./docs/files
+      - name: Create temporary tex ./docs/files and set CNAME
         run: |
           ./generate_latex_metadata.sh
+          echo "transparenz.hilberg.eu" > ./docs/CNAME
         shell: bash
 
       - name: Compile LaTeX document
