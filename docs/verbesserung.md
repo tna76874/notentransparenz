@@ -4,7 +4,7 @@ Eine Verbesserung ist eine individuelle Nacharbeit. Zu **jedem** Korrekturzeiche
 
 ## Was ist eine „Abgabe“?
 
-Eine „Abgabe“ ist die Dokumentation des Standes der persönlichen Verbesserung eines Schülers / einer Schülerin. Für diese ist der Schüler / die Schülerin selber verantwortlich. Die Dokumentation kann digital über einen zugestellten Link erfolgen oder analog, indem von der Lehrkraft vor Ort die Verbesserung datiert und fotografiert wird. Da die Verbesserung Teil der persönlichen Lernunterlagen ist, verbleibt diese bei dem Schüler / der Schülerin und muss auf Nachfrage der Lehrkraft im Original vorgelegt werden können. 
+Eine „Abgabe“ ist die Dokumentation des Standes der persönlichen Verbesserung eines Schülers / einer Schülerin. Für diese ist der Schüler / die Schülerin selber verantwortlich. Die Dokumentation kann digital über einen zugestellten Link erfolgen oder analog, indem von der Lehrkraft vor Ort die Verbesserung datiert wird. Da die Verbesserung Teil der persönlichen Lernunterlagen ist, verbleibt diese bei dem Schüler / der Schülerin und muss auf Nachfrage der Lehrkraft im Original vorgelegt werden können. 
 
 ## Was muss abgegeben werden?
 

@@ -10,7 +10,20 @@ markdown_extensions:
 plugins:
   - macros
   - search
-  - glightbox
+  - glightbox:
+      touchNavigation: true
+      loop: false
+      effect: zoom
+      slide_effect: slide
+      width: 100%
+      height: auto
+      zoomable: true
+      draggable: true
+      auto_caption: true
+      caption_position: bottom
+      background: white
+      shadow: true
+      manual: false
 
 extra_javascript:
   - https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.4/MathJax.js?config=TeX-AMS-MML_HTMLorMML
@@ -36,13 +49,26 @@ extra:
       physik: https://www.bildungsplaene-bw.de/,Lde/LS/BP2016BW/ALLG/GYM/PH/OP
       info: https://www.bildungsplaene-bw.de/,Lde/LS/BP2016BW/ALLG/GYM/INF/OP
     korrekturrichtlinien: https://km.baden-wuerttemberg.de/fileadmin/redaktion/m-km/intern/PDF/Dateien/Gymnasium/Dokumente_Abitur/Abitur_2025/Beurteilungs__und_Korrekturrichtlinienerlass_2025.pdf
-  
+    scanner:
+      geniusscan:
+        name: Genius Scan
+        android: https://play.google.com/store/apps/details?id=com.thegrizzlylabs.geniusscan.free&hl=de&gl=DE
+        ios: https://apps.apple.com/us/app/scanner-app-genius-scan/id377672876
+      adobe:
+        name: Adobe Scan
+        android: https://play.google.com/store/apps/details?id=com.adobe.scan.android&hl=de&gl=DE
+        ios: https://apps.apple.com/de/app/adobe-scan-pdf-ocr-scanner/id1199564834
+      microsoft:
+        name: Microsoft Lens
+        android: https://play.google.com/store/apps/details?id=com.microsoft.office.officelens&hl=de&gl=DE
+        ios: https://apps.apple.com/de/app/microsoft-lens-pdf-scanner/id975925059   
 
 copyright: !ENV build_doc_date
 
 nav:
   - Notentransparenz: index.md
-  - einfache Sprache: simple.md
+  - Notentransparenz in einfacher Sprache: simple.md
   - Korrekturzeichen: korrektur.md
   - Verbesserungen: verbesserung.md
+  - digitale Abgabe: abgabe.md
   - Anhang: python.md
