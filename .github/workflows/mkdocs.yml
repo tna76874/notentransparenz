@@ -19,6 +19,12 @@ jobs:
         with:
           fetch-depth: 0
 
+      - name: Install pandoc
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y pandoc
+        shell: bash
+
       - name: Check for changes in LaTeX file
         id: check_changes
         run: |
@@ -32,7 +38,6 @@ jobs:
 
       - name: Generate markdown version of notentransparenz
         run: |
-          apt-get install pandoc
           ./generate_markdown_from_latex.sh
         shell: bash
 
