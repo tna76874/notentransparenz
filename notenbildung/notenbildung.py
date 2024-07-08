@@ -223,7 +223,7 @@ class Notenberechnung:
             return None
         
         # Berechnung der Mittelwerte von KT und KA
-        w_s = 0 if n_KT == 0 else n_KT * self.w_s0/self.n_KT_0 if n_KT < self.n_KT_0 else self.w_s0
+        w_s = n_KT * self.w_s0/self.n_KT_0 if n_KT < self.n_KT_0 else self.w_s0
         m_s1 = (n_KA * m_KA + w_s * m_KT) / (n_KA + w_s)
 
         # Berechnung des Diskretisierungsfaktors
