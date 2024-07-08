@@ -111,7 +111,7 @@ class Note:
         return self._print()
 
 class Notenberechnung:
-    def __init__(self, w_s0 = 1, w_sm = 3, system = 'N', w_th = 0.4, SJ=None, v_enabled = True):        
+    def __init__(self, w_s0 = 1, w_sm = 3, system = 'N', w_th = 0.4, n_KT_0 = 3, SJ=None, v_enabled = True):        
         if system not in ['N', 'NP']:
             raise ValueError("Das System muss entweder 'N' oder 'NP' sein.")
         if not 0 <= float(w_th) <= 0.5:
@@ -120,6 +120,9 @@ class Notenberechnung:
             raise ValueError("w_s0 muss in  [0; 2] liegen.")
         if not 1 <= float(w_sm) <= 4:
             raise ValueError("w_s0 muss in  [1; 4] liegen.")
+        if not 1<= int(n_KT_0):
+            raise ValueError("n_KT_0 muss größer als 0 sein.")
+        self.n_KT_0 = int(n_KT_0)
         self.w_s0 = float(w_s0)
         self.w_sm = float(w_sm)
         self.w_th = float(w_th)
@@ -220,7 +223,7 @@ class Notenberechnung:
             return None
         
         # Berechnung der Mittelwerte von KT und KA
-        w_s = 0 if n_KT == 0 else self.w_s0/2 if n_KT == 1 else self.w_s0
+        w_s = 0 if n_KT == 0 else n_KT * self.w_s0/self.n_KT_0 if n_KT < self.n_KT_0 else self.w_s0
         m_s1 = (n_KA * m_KA + w_s * m_KT) / (n_KA + w_s)
 
         # Berechnung des Diskretisierungsfaktors
@@ -322,11 +325,12 @@ class Notenberechnung:
         ax.grid(which='minor', axis='y', linestyle=':', linewidth=0.5, color='black')
         fig.tight_layout()
         
-        # Diskretisierungsbereich
-        baseline = (np.ceil(gesamtnoten[-1])+np.floor(gesamtnoten[-1]))/2
-        xlims = ax.get_xlim()
-        rect = patches.Rectangle((xlims[0], baseline - self.w_th), xlims[1]-xlims[0], 2*self.w_th, linewidth=1, edgecolor='none', facecolor='red', alpha=0.15)
-        ax.add_patch(rect)
+        if self._v_enabled:
+            # Diskretisierungsbereich
+            baseline = (np.ceil(gesamtnoten[-1])+np.floor(gesamtnoten[-1]))/2
+            xlims = ax.get_xlim()
+            rect = patches.Rectangle((xlims[0], baseline - self.w_th), xlims[1]-xlims[0], 2*self.w_th, linewidth=1, edgecolor='none', facecolor='red', alpha=0.15)
+            ax.add_patch(rect)
 
         # Datumsformatierung der x-Achse
         fig.autofmt_xdate()
