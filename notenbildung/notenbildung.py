@@ -309,7 +309,12 @@ class Notenberechnung:
         
         return ergebnisse
     
-    def plot_time_series(self, save=None, formats = ['jpg'], **kwargs):
+    def plot_time_series(self, save=None, sid = None, parent = None, formats = ['jpg'], **kwargs):
+        if not isinstance(sid, SchuelerEntity):
+            sid = None
+        if not isinstance(parent, LerngruppeEntity):
+            parent = None
+            
         cvars =         {
                         'bbox_inches'   : 'tight',
                         'pad_inches'    : 0.05/2.54,
@@ -348,8 +353,13 @@ class Notenberechnung:
         # Achsenbeschriftungen und Titel
         ax.set_xlabel('Datum')
         ax.set_ylabel('Gesamtnote')
-        ax.set_title(f'Entwicklung der Leistungen in dem Schuljahr {self.sj_start.year}/{self.sj_ende.year}')
-        
+        if (sid!=None) and (parent!=None):
+            ax.set_title(f'{sid.vorname} {sid.nachname}, {parent.kurs}, {parent.fach}, Schuljahr {self.sj_start.year}/{self.sj_ende.year}')
+        elif (sid!=None):
+            ax.set_title(f'{sid.vorname} {sid.nachname}, Schuljahr {self.sj_start.year}/{self.sj_ende.year}')
+        else:
+            ax.set_title(f'Entwicklung der Leistungen in dem Schuljahr {self.sj_start.year}/{self.sj_ende.year}')
+
         # Legende
         ax.legend()
         
@@ -401,6 +411,12 @@ class SchuelerEntity:
     
     def __repr__(self):
         return self._print()
+    
+    def plot(self, parent = None, **kwargs):
+        if not isinstance(self._notenberechnung, Notenberechnung):
+            raise ValueError("Für {self.sid} {self.vorname} {self.nachname} wurden noch keine Noten gesetzt.")     
+            
+        self._notenberechnung.plot_time_series(sid=self, parent = parent, **kwargs)
 
     def setze_note(self, note):
         if not isinstance(note, Notenberechnung):
@@ -448,6 +464,18 @@ class LerngruppeEntity:
             raise ValueError("Das hinzuzufügende Objekt muss eine Instanz der Klasse SchuelerEntity sein.")
         
         self.schueler[schueler_entity.sid] = schueler_entity
+    
+    def plot_sid(self, sid, **kwargs):
+        if isinstance(sid, SchuelerEntity):
+            if sid not in self.schueler.values():
+                raise ValueError("Das Objekt ist nicht in der Lerngruppe enthalten!")
+            sid.plot(parent=self, **kwargs)
+            
+        else: 
+            if sid not in self.schueler.keys():
+                raise ValueError("Dieses Objekt enthält keine sid {sid}")
+        
+            self.schueler[sid].plot(parent=self, **kwargs)
 
     def _export(self):
         export_list = []

@@ -10,8 +10,14 @@ pip install git+https://github.com/tna76874/notentransparenz.git
 --8<-- "examples/beispiel.py"
 ```
 
-![Formular](files/images/example_plot.jpg)
+![Beispiel Diagramm](files/images/example_plot.jpg)
 
 ``` 
 --8<-- "examples/beispiel_excel.py"
 ```
+
+``` 
+--8<-- "examples/example_lerngruppe.py"
+```
+
+![Beispiel Diagramm mit Lerngruppe](files/images/example_plot_lerngruppe.jpg)
