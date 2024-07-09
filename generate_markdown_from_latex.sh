@@ -5,4 +5,4 @@ REF_FILE=references.bib
 METADATA_FILE=metadata.yml
 
 cd ${TEX_DIR}
-pandoc -s "${TEX_FILE}" -o "notentransparenz.md" --katex --bibliography="${REF_FILE}" --metadata-file="${METADATA_FILE}"
+pandoc -s "${TEX_FILE}" -o "notentransparenz.md" --katex --bibliography="${REF_FILE}" --metadata-file="${METADATA_FILE}" --no-highlight

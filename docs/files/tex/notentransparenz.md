@@ -11,18 +11,16 @@ Aufgrund von Konvertierungsinkonsistenzen kann diese Web-Darstellung des
 Dokumentes zur Notentransparenz nicht alle Informationen enthalten.
 Bitte das Originaldokument überprüfen.
 
-Die Notenbildung ist in Abschnitt [3](#chap:C){reference-type="ref"
-reference="chap:C"} \[\] exakt definiert. Zur besseren Verständlichkeit
-wird diese in Abschnitt [1](#chap:A){reference-type="ref"
-reference="chap:A"} \[\] vereinfacht und exemplarisch dargestellt. Im
-Zweifelsfall sind immer die Definitionen aus Abschnitt
-[3](#chap:C){reference-type="ref" reference="chap:C"} ausschlaggebend.
+Die Notenbildung ist in Abschnitt C exakt definiert. Zur besseren
+Verständlichkeit wird diese in Abschnitt A vereinfacht und exemplarisch
+dargestellt. Die Reduktion in Abschnitt A hat keinen Anspruch auf
+Vollständigkeit.
 
 ------------------------------------------------------------------------
 
 ------------------------------------------------------------------------
 
-Notenbildung (verbalisiert, vereinfachte Darstellung) {#chap:A}
+Notenbildung (verbalisiert, vereinfachte Darstellung)
 =====================================================
 
 1.  Schriftliche und mündliche Noten sind im Verhältnis $w_{sm} : 1$
@@ -52,7 +50,7 @@ Notenbildung (verbalisiert, vereinfachte Darstellung) {#chap:A}
     $\frac{2}{3}$ Klassenarbeiten. Werden fünf Kurztests geschrieben,
     werden diese zusammen soviel gewertet wie eine Klassenarbeit.
 
-Kriterien für die Erteilung mündlicher Noten {#chap:B}
+Kriterien für die Erteilung mündlicher Noten
 ============================================
 
 2
@@ -107,7 +105,7 @@ Kriterien für die Erteilung mündlicher Noten {#chap:B}
     -   Die Einziehung des Schülers / der Schülerin behindert häufig den
         Unterrichtsverlauf
 
-Notenbildung (exakte Definitionen) {#chap:C}
+Notenbildung (exakte Definitionen)
 ==================================
 
 1.   **KA**: Klassenarbeit; **GFS**: GFS; **KT**: schriftliche
