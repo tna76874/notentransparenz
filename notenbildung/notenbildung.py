@@ -379,6 +379,123 @@ class Notenberechnung:
         else:
             # Anzeigen der Figur
             plt.show()
+            
+class SchuelerEntity:
+    def __init__(self, **kwargs):
+        self.sid = kwargs.get('sid')
+        self.vorname = kwargs.get('vorname')
+        self.nachname = kwargs.get('nachname')
+        self.note = None
+        
+        if None in (self.sid, self.vorname, self.nachname):
+            raise ValueError("Alle Werte (sid, vorname, nachname) müssen beim Initialisieren gesetzt werden.")
+
+    def _print(self):
+        note = ""
+        if self.note != None:
+            note = f', {self.note.gesamtnote._get_HJ(text=True)}'
+        return f"{self.vorname} {self.nachname}{note}"
+
+    def __str__(self):
+        return self._print()
+    
+    def __repr__(self):
+        return self._print()
+
+    def setze_note(self, note):
+        if not isinstance(note, Notenberechnung):
+            raise ValueError("Das übergebene Objekt ist keine Instanz der Klasse Notenberechnung.")
+        self._notenberechnung = note
+        self.note = self._notenberechnung.berechne_gesamtnote()
+
+class LerngruppeEntity:
+    def __init__(self, **kwargs):
+        self.stufe = int(kwargs.get('stufe', None)) if kwargs.get('stufe') is not None else None
+        
+        if self.stufe not in range(5, 13):
+            raise ValueError("Die Stufe muss zwischen 5 und 12 liegen.")
+        
+        self._faecher = {
+            'M': 'Mathematik',
+            'Ph': 'Physik',
+            'Inf': 'Informatik',
+        }
+        self.fach = kwargs.get('fach', None)
+        if self.fach not in self._faecher:
+            raise ValueError(f"Das angegebene Fach '{self.fach}' ist nicht gültig. Gültige Fächer sind: {', '.join(self._faecher.keys())}")
+                    
+        if self.stufe in [11, 12]:
+            self.zug = None
+            self.kurs = kwargs.get('kurs', None)
+            if self.kurs is None:
+                raise ValueError("Für Stufe 11 oder 12 muss der Kurs angegeben werden.")
+        else:
+            self.zug = kwargs.get('zug', None).lower() if kwargs.get('zug', None) else None
+            self.kurs = self._name()
+        
+        self.schueler = dict()
+
+    def _name(self):
+        if self.stufe in range(5, 11):
+            return f"{self.stufe:02d}{self.zug}"
+        elif self.stufe in [11, 12]:
+            return f"JGS{self.stufe}"
+        else:
+            raise ValueError("Ungültige Stufe")
+
+    def update_sid(self, schueler_entity):
+        if not isinstance(schueler_entity, SchuelerEntity):
+            raise ValueError("Das hinzuzufügende Objekt muss eine Instanz der Klasse SchuelerEntity sein.")
+        
+        self.schueler[schueler_entity.sid] = schueler_entity
+
+    def _export(self):
+        export_list = []
+        for schueler_entity in self.schueler.values():
+            schueler_dict = {
+                'sid': schueler_entity.sid,
+                'vorname': schueler_entity.vorname,
+                'nachname': schueler_entity.nachname,
+                'stufe': self.stufe,
+                'zug' : self.zug,
+                'fach': self.fach,
+                'klasse' : self._name(),
+                'kurs' : self.kurs,
+                'note_s' : float(schueler_entity.note.m_s),
+                'note_m' : float(schueler_entity.note.m_m),
+                'note' : float(schueler_entity.note.gesamtnote),
+                'note_hj' : schueler_entity.note.gesamtnote._get_HJ(text=True),
+                'note_z' : schueler_entity.note.gesamtnote._get_Z(text=True),
+            }
+            
+            export_list.append(schueler_dict)
+        
+        return export_list
+    
+    def get_dataframe(self):
+        return pd.DataFrame(self._export())
+    
+    def save_excel(self, path):
+        path = os.path.abspath(os.path.splitext(path)[0] + '.xlsx')
+        # Check if basedir of path exists, create if not
+        basedir = os.path.dirname(path)
+        if not os.path.exists(basedir):
+            try:
+                os.makedirs(basedir)
+            except OSError as e:
+                raise RuntimeError(f"Error creating directory {basedir}: {e}")
+
+        # Check if directory was created
+        if not os.path.exists(basedir):
+            raise RuntimeError(f"Directory {basedir} could not be created.")
+            
+        df = self.get_dataframe()
+
+        try:
+            df.to_excel(path, index=False)
+            print(f"DataFrame successfully exported to {path}")
+        except Exception as e:
+            raise RuntimeError(f"Error exporting DataFrame to Excel: {e}")
 
 if __name__ == "__main__":
     # Beispiel
@@ -396,3 +513,4 @@ if __name__ == "__main__":
     gesamtnote = self.berechne_gesamtnote()
     print(gesamtnote)
     self.plot_time_series()
+    
