@@ -69,5 +69,5 @@ jobs:
       - run: |
           pip install -r requirements_docs.txt
       - run: |
-          mike deploy ${{ github.sha }} latest --push
+          mike deploy --push --update-aliases ${{ github.sha }} latest
           mike set-default --push latest
