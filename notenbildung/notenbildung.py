@@ -141,7 +141,7 @@ class Note:
         return self._print()
 
 class Notenberechnung:
-    def __init__(self, w_s0 = 1, w_sm = 3, system = 'N', w_th = 0.25, n_KT_0 = 3, SJ=None, v_enabled = True):        
+    def __init__(self, w_sm = 3, w_th = 0.25, w_s0 = 1, n_KT_0 = 3, system = 'N', v_enabled = True):        
         if system not in ['N', 'NP']:
             raise ValueError("Das System muss entweder 'N' oder 'NP' sein.")
         if not 0 <= float(w_th) <= 0.5:
@@ -158,26 +158,28 @@ class Notenberechnung:
         self.w_th = float(w_th)
         self.system = system
         self.noten = []
-        self.sj_start, self.sj_ende = self._set_zeitraum(SJ=SJ)
+        self.sj_start, self.sj_ende = None, None
         self._v_enabled = v_enabled
-        
-    def _set_zeitraum(self, SJ=None):
-        if SJ!=None:
-            sj_start = datetime(int(SJ), 9, 1)
-            sj_ende = datetime(int(SJ)+1, 7, 31)
-            return sj_start, sj_ende
+
+    def _set_SJ(self):
+         dates = [note['datum'] for note in self.noten]
+         min_date = min(dates)
+         max_date = max(dates)
+    
+         if (max_date - min_date).days > 365:
+             raise ValueError('Die hinzugefügten Noten liegen mehr als 1 Jahr auseinander.')
+         
+         SJ = min_date.year if min_date.month >= 9 else min_date.year - 1
+    
+         sj_start = datetime(SJ, 9, 1)
+         sj_ende = datetime(SJ + 1, 7, 31)
             
-        heutiges_datum = datetime.now()
-        stichtag_start = datetime(heutiges_datum.year, 7, 31)
-        stichtag_ende = datetime(heutiges_datum.year, 9, 1)
-        if (stichtag_start <= heutiges_datum < stichtag_ende) or (heutiges_datum >= stichtag_ende):
-            sj_start = datetime(heutiges_datum.year, 9, 1)
-            sj_ende = datetime(heutiges_datum.year+1, 7, 31)
-        else:
-            sj_start = datetime(heutiges_datum.year-1, 9, 1)
-            sj_ende = datetime(heutiges_datum.year, 7, 31)
-        return sj_start, sj_ende
-        
+         for date in dates:
+             if not (sj_start <= date <= sj_ende):
+                 raise ValueError('Alle Noten müssen sich innerhalb eines Schuljahres bewegen.')
+                 
+         self.sj_start, self.sj_ende = sj_start, sj_ende
+                
     def _sort_grade_after_date(self):
         self.noten.sort(key=lambda x: x['datum'])
 
@@ -207,6 +209,7 @@ class Notenberechnung:
                 note_dict['status'] = '---'
             self.noten.append(note_dict)
             self._sort_grade_after_date()
+            self._set_SJ()
         else:
             raise ValueError(f'Fehlende Informationen. Bitte geben Sie {" und ".join(mandatory_keys)} an.')
 
@@ -330,7 +333,6 @@ class Notenberechnung:
         ax.plot(dates, schriftlich, marker='.', linestyle='--', color='b', label='schriftlich')
         ax.plot(dates, muendlich, marker='+', linestyle=':', color='g', label='mündlich')
         ax.plot(dates[-1], result[-1].gesamtnote._get_Z(), marker='x', color='k', linestyle='None', label='Stand')
-
 
         # Setze die Zeitachsen-Begrenzungen
         ax.set_xlim(self.sj_start, self.sj_ende)
