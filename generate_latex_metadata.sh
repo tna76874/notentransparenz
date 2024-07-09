@@ -1,9 +1,22 @@
 #!/bin/bash
-TEX_DIR='docs/files/tex'
-TEX_FILE=${TEX_DIR}
-timestamp=$(git log -1 --format=%cd --date=format-local:%d.%m.%Y ${TEX_FILE})
-echo "$timestamp" > ${TEX_DIR}/changed.tex
+export TEX_DIR='docs/files/tex'
+export VERSION_DIR="${TEX_DIR}/_version"
+export DATE_FORMAT='%d.%m.%Y'
 
-COMMIT=$(git log -1 --pretty=format:"%H" ${TEX_FILE})
-echo "\href{https://github.com/tna76874/notentransparenz/tree/${COMMIT}}{Version ${COMMIT}}" > ${TEX_DIR}/commit_github.tex
-echo "${COMMIT}" > ${TEX_DIR}/commit.tex
+mkdir -p ${VERSION_DIR}
+
+timestamp_tex=$(git log -1 --format=%cd --date=format-local:${DATE_FORMAT} ${TEX_DIR})
+timestamp_tex_iso=$(git log -1 --format=%cd --date=format-local:'%Y-%m-%d' ${TEX_DIR})
+commit_tex=$(git log -1 --pretty=format:"%H" ${TEX_DIR})
+commit_count_tex=$(git log --since="$timestamp_tex_iso 00:00:00" --until="$timestamp_tex_iso 23:59:59" --format=%H -- "${TEX_DIR}" | wc -l)
+
+timestamp_repo=$(git log -1 --format=%cd --date=format-local:${DATE_FORMAT})
+commit_repo=$(git log -1 --pretty=format:"%H")
+
+# EXPORTING IN LATEX FILES
+echo "$timestamp_tex" > ${VERSION_DIR}/timestamp_tex.tex
+echo "$commit_count_tex" > ${VERSION_DIR}/commit_count_tex.tex
+echo "$timestamp_repo" > ${VERSION_DIR}/timestamp_repo.tex
+
+echo "\href{https://github.com/tna76874/notentransparenz/tree/${commit_tex}}{${commit_tex}}" > ${VERSION_DIR}/commit_tex.tex
+echo "\href{https://github.com/tna76874/notentransparenz/tree/${commit_repo}}{${commit_repo}}" > ${VERSION_DIR}/commit_repo.tex

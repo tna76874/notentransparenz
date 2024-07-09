@@ -26,9 +26,8 @@
 {\normalsize\bfseries}{\thesection}{1em}{}
 \titlespacing*{\section}{0pt}{0.5ex plus 0.2ex minus 0.1ex}{0.3ex plus 0.1ex}
 
-
-
-
+\newcommand{\versiondir}{_version}
+\newcommand{\standtex}{\input{\versiondir/timestamp_tex.tex}v\input{\versiondir/commit_count_tex.tex}}
 \newcommand{\onlinedoc}{\href{https://transparenz.hilberg.eu}{transparenz.hilberg.eu}}
 
 \fancypagestyle{meinpagestyle}{
@@ -36,8 +35,8 @@
 	\fancyhead[L]{\large Notentransparenz}
     \fancyhead[C]{Seite \thepage\ von~\pageref{LastPage}}
 	\fancyhead[R]{Hilberg}
-	\fancyfoot[L]{Stand \input{changed.tex} }
-	\fancyfoot[C]{\footnotesize \input{commit_github.tex} }
+	\fancyfoot[L]{Stand \standtex}
+	\fancyfoot[C]{\footnotesize Web-Version \input{\versiondir/commit_repo.tex} }
 	\fancyfoot[R]{\onlinedoc}
 }
 \pagestyle{meinpagestyle}
@@ -46,6 +45,11 @@
 \begin{document}
 	\vspace*{-1cm}
 	Die Notenbildung ist in Abschnitt C exakt definiert. Zur besseren Verständlichkeit wird diese in Abschnitt A vereinfacht und exemplarisch dargestellt. Die Reduktion in Abschnitt A hat keinen Anspruch auf Vollständigkeit.
+
+	\begin{description}
+		\item[Stand dieses Dokumentes] Version \input{\versiondir/commit_count_tex.tex} \input{\versiondir/commit_tex.tex} vom \input{\versiondir/timestamp_tex.tex}
+		\item[Stand Web-Version] Version \input{\versiondir/commit_repo.tex} vom \input{\versiondir/timestamp_repo.tex}
+	\end{description}
 		
 	\rule{\linewidth}{2pt}
 	\renewcommand{\contentsname}{Abschnitte der Notentransparenz}
@@ -54,7 +58,7 @@
 	
 	\input{notentransparenz_simple.tex}
 	
-	\vspace{1cm}
+	\vspace{0.5cm}
 
 	\input{notentransparenz_mdl.tex}
 
