@@ -1,5 +1,5 @@
 site_name: Notentransparenz
-site_url: https://transparenz.hilberg.eu
+site_url: https://transparenz.hilberg.eu/
 theme:
   name: material
   language: de
@@ -10,6 +10,14 @@ markdown_extensions:
 plugins:
   - macros
   - search
+  - mike:
+      alias_type: symlink
+      redirect_template: null
+      deploy_prefix: ''
+      canonical_version: null
+      version_selector: true
+      css_dir: css
+      javascript_dir: js
   - glightbox:
       touchNavigation: true
       loop: false
@@ -29,6 +37,9 @@ extra_javascript:
   - https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.4/MathJax.js?config=TeX-AMS-MML_HTMLorMML
 
 extra:
+  version:
+      provider: mike
+      default: latest
   github_user: tna76874
   github_repo: notentransparenz
   build_doc_date: !ENV build_doc_date
