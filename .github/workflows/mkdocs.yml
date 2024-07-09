@@ -45,7 +45,7 @@ jobs:
         uses: xu-cheng/latex-action@v3
         with:
           root_file: notentransparenz.tex
-          working_directory: ./docs/files
+          working_directory: ./docs/files/tex
 
       - name: Configure Git Credentials
         run: |
