@@ -1,8 +1,8 @@
-docs/files/notentransparenz.md
-docs/files/notentransparenz.pdf
-docs/files/changed.tex
-docs/files/commit.tex
-docs/files/commit_github.tex
+docs/files/tex/notentransparenz.md
+docs/files/tex/notentransparenz.pdf
+docs/files/tex/changed.tex
+docs/files/tex/commit.tex
+docs/files/tex/commit_github.tex
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
