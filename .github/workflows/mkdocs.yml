@@ -61,6 +61,7 @@ jobs:
       - run: |
           echo "cache_id=$(date --utc '+%V')" >> $GITHUB_ENV
           echo "build_doc_date=$(date -u '+%d.%m.%Y')" >> $GITHUB_ENV
+          echo "REPO_COMMIT=${{ github.sha }}" >> $GITHUB_ENV
 
       - uses: actions/cache@v4
         with:
