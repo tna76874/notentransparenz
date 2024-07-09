@@ -12,26 +12,34 @@ import matplotlib.pyplot as plt
 import matplotlib.patches as patches
 import matplotlib.dates as mdates
 
-class NoteEntity:
-    def __init__(self, note, system=None):
-        if system not in ['N', 'NP']:
-            raise ValueError("Das System muss entweder 'N' oder 'NP' sein.")
+class NoteEntity(np.ndarray):
+    def __new__(cls, note, system=None):
+        # Validate note range based on the system
+        if note==None:
+            note = np.nan
         else:
-            self.system = system
-        self.note = note
-        self.system = system
+            if system not in ['N', 'NP']:
+                raise ValueError("Das System muss entweder 'N' oder 'NP' sein.")
+            if system == 'N' and not (1 <= note <= 6):
+                raise ValueError("Die Note muss zwischen 1 und 6 für das System 'N' liegen.")
+            elif system == 'NP' and not (0 <= note <= 15):
+                raise ValueError("Die Note muss zwischen 0 und 15 für das System 'NP' liegen.")
         
+        obj = np.asarray(note).view(cls)
+        obj.system = system
+        return obj
+
     def gerundet(self):
         result = dict()
-        Z = round(self.note)
+        Z = round(float(self))
         if self.system == 'N':
-            HJ = round(self.note * 4) / 4
-            result.update({'HJ' : {'v' : HJ, 's' : self._num_to_string(HJ)} , 'Z' : {'v' : Z, 's' : self._num_to_string(Z, ints=True)} })
+            HJ = round(float(self) * 4) / 4
+            result.update({'HJ': {'v': HJ, 's': self._num_to_string(HJ)}, 'Z': {'v': Z, 's': self._num_to_string(Z, ints=True)}})
         elif self.system == 'NP':
-            result.update({'Z' : {'v' : Z, 's' : self._num_to_string(Z)} })
+            result.update({'Z': {'v': Z, 's': self._num_to_string(Z)}})
             result['HJ'] = result['Z']
         return result
-    
+
     def _get_Z(self, text=False):
         if text:
             return self.gerundet().get('Z',{}).get('s')
@@ -48,7 +56,7 @@ class NoteEntity:
         if self.system == 'NP':
             return str(int(round(note)))
         elif self.system == 'N':
-            if (ints == True) or (note.is_integer()):
+            if (ints == True) or (note == round(note)):
                 return str(int(round(note)))
             else:
                 whole_number = int(note)
@@ -62,20 +70,42 @@ class NoteEntity:
                 else:
                     return str(whole_number)
 
-    def __array__(self):
-        return np.array([float(self.note)])
+    def __array_finalize__(self, obj):
+        if obj is None:
+            return
+        self.system = getattr(obj, 'system', None)
 
     def __str__(self):
-        return f"{self.note}"
+        return f"{self}"
 
     def __repr__(self):
         return self.__str__()
-    
-    def __add__(self, other):
-        if self.system == other.system:
-            return NoteEntity(self.note + other.note, self.system)
+
+    def __round__(self):
+        return round(float(self))
+
+    def _operate(self, other, operation):
+        if isinstance(other, NoteEntity):
+            if self.system == other.system:
+                result = operation(float(self), float(other))
+                return NoteEntity(result, system = self.system)
+            else:
+                raise ValueError("Systeme sind nicht gleich und können nicht verrechnet werden")
         else:
-            raise ValueError("Systeme sind nicht gleich und können nicht addiert werden")
+            result = operation(float(self), float(other))
+            return NoteEntity(result, system = self.system)
+
+    def __add__(self, other):
+        return self._operate(other, lambda x, y: x + y)
+
+    def __sub__(self, other):
+        return self._operate(other, lambda x, y: x - y)
+
+    def __mul__(self, other):
+        return self._operate(other, lambda x, y: x * y)
+
+    def __truediv__(self, other):
+        return self._operate(other, lambda x, y: x / y)
 
 class Note:
     def __init__(self, system = 'N', **kwargs):
@@ -288,9 +318,9 @@ class Notenberechnung:
         
         # Extrahiere Daten für den Plot
         dates = [entry.datum for entry in result]
-        gesamtnoten = [entry.gesamtnote.note for entry in result]
-        schriftlich = [entry.m_s.note for entry in result]
-        muendlich = [entry.m_m.note for entry in result]
+        gesamtnoten = [entry.gesamtnote for entry in result]
+        schriftlich = [entry.m_s for entry in result]
+        muendlich = [entry.m_m for entry in result]
 
         # Erstelle die Figure und Subplots
         fig, ax = plt.subplots(figsize=(10, 6))
@@ -327,7 +357,7 @@ class Notenberechnung:
         
         if self._v_enabled:
             # Diskretisierungsbereich
-            baseline = (np.ceil(gesamtnoten[-1])+np.floor(gesamtnoten[-1]))/2
+            baseline = (np.ceil(float(gesamtnoten[-1]))+np.floor(float(gesamtnoten[-1])))/2
             xlims = ax.get_xlim()
             rect = patches.Rectangle((xlims[0], baseline - self.w_th), xlims[1]-xlims[0], 2*self.w_th, linewidth=1, edgecolor='none', facecolor='red', alpha=0.15)
             ax.add_patch(rect)
