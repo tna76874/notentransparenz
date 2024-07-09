@@ -10,6 +10,8 @@ on:
       - 'notenbildung/**'
       - 'mkdocs.yml'
       - '.github/workflows/mkdocs.yml'
+      - 'generate_latex_metadata.sh'
+      - 'generate_markdown_from_latex.sh'
 permissions:
   contents: write
 jobs:
