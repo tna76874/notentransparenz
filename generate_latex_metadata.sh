@@ -18,5 +18,5 @@ echo "$timestamp_tex" > ${VERSION_DIR}/timestamp_tex.tex
 echo "$commit_count_tex" > ${VERSION_DIR}/commit_count_tex.tex
 echo "$timestamp_repo" > ${VERSION_DIR}/timestamp_repo.tex
 
-echo "\href{https://github.com/tna76874/notentransparenz/tree/${commit_tex}}{${commit_tex}}" > ${VERSION_DIR}/commit_tex.tex
-echo "\href{https://github.com/tna76874/notentransparenz/tree/${commit_repo}}{${commit_repo}}" > ${VERSION_DIR}/commit_repo.tex
+echo "\href{https://transparenz.hilberg.eu/${commit_tex}}{${commit_tex}}" > ${VERSION_DIR}/commit_tex.tex
+echo "\href{https://transparenz.hilberg.eu/${commit_repo}}{${commit_repo}}" > ${VERSION_DIR}/commit_repo.tex
