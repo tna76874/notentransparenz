@@ -260,7 +260,7 @@ class Notenberechnung:
         m_s1 = (n_KA * m_KA + w_s * m_KT) / (n_KA + w_s)
 
         # Berechnung des Diskretisierungsfaktors
-        w_d = abs((0.5 - (m_s1 % 1)) / self.w_th) 
+        w_d = 1 if self.w_th == 0 else abs((0.5 - (m_s1 % 1)) / self.w_th) 
         
         # Berechnen der Gewichte je nach Notensystem
         m_h = (np.ceil(m_s1)+np.floor(m_s1))/2
@@ -273,9 +273,9 @@ class Notenberechnung:
             w_v2 = 0 if w_d >= 1 else m_h + self.w_th if w_d < 1 else 0
             w_0 = 15 - 0
             
-        w_v3 = 0 if w_d >= 1 else w_0/self.w_th if w_d < 1 else 0
+        w_v3 = 0 if w_d >= 1 else abs(w_0/self.w_th) if w_d < 1 else 0
         
-        if (not verbesserung_enabled) or (n_v_g == 0):
+        if (not verbesserung_enabled) or (n_v_g == 0) or (self.w_th==0) or (w_d >= 1):
             w_v4 = 0
             w_v3 = 0
         else:
