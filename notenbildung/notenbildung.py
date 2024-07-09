@@ -111,7 +111,7 @@ class Note:
         return self._print()
 
 class Notenberechnung:
-    def __init__(self, w_s0 = 1, w_sm = 3, system = 'N', w_th = 0.4, n_KT_0 = 3, SJ=None, v_enabled = True):        
+    def __init__(self, w_s0 = 1, w_sm = 3, system = 'N', w_th = 0.25, n_KT_0 = 3, SJ=None, v_enabled = True):        
         if system not in ['N', 'NP']:
             raise ValueError("Das System muss entweder 'N' oder 'NP' sein.")
         if not 0 <= float(w_th) <= 0.5:

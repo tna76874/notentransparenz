@@ -1,0 +1,63 @@
+\documentclass{article}
+\usepackage[a4paper, margin=1.6cm]{geometry}
+\usepackage{amsmath}
+\usepackage{parskip}
+\usepackage{enumitem}
+\usepackage[german]{babel}
+\usepackage{fancyhdr}
+\usepackage{datetime}
+\usepackage{hyperref}
+\hypersetup{
+	colorlinks=true,
+	linkcolor=black,
+	urlcolor=black,
+	citecolor=black
+}
+\usepackage{natbib}
+\usepackage{multicol}
+\usepackage{lastpage}
+
+\usepackage{helvet}
+\renewcommand{\familydefault}{\sfdefault}
+
+\usepackage{titlesec}
+\renewcommand{\thesection}{\Alph{section}}
+\titleformat{\section}
+{\normalsize\bfseries}{\thesection}{1em}{}
+\titlespacing*{\section}{0pt}{0.5ex plus 0.2ex minus 0.1ex}{0.3ex plus 0.1ex}
+
+
+
+
+\newcommand{\onlinedoc}{\href{https://transparenz.hilberg.eu}{transparenz.hilberg.eu}}
+
+\fancypagestyle{meinpagestyle}{
+	\fancyhf{}
+	\fancyhead[L]{\large Notentransparenz}
+    \fancyhead[C]{Seite \thepage\ von~\pageref{LastPage}}
+	\fancyhead[R]{Hilberg}
+	\fancyfoot[L]{Stand \input{changed.tex} }
+	\fancyfoot[C]{\footnotesize \input{commit_github.tex} }
+	\fancyfoot[R]{\onlinedoc}
+}
+\pagestyle{meinpagestyle}
+
+
+\begin{document}
+	\vspace*{-1cm}
+	Die Notenbildung ist in Abschnitt \ref{chap:C} [\nameref{chap:C}] exakt definiert. Zur besseren Verständlichkeit wird diese in Abschnitt \ref{chap:A} [\nameref{chap:A}] vereinfacht und exemplarisch dargestellt. Im Zweifelsfall sind immer die Definitionen aus Abschnitt \ref{chap:C} ausschlaggebend. 
+		
+	\rule{\linewidth}{2pt}
+	\renewcommand{\contentsname}{Abschnitte der Notentransparenz}
+	\tableofcontents
+	\rule{\linewidth}{2pt}
+	
+	\input{notentransparenz_simple.tex}
+	
+	\vspace{1cm}
+
+	\input{notentransparenz_mdl.tex}
+
+	\clearpage
+	\input{notentransparenz_definition.tex}
+\end{document}

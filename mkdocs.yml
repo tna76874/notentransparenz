@@ -38,7 +38,8 @@ extra:
       link: https://github.com/tna76874/notentransparenz
       name: "tna76874"
   urls:
-    docfile: files/notentransparenz.pdf
+    docfile: files/tex/notentransparenz.pdf
+    markdown_transparenz: files/tex/notentransparenz
     binder_base: https://mybinder.org/v2/gh/tna76874/notebooks-school/stable
     bildungsplan:
       mathe: https://www.bildungsplaene-bw.de/site/bildungsplan/bpExport/3221757/Lde/index.html?_page=0&requestMode=PDF&_finish=Erstellen
@@ -67,7 +68,6 @@ copyright: !ENV build_doc_date
 
 nav:
   - Notentransparenz: index.md
-  - Notentransparenz in einfacher Sprache: simple.md
   - Korrekturzeichen: korrektur.md
   - Verbesserungen: verbesserung.md
   - digitale Abgabe: abgabe.md

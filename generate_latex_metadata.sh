@@ -1,6 +1,6 @@
 #!/bin/bash
-TEX_DIR='docs/files'
-TEX_FILE=${TEX_DIR}/notentransparenz.tex
+TEX_DIR='docs/files/tex'
+TEX_FILE=${TEX_DIR}
 timestamp=$(git log -1 --format=%cd --date=format-local:%d.%m.%Y ${TEX_FILE})
 echo "$timestamp" > ${TEX_DIR}/changed.tex
 

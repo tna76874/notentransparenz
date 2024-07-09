@@ -8,6 +8,6 @@ Alle Änderungen dieser Website sind öffentlich unter [https://github.com/tna76
 </object>
 
 <p>Hier geht es zu einer Web-Absicht des PDF-Dokuments:<br>
-<a href="/files/notentransparenz">Web-Absicht</a></p>
+<a href="{{ extra.urls.markdown_transparenz }}">Web-Absicht</a></p>
 
 
