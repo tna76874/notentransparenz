@@ -224,7 +224,6 @@ class LeistungP(LeistungKT):
 class LimitsGeneric:
     def __init__(self):
         self._type = None
-        self._is_kernfach = None
         self.limits = []
 
     def check_limits(self, leistungen):
@@ -262,13 +261,7 @@ class LimitsKernfach(LimitsGeneric):
     def __init__(self):
         super().__init__()
         self._type = 'Kernfach'
-        self._is_kernfach = True
         self.limits =   [ 
-                            {
-                             'sum' : [AttributS],
-                             'min' : 4,
-                             'max' : None,
-                            },
                             {
                              'sum' : [AttributM],
                              'min' : 1,
@@ -285,11 +278,10 @@ class LimitsNichtkernfach(LimitsGeneric):
     def __init__(self):
         super().__init__()
         self._type = 'Nichtkernfach'
-        self._is_kernfach = False
         self.limits =   [ 
                             {
                              'sum' : [AttributS],
-                             'min' : 0,
+                             'min' : None,
                              'max' : 4,
                             },
                             {
@@ -297,9 +289,21 @@ class LimitsNichtkernfach(LimitsGeneric):
                              'min' : 1,
                              'max' : None,
                             },
+                        ]
+
+class LimitsLK(LimitsGeneric):
+    def __init__(self):
+        super().__init__()
+        self._type = 'LK'
+        self.limits =   [ 
                             {
-                             'sum' : [AttributP],
-                             'min' : 0,
+                             'sum' : [AttributM],
+                             'min' : 1,
+                             'max' : None,
+                            },
+                            {
+                             'sum' : [LeistungKA],
+                             'min' : 2,
                              'max' : None,
                             },
                         ]
@@ -328,7 +332,6 @@ class VerbesserungStatus:
         
 class FachGeneric:
     def __init__(self):
-        self._ist_kernfach = None
         self.name = None
         self.long = None
         self.limits = []
@@ -343,8 +346,6 @@ class FachM(FachGeneric):
         super().__init__()
         self.name = 'M'
         self.long = 'Mathematik'
-        self._ist_kernfach = True
-
         self.limits = LimitsKernfach()
 
 class FachPH(FachGeneric):
@@ -352,9 +353,14 @@ class FachPH(FachGeneric):
         super().__init__()
         self.name = 'Ph'
         self.long = 'Physik'
-        self._ist_kernfach = False
-
         self.limits = LimitsNichtkernfach()
+
+class FachPHLK(FachGeneric):
+    def __init__(self):
+        super().__init__()
+        self.name = 'Ph'
+        self.long = 'Physik'
+        self.limits = LimitsLK()
 
 class FachINF(FachGeneric):
     def __init__(self):
