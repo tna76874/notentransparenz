@@ -107,6 +107,46 @@ class NoteEntity(np.ndarray):
     def __truediv__(self, other):
         return self._operate(other, lambda x, y: x / y)
 
+class LeistungGeneric:
+    def __init__(self, **kwargs):
+        note = kwargs.get('note')
+        system = kwargs.get('system')
+        self._art = None
+        
+        if note is None or system is None:
+            raise ValueError("Die Argumente 'note' und 'system' müssen angegeben werden.")
+        
+        self.note = NoteEntity(note, system)
+
+    def __str__(self):
+        return self._print()
+
+    def __repr__(self):
+        return self._print()
+
+    def _print(self):
+        return f"Note: {self.note}, System: {self.note.system}, Art: {self._art}"
+        
+class LeistungM(LeistungGeneric):
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+        self._art = 'm'
+        
+class LeistungKA(LeistungGeneric):
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+        self._art = 'KA'
+        
+class LeistungKT(LeistungGeneric):
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+        self._art = 'KT'
+
+class LeistungGFS(LeistungGeneric):
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+        self._art = 'GFS'
+
 class Note:
     def __init__(self, system = 'N', **kwargs):
         if system not in ['N', 'NP']:
@@ -216,18 +256,31 @@ class Notenberechnung:
         mandatory_keys = ['art', 'note', 'date']
         if all(key in kwargs for key in mandatory_keys):
             art = kwargs.get('art')
-            if art not in self._art:
-                raise ValueError(f'Mögliche Arten der Note: {", ".join(self._art)} an.')
+            note = kwargs.get('note')
+            date = kwargs.get('date')
+            
+            if art == 'm':
+                leistung_obj = LeistungM(note=note, system=self.system)
+            elif art == 'KA':
+                leistung_obj = LeistungKA(note=note, system=self.system)
+            elif art == 'KT':
+                leistung_obj = LeistungKT(note=note, system=self.system)
+            elif art == 'GFS':
+                leistung_obj = LeistungGFS(note=note, system=self.system)
+            else:
+                raise ValueError(f'Ungültige Art der Note: {art}')
+            
             note_dict = {
-                'art': kwargs.get('art'),
-                'note': kwargs.get('note'),
+                'art': art,
+                'note': leistung_obj,
                 'status': kwargs.get('status', '---'),
-                'datum': self.parse_date(kwargs.get('date')),
+                'datum': self.parse_date(date),
                 'nr': kwargs.get('nr'),
             }
 
-            if kwargs.get('art') in ['m', 'GFS']:
+            if art in ['m', 'GFS']:
                 note_dict['status'] = '---'
+            
             self.noten.append(note_dict)
             self._sort_grade_after_date()
             self._set_SJ()
@@ -235,7 +288,7 @@ class Notenberechnung:
             raise ValueError(f'Fehlende Informationen. Bitte geben Sie {" und ".join(mandatory_keys)} an.')
 
     def mittelwert(self, noten):
-        noten_werte = np.array([note.get('note') for note in noten if isinstance(note.get('note'), (int, float))])
+        noten_werte = np.array([note.get('note').note for note in noten if isinstance(note.get('note'), LeistungGeneric)])
         if len(noten_werte)==0:
             return None
         return np.mean(noten_werte)
