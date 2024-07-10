@@ -107,6 +107,28 @@ class NoteEntity(np.ndarray):
     def __truediv__(self, other):
         return self._operate(other, lambda x, y: x / y)
 
+class AttributGeneric:
+    def __init__(self):
+        pass
+
+class AttributM(AttributGeneric):
+    def __init__(self):
+        super().__init__()
+        self._type = 'm'
+        self.long = 'mündlich'
+
+class AttributS(AttributGeneric):
+    def __init__(self):
+        super().__init__()
+        self._type = 's'
+        self.long = 'schriftlich'
+
+class AttributP(AttributGeneric):
+    def __init__(self):
+        super().__init__()
+        self._type = 'p'
+        self.long = 'fachpraktisch'
+
 class LeistungGeneric:
     def __init__(self, **kwargs):
         note = kwargs.get('note')
@@ -131,27 +153,84 @@ class LeistungM(LeistungGeneric):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
         self._art = 'm'
+        self._attribut = AttributM()
         
 class LeistungKA(LeistungGeneric):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
         self._art = 'KA'
+        self._attribut = AttributS()
         
 class LeistungKT(LeistungGeneric):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
         self._art = 'KT'
+        self._attribut = kwargs.get('attribut', AttributS())
 
 class LeistungGFS(LeistungGeneric):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
         self._art = 'GFS'
+        self._attribut = AttributP()
+
+class LimitsGeneric:
+    def __init__(self):
+        self._type = None
+        self._is_kernfach = None
+        self.limits = []
+        
+class LimitsKernfach(LimitsGeneric):
+    def __init__(self):
+        super().__init__()
+        self._type = 'Kernfach'
+        self._is_kernfach = True
+        self.limits =   [ 
+                            {
+                             'sum' : [AttributS],
+                             'min' : 4,
+                             'max' : None,
+                            },
+                            {
+                             'sum' : [AttributM],
+                             'min' : 1,
+                             'max' : None,
+                            },
+                            {
+                             'sum' : [LeistungKA],
+                             'min' : 4,
+                             'max' : None,
+                            },
+                        ]
+
+class LimitsNichtkernfach(LimitsGeneric):
+    def __init__(self):
+        super().__init__()
+        self._type = 'Nichtkernfach'
+        self._is_kernfach = False
+        self.limits =   [ 
+                            {
+                             'sum' : [AttributS],
+                             'min' : 0,
+                             'max' : 4,
+                            },
+                            {
+                             'sum' : [AttributM],
+                             'min' : 1,
+                             'max' : None,
+                            },
+                            {
+                             'sum' : [AttributP],
+                             'min' : 0,
+                             'max' : None,
+                            },
+                        ]
         
 class FachGeneric:
     def __init__(self):
         self._ist_kernfach = None
         self.name = None
         self.long = None
+        self.limits = []
         
     def _get_name(self):
         if self.long!=None:
@@ -165,6 +244,8 @@ class FachM(FachGeneric):
         self.long = 'Mathematik'
         self._ist_kernfach = True
 
+        self.limits = LimitsKernfach()
+
 class FachPH(FachGeneric):
     def __init__(self):
         super().__init__()
@@ -172,12 +253,14 @@ class FachPH(FachGeneric):
         self.long = 'Physik'
         self._ist_kernfach = False
 
+        self.limits = LimitsNichtkernfach()
+
 class FachINF(FachGeneric):
     def __init__(self):
         super().__init__()
         self.name = 'Inf'
         self.long = 'Informatik'
-        self._ist_kernfach = False
+        self.limits = LimitsNichtkernfach()
 
 class Note:
     def __init__(self, system = 'N', **kwargs):
