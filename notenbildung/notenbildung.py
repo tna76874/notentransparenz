@@ -201,7 +201,14 @@ class LeistungKA(LeistungGeneric):
         super().__init__(**kwargs)
         self._art = 'KA'
         self._attribut = AttributS()
-        
+
+class LeistungGFS(LeistungKA):
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+        self._art = 'GFS'
+        self._attribut = AttributP()
+        self.status._disable()
+
 class LeistungKT(LeistungGeneric):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
@@ -211,13 +218,6 @@ class LeistungKT(LeistungGeneric):
 class LeistungP(LeistungKT):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
-        self._attribut = AttributP()
-        self.status._disable()
-
-class LeistungGFS(LeistungGeneric):
-    def __init__(self, **kwargs):
-        super().__init__(**kwargs)
-        self._art = 'GFS'
         self._attribut = AttributP()
         self.status._disable()
 
@@ -543,7 +543,7 @@ class Notenberechnung:
         
         # Filtern der Noten nach Art
         noten_ka = list(filter(lambda x: isinstance(x, LeistungKA) or isinstance(x, LeistungGFS), self.noten))
-        noten_kt = list(filter(lambda x: isinstance(x, LeistungKT), self.noten))
+        noten_kt = list(filter(lambda x: isinstance(x, LeistungKT) or isinstance(x, LeistungP), self.noten))
         noten_muendlich = list(filter(lambda x: isinstance(x, LeistungM), self.noten))
 
         
@@ -856,6 +856,7 @@ if __name__ == "__main__":
     self.note_hinzufuegen(art='KA', date = '2024-04-10', note=3, status='fertig')
     self.note_hinzufuegen(art='KA', date = '2024-04-15', note=2.5, status='fertig')
     self.note_hinzufuegen(art='KA', date = '2024-03-01', note=4, status='fertig')
+    self.note_hinzufuegen(art='GFS', date = '2024-03-05', note=3.25)
     self.note_hinzufuegen(art='KA', date = '2024-03-15', note=5, status='uv')
     self.note_hinzufuegen(art='P', date = '2024-02-01', note=4)
     self.note_hinzufuegen(art='KT', date = '2024-01-01', note=2.75, status='fehlt')
