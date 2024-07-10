@@ -14,7 +14,6 @@ import matplotlib.dates as mdates
 
 class NoteEntity(np.ndarray):
     def __new__(cls, note, system=None):
-        # Validate note range based on the system
         if note==None:
             note = np.nan
         else:
@@ -109,7 +108,17 @@ class NoteEntity(np.ndarray):
 
 class AttributGeneric:
     def __init__(self):
-        pass
+        self._type = None
+        self.long = None
+
+    def __str__(self):
+        return self._print()
+
+    def __repr__(self):
+        return self._print()
+
+    def _print(self):
+        return f"{self.long}"
 
 class AttributM(AttributGeneric):
     def __init__(self):
@@ -183,7 +192,12 @@ class LeistungKT(LeistungGeneric):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
         self._art = 'KT'
-        self._attribut = kwargs.get('attribut', AttributS())
+        self._attribut = AttributS()
+
+class LeistungP(LeistungKT):
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+        self._attribut = AttributP()
 
 class LeistungGFS(LeistungGeneric):
     def __init__(self, **kwargs):
@@ -199,19 +213,35 @@ class LimitsGeneric:
         self.limits = []
 
     def check_limits(self, leistungen):
-        for limit in self.limits:
+        limits = self.limits.copy()
+        for limit in limits:
             sum_attributes = 0
             for leistung in leistungen:
                 if any(isinstance(obj, item) for obj in [leistung, leistung._attribut] for item in limit['sum']):
                     sum_attributes += 1
+            limit['result'] = sum_attributes
+            limit['passed'] = True
+            limit['softfail'] = False
+            limit['hardfail'] = False
+            
             
             if limit['min'] is not None and sum_attributes < limit['min']:
-                return False
+                limit['passed'] = False
+                limit['softfail'] = True
+
             
             if limit['max'] is not None and sum_attributes > limit['max']:
-                return False
+                limit['passed'] = False
+                limit['hardfail'] = True
+                
+        result = {
+                  'passed' : all(limit['passed'] for limit in limits), 
+                  'softfail' : any(limit['softfail'] for limit in limits),                  
+                  'hardfail' : any(limit['hardfail'] for limit in limits),                  
+                  'result':limits,
+                  }
         
-        return True
+        return result
         
 class LimitsKernfach(LimitsGeneric):
     def __init__(self):
@@ -374,8 +404,16 @@ class Notenberechnung:
         if self._fach==None:
             return None
         
-        self._fach.limits.check_limits([item['note'] for item in self.noten])
+        checks = self._fach.limits.check_limits(self.noten)
 
+        if not checks['passed']:
+            _ = [print(f"Warning: Softfail detected for limit with attributes: {limit['sum']}: Anzahl der Leistungen {limit['result']}<{limit['min']}") if not limit['passed'] and limit['softfail'] else None for limit in checks['result']]
+
+            _ = [print(f"Error: Hardfail detected for limit with attributes: {limit['sum']}: Anzahl der Leistungen {limit['result']}>{limit['max']}") for limit in checks['result'] if not limit['passed'] and limit['hardfail']]
+            
+            if any(not limit['passed'] and limit['hardfail'] for limit in checks['result']):
+                raise ValueError("Error: Hardfails detected.")
+            
     def _set_SJ(self):
          dates = [note.date for note in self.noten]
          min_date = min(dates)
@@ -407,14 +445,14 @@ class Notenberechnung:
         updated_notenliste = self.noten.copy()
         for art in self._art:
             current_nr = 1
-            filtered_noten = [note for note in updated_notenliste if note['art'] == art]
-            filtered_noten.sort(key=lambda x: x['datum'])
+            filtered_noten = [note for note in updated_notenliste if note._art == art]
+            filtered_noten.sort(key=lambda x: x.date)
             for note in filtered_noten:
-                if note['nr'] is None:
-                    last_note_same_art = next((n for n in reversed(filtered_noten) if n.get('nr') is not None and n['datum'] < note['datum']), None)
+                if note.nr is None:
+                    last_note_same_art = next((n for n in reversed(filtered_noten) if n.nr is not None and n.date < note.date), None)
                     if last_note_same_art:
-                        current_nr = last_note_same_art['nr'] + 1
-                    note['nr'] = current_nr
+                        current_nr = last_note_same_art.nr + 1
+                    note.nr = current_nr
                     current_nr += 1
         return updated_notenliste
 
@@ -439,6 +477,8 @@ class Notenberechnung:
                 leistung_obj = LeistungKA(**pars)
             elif art == 'KT':
                 leistung_obj = LeistungKT(**pars)
+            elif art == 'P':
+                leistung_obj = LeistungP(**pars)
             elif art == 'GFS':
                 leistung_obj = LeistungGFS(**pars)
             else:
@@ -771,12 +811,12 @@ class LerngruppeEntity:
 
 if __name__ == "__main__":
     # Beispiel
-    self = Notenberechnung(w_s0=1, w_sm=3, system = 'N', v_enabled=True, w_th = 0.4, fach=FachM())
+    self = Notenberechnung(w_s0=1, w_sm=3, system = 'N', v_enabled=True, w_th = 0.4, fach=FachPH())
     self.note_hinzufuegen(art='KA', date = '2024-04-10', note=3, status='fertig')
     self.note_hinzufuegen(art='KA', date = '2024-04-15', note=2.5, status='fertig')
     self.note_hinzufuegen(art='KA', date = '2024-03-01', note=4, status='fertig')
     self.note_hinzufuegen(art='KA', date = '2024-03-15', note=5, status='uv')
-    self.note_hinzufuegen(art='KT', date = '2024-02-01', note=4)
+    self.note_hinzufuegen(art='P', date = '2024-02-01', note=4)
     self.note_hinzufuegen(art='KT', date = '2024-01-01', note=2.75, status='fehlt')
     self.note_hinzufuegen(art='m', date = '2023-09-01', note=3.0)
     self.note_hinzufuegen(art='m', date = '2023-10-01', note=3.25)
