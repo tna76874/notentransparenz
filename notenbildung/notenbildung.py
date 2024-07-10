@@ -178,6 +178,21 @@ class LimitsGeneric:
         self._type = None
         self._is_kernfach = None
         self.limits = []
+
+    def check_limits(self, leistungen):
+        for limit in self.limits:
+            sum_attributes = 0
+            for leistung in leistungen:
+                if any(isinstance(obj, item) for obj in [leistung, leistung._attribut] for item in limit['sum']):
+                    sum_attributes += 1
+            
+            if limit['min'] is not None and sum_attributes < limit['min']:
+                return False
+            
+            if limit['max'] is not None and sum_attributes > limit['max']:
+                return False
+        
+        return True
         
 class LimitsKernfach(LimitsGeneric):
     def __init__(self):
@@ -296,13 +311,13 @@ class Note:
         return self._print()
 
 class Notenberechnung:
-    def __init__(self, w_sm = 3, w_th = 0.25, w_s0 = 1, n_KT_0 = 3, system = 'N', v_enabled = True, typ=None):
+    def __init__(self, w_sm = 3, w_th = 0.25, w_s0 = 1, n_KT_0 = 3, system = 'N', v_enabled = True, fach=None):
         self._typ = None
-        if typ is not None:
-            if not isinstance(typ, FachGeneric):
+        if fach is not None:
+            if not isinstance(fach, FachGeneric):
                 raise ValueError("Der übergebene Typ muss eine Instanz der Klasse FachGeneric sein.")
             else:
-                self._typ = typ
+                self._fach = fach
         if system not in ['N', 'NP']:
             raise ValueError("Das System muss entweder 'N' oder 'NP' sein.")
         if not 0 <= float(w_th) <= 0.5:
@@ -322,6 +337,12 @@ class Notenberechnung:
         self.sj_start, self.sj_ende = None, None
         self._v_enabled = v_enabled
         self._art = ['m', 'KT', 'KA', 'GFS']
+        
+    def _check_limits(self):
+        if self._fach==None:
+            return None
+        
+        self._fach.limits.check_limits([item['note'] for item in self.noten])
 
     def _set_SJ(self):
          dates = [note['datum'] for note in self.noten]
@@ -392,7 +413,7 @@ class Notenberechnung:
                 raise ValueError(f'Ungültige Art der Note: {art}')
             
             note_dict = {
-                'art': art,
+                'art': leistung_obj._art,
                 'note': leistung_obj,
                 'status': kwargs.get('status', '---'),
                 'datum': self.parse_date(date),
@@ -727,7 +748,7 @@ class LerngruppeEntity:
 
 if __name__ == "__main__":
     # Beispiel
-    self = Notenberechnung(w_s0=1, w_sm=3, system = 'N', v_enabled=True, w_th = 0.4, typ=FachM())
+    self = Notenberechnung(w_s0=1, w_sm=3, system = 'N', v_enabled=True, w_th = 0.4, fach=FachM())
     self.note_hinzufuegen(art='KA', date = '2024-04-10', note=3, status='fertig')
     self.note_hinzufuegen(art='KA', date = '2024-04-15', note=2.5, status='fertig')
     self.note_hinzufuegen(art='KA', date = '2024-03-01', note=4, status='fertig')
