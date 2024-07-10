@@ -8,6 +8,7 @@ import numpy as np
 import pandas as pd
 from datetime import datetime
 import copy
+import itertools
 import matplotlib.pyplot as plt
 import matplotlib.patches as patches
 import matplotlib.dates as mdates
@@ -148,6 +149,7 @@ class LeistungGeneric:
         system = kwargs.get('system')
         self.date = self._parse_date(kwargs.get('date'))
         self._art = None
+        self._is_punctual = True
         
         self.status = VerbesserungStatus(kwargs.get('status','---'))
         self.note = NoteEntity(note, system)
@@ -183,11 +185,16 @@ class LeistungM(LeistungGeneric):
         super().__init__(**kwargs)
         self._art = 'm'
         self._attribut = AttributM()
-        self.status._disable()
-
-        # missing_args = ", ".join([arg for arg in ['von', 'bis'] if arg not in kwargs])
-        # if any(arg not in kwargs for arg in ['von', 'bis']):
-        #     raise ValueError(f"Die Argumente '{missing_args}' müssen angegeben werden.")
+        self.status._disable()          
+        
+        self.von = self._parse_date(kwargs.get('von') or self.date)
+        self.bis = self._parse_date(kwargs.get('bis') or self.date)
+        
+        if self.von > self.bis:
+            raise ValueError(f"Ungültiger Zeitraum für die mündlichen noten.")
+            
+        if self.von != self.bis:
+            self._is_punctual = False
         
         
 class LeistungKA(LeistungGeneric):
@@ -416,15 +423,22 @@ class Notenberechnung:
         self.sj_start, self.sj_ende = None, None
         self._v_enabled = v_enabled
         self._art = ['m', 'KT', 'KA', 'GFS']
+    
+    def _check_time_range(self):
+        noten_with_range = list(filter(lambda x: x._is_punctual==False, self.noten))
+        for pair in itertools.combinations(noten_with_range, 2):
+            if pair[0].von <= pair[1].bis and pair[0].bis >= pair[1].von:
+                raise ValueError(f"Die Zeiträume der mündlichen Noten überschneiden sich: {pair[0]} von {pair[0].date} und {pair[1]} vom {pair[1].date}")
         
-    def _check_limits(self):
+    def _check_limits(self, show_warnings = True):
         if self._fach==None:
             return None
         
         checks = self._fach.limits.check_limits(self.noten)
 
         if not checks['passed']:
-            _ = [print(f"Warning: Softfail detected for limit with attributes: {limit['sum']}: Anzahl der Leistungen {limit['result']}<{limit['min']}") if not limit['passed'] and limit['softfail'] else None for limit in checks['result']]
+            if show_warnings==True:
+                _ = [print(f"Warning: Softfail detected for limit with attributes: {limit['sum']}: Anzahl der Leistungen {limit['result']}<{limit['min']}") if not limit['passed'] and limit['softfail'] else None for limit in checks['result']]
 
             _ = [print(f"Error: Hardfail detected for limit with attributes: {limit['sum']}: Anzahl der Leistungen {limit['result']}>{limit['max']}") for limit in checks['result'] if not limit['passed'] and limit['hardfail']]
             
@@ -486,6 +500,8 @@ class Notenberechnung:
                     'date' : date,
                     'status' : kwargs.get('status'),
                     'nr' : kwargs.get('nr'),
+                    'von' : kwargs.get('von'),
+                    'bis' : kwargs.get('bis'),
                     }
             
             if art == 'm':
@@ -513,7 +529,12 @@ class Notenberechnung:
             return None
         return np.mean(noten_werte)
 
-    def berechne_gesamtnote(self):
+    def berechne_gesamtnote(self, show_warnings = True):
+        #First run checks on noten
+        self._check_time_range()
+        self._check_limits(show_warnings = show_warnings)
+        
+        # Calculate
         result = Note(datum=self.noten[-1].date)
         verbesserung_enabled = any(note.status._enabled for note in self.noten) and self._v_enabled
         
@@ -598,7 +619,7 @@ class Notenberechnung:
             try:
                 kopie.noten.append(note)
                 kopie._sort_grade_after_date()
-                ergebnis = kopie.berechne_gesamtnote()
+                ergebnis = kopie.berechne_gesamtnote(show_warnings=False)
                 ergebnisse.append(ergebnis)
             except ValueError as e:
                 print(f"Fehler beim Hinzufügen der Note: {str(e)}")
@@ -828,16 +849,16 @@ class LerngruppeEntity:
 
 if __name__ == "__main__":
     # Beispiel
-    self = Notenberechnung(w_s0=1, w_sm=3, system = 'N', v_enabled=True, w_th = 0.4, fach=FachPH())
+    self = Notenberechnung(w_s0=1, w_sm=3, system = 'N', v_enabled=True, w_th = 0.4, fach=FachM())
     self.note_hinzufuegen(art='KA', date = '2024-04-10', note=3, status='fertig')
     self.note_hinzufuegen(art='KA', date = '2024-04-15', note=2.5, status='fertig')
     self.note_hinzufuegen(art='KA', date = '2024-03-01', note=4, status='fertig')
     self.note_hinzufuegen(art='KA', date = '2024-03-15', note=5, status='uv')
     self.note_hinzufuegen(art='P', date = '2024-02-01', note=4)
     self.note_hinzufuegen(art='KT', date = '2024-01-01', note=2.75, status='fehlt')
-    self.note_hinzufuegen(art='m', date = '2023-09-01', note=3.0)
-    self.note_hinzufuegen(art='m', date = '2023-10-01', note=3.25)
-    self.note_hinzufuegen(art='m', date = '2023-11-01', note=3.5)
+    self.note_hinzufuegen(art='m', date = '2023-10-05', von = '2023-09-01', note=3.0)
+    self.note_hinzufuegen(art='m', date = '2023-12-05', von = '2023-10-06', note=3.25)
+    self.note_hinzufuegen(art='m', date = '2024-05-01', von = '2023-12-06', note=3.5)
     
     gesamtnote = self.berechne_gesamtnote()
     print(gesamtnote)
