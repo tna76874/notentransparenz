@@ -131,14 +131,26 @@ class AttributP(AttributGeneric):
 
 class LeistungGeneric:
     def __init__(self, **kwargs):
+        missing_args = ", ".join([arg for arg in ['note', 'system', 'date'] if arg not in kwargs])
+        if any(arg not in kwargs for arg in ['note', 'system', 'date']):
+            raise ValueError(f"Die Argumente '{missing_args}' müssen angegeben werden.")
+
         note = kwargs.get('note')
         system = kwargs.get('system')
+        self.date = self._parse_date(kwargs.get('date'))
         self._art = None
         
-        if note is None or system is None:
-            raise ValueError("Die Argumente 'note' und 'system' müssen angegeben werden.")
-        
+        self.status = VerbesserungStatus(kwargs.get('status','---'))
         self.note = NoteEntity(note, system)
+        self.nr = kwargs.get('nr')
+        
+    def _parse_date(self, date_str):
+        if isinstance(date_str, datetime):
+            return date_str
+        try:
+            return datetime.strptime(date_str, "%Y-%m-%d")
+        except (ValueError, TypeError):
+            raise ValueError("Ungültiges Datumsformat")
 
     def __str__(self):
         return self._print()
@@ -154,6 +166,12 @@ class LeistungM(LeistungGeneric):
         super().__init__(**kwargs)
         self._art = 'm'
         self._attribut = AttributM()
+        self.status._disable()
+
+        # missing_args = ", ".join([arg for arg in ['von', 'bis'] if arg not in kwargs])
+        # if any(arg not in kwargs for arg in ['von', 'bis']):
+        #     raise ValueError(f"Die Argumente '{missing_args}' müssen angegeben werden.")
+        
         
 class LeistungKA(LeistungGeneric):
     def __init__(self, **kwargs):
@@ -172,6 +190,7 @@ class LeistungGFS(LeistungGeneric):
         super().__init__(**kwargs)
         self._art = 'GFS'
         self._attribut = AttributP()
+        self.status._disable()
 
 class LimitsGeneric:
     def __init__(self):
@@ -239,6 +258,19 @@ class LimitsNichtkernfach(LimitsGeneric):
                              'max' : None,
                             },
                         ]
+        
+class VerbesserungStatus:
+    def __init__(self, text):
+        self.text = text if text != None else '---'
+        self._check()
+    
+    def _check(self):
+        self._enabled = True if self.text != "---" else False
+        self.status = True if self.text == "fertig" else False if self.text == "fehlt" else None        
+    
+    def _disable(self):
+        self.text = '---'
+        self._check()
         
 class FachGeneric:
     def __init__(self):
@@ -345,7 +377,7 @@ class Notenberechnung:
         self._fach.limits.check_limits([item['note'] for item in self.noten])
 
     def _set_SJ(self):
-         dates = [note['datum'] for note in self.noten]
+         dates = [note.date for note in self.noten]
          min_date = min(dates)
          max_date = max(dates)
     
@@ -364,15 +396,7 @@ class Notenberechnung:
          self.sj_start, self.sj_ende = sj_start, sj_ende
                 
     def _sort_grade_after_date(self):
-        self.noten.sort(key=lambda x: x['datum'])
-
-    def parse_date(self, date_str):
-        if isinstance(date_str, datetime):
-            return date_str
-        try:
-            return datetime.strptime(date_str, "%Y-%m-%d")
-        except (ValueError, TypeError):
-            raise ValueError("Ungültiges Datumsformat")
+        self.noten.sort(key=lambda x: x.date)
             
     def add_from_excel(self, path):
         df = pd.read_excel(path)
@@ -401,54 +425,53 @@ class Notenberechnung:
             note = kwargs.get('note')
             date = kwargs.get('date')
             
+            pars = {
+                    'note' : note,
+                    'system': self.system,
+                    'date' : date,
+                    'status' : kwargs.get('status'),
+                    'nr' : kwargs.get('nr'),
+                    }
+            
             if art == 'm':
-                leistung_obj = LeistungM(note=note, system=self.system)
+                leistung_obj = LeistungM(**pars)
             elif art == 'KA':
-                leistung_obj = LeistungKA(note=note, system=self.system)
+                leistung_obj = LeistungKA(**pars)
             elif art == 'KT':
-                leistung_obj = LeistungKT(note=note, system=self.system)
+                leistung_obj = LeistungKT(**pars)
             elif art == 'GFS':
-                leistung_obj = LeistungGFS(note=note, system=self.system)
+                leistung_obj = LeistungGFS(**pars)
             else:
                 raise ValueError(f'Ungültige Art der Note: {art}')
-            
-            note_dict = {
-                'art': leistung_obj._art,
-                'note': leistung_obj,
-                'status': kwargs.get('status', '---'),
-                'datum': self.parse_date(date),
-                'nr': kwargs.get('nr'),
-            }
 
-            if art in ['m', 'GFS']:
-                note_dict['status'] = '---'
-            
-            self.noten.append(note_dict)
+            self.noten.append(leistung_obj)
             self._sort_grade_after_date()
             self._set_SJ()
         else:
             raise ValueError(f'Fehlende Informationen. Bitte geben Sie {" und ".join(mandatory_keys)} an.')
 
     def mittelwert(self, noten):
-        noten_werte = np.array([note.get('note').note for note in noten if isinstance(note.get('note'), LeistungGeneric)])
+        noten_werte = np.array([float(note.note) for note in noten])
         if len(noten_werte)==0:
             return None
         return np.mean(noten_werte)
 
     def berechne_gesamtnote(self):
-        result = Note(datum=self.noten[-1].get('datum'))
-        verbesserung_enabled = any(note['status'] != '---' for note in self.noten) and self._v_enabled
+        result = Note(datum=self.noten[-1].date)
+        verbesserung_enabled = any(note.status._enabled for note in self.noten) and self._v_enabled
         
         # Filtern der Noten nach Art
-        noten_ka = [note for note in self.noten if note.get('art') in ['KA', 'GFS']]
-        noten_kt = [note for note in self.noten if note.get('art') in ['KT']]
-        noten_muendlich = [note for note in self.noten if note.get('art') == 'm']
+        noten_ka = list(filter(lambda x: isinstance(x, LeistungKA) or isinstance(x, LeistungGFS), self.noten))
+        noten_kt = list(filter(lambda x: isinstance(x, LeistungKT), self.noten))
+        noten_muendlich = list(filter(lambda x: isinstance(x, LeistungM), self.noten))
+
         
         # Zählen der verschiedenen Statusarten
-        n_v_g = len([note.get('status') for note in self.noten if not note.get('status') == '---'])
-        n_v_o = len([note.get('status') for note in self.noten if not note.get('status') in ['---', 'fehlt', 'fertig']])
-        n_v_1 = len([note.get('status') for note in self.noten if note.get('status') == 'fehlt'])
-        n_v_2 = len([note.get('status') for note in self.noten if note.get('status') == 'fertig'])
+        verbesserung_enabled = [note for note in self.noten if note.status._enabled]
+        n_v_g = len(verbesserung_enabled)
+        n_v_o = len([note for note in verbesserung_enabled if note.status.status==None])
+        n_v_1 = len([note for note in verbesserung_enabled if note.status.status==False])
+        n_v_2 = len([note for note in verbesserung_enabled if note.status.status==True])
 
         # Ermitteln der Anzahl der verschiedenen Leistungsarten
         n_KA = len(noten_ka)
@@ -752,9 +775,9 @@ if __name__ == "__main__":
     self.note_hinzufuegen(art='KA', date = '2024-04-10', note=3, status='fertig')
     self.note_hinzufuegen(art='KA', date = '2024-04-15', note=2.5, status='fertig')
     self.note_hinzufuegen(art='KA', date = '2024-03-01', note=4, status='fertig')
-    self.note_hinzufuegen(art='KA', date = '2024-03-15', note=5, status='fertig')
+    self.note_hinzufuegen(art='KA', date = '2024-03-15', note=5, status='uv')
     self.note_hinzufuegen(art='KT', date = '2024-02-01', note=4)
-    self.note_hinzufuegen(art='KT', date = '2024-01-01', note=2.75, status='fertig')
+    self.note_hinzufuegen(art='KT', date = '2024-01-01', note=2.75, status='fehlt')
     self.note_hinzufuegen(art='m', date = '2023-09-01', note=3.0)
     self.note_hinzufuegen(art='m', date = '2023-10-01', note=3.25)
     self.note_hinzufuegen(art='m', date = '2023-11-01', note=3.5)
