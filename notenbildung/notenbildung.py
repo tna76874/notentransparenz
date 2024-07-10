@@ -680,7 +680,7 @@ class Notenberechnung:
         ax.set_xlabel('Datum')
         ax.set_ylabel('Gesamtnote')
         if (sid!=None) and (parent!=None):
-            title = f'{sid.vorname} {sid.nachname}, {parent.kurs}, {parent.fach}, Schuljahr {self.sj_start.year}/{self.sj_ende.year}'
+            title = f'{sid.vorname} {sid.nachname}, {parent.kurs}, {parent.fach.name}, Schuljahr {self.sj_start.year}/{self.sj_ende.year}'
         elif (sid!=None):
             title = f'{sid.vorname} {sid.nachname}, Schuljahr {self.sj_start.year}/{self.sj_ende.year}'
         else:
@@ -762,14 +762,9 @@ class LerngruppeEntity:
         if self.stufe not in range(5, 13):
             raise ValueError("Die Stufe muss zwischen 5 und 12 liegen.")
         
-        self._faecher = {
-            'M': 'Mathematik',
-            'Ph': 'Physik',
-            'Inf': 'Informatik',
-        }
         self.fach = kwargs.get('fach', None)
-        if self.fach not in self._faecher:
-            raise ValueError(f"Das angegebene Fach '{self.fach}' ist nicht gültig. Gültige Fächer sind: {', '.join(self._faecher.keys())}")
+        if not isinstance(self.fach, FachGeneric):
+            raise ValueError(f"Bitte ein gültiges Objekt für ein Fach übergeben.")
                     
         if self.stufe in [11, 12]:
             self.zug = None
