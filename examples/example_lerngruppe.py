@@ -5,7 +5,7 @@ Beispiel: Noten mit Lerngruppen
 """
 from notenbildung.notenbildung import *
 
-note = Notenberechnung(w_s0=1, w_sm=3, system = 'N', v_enabled=True, w_th = 0.4)
+note = Notenberechnung(w_s0=1, w_sm=3, system = 'N', v_enabled=True, w_th = 0.4, fach=FachM())
 note.note_hinzufuegen(art='KA', date = '2024-04-10', note=3, status='fertig')
 note.note_hinzufuegen(art='KA', date = '2024-04-15', note=2.5, status='fertig')
 note.note_hinzufuegen(art='KA', date = '2024-03-01', note=4, status='fertig')

@@ -178,7 +178,7 @@ class LeistungGeneric:
             if self.status._enabled:
                 output += f", Status: {self.status}"
         
-        return output
+        return f'({output})'
         
 class LeistungM(LeistungGeneric):
     def __init__(self, **kwargs):
@@ -194,8 +194,7 @@ class LeistungM(LeistungGeneric):
             raise ValueError(f"Ungültiger Zeitraum für die mündlichen noten.")
             
         if self.von != self.bis:
-            self._is_punctual = False
-        
+            self._is_punctual = False      
         
 class LeistungKA(LeistungGeneric):
     def __init__(self, **kwargs):
@@ -399,6 +398,7 @@ class Note:
 class Notenberechnung:
     def __init__(self, w_sm = 3, w_th = 0.25, w_s0 = 1, n_KT_0 = 3, system = 'N', v_enabled = True, fach=None):
         self._typ = None
+        self._fach = None
         if fach is not None:
             if not isinstance(fach, FachGeneric):
                 raise ValueError("Der übergebene Typ muss eine Instanz der Klasse FachGeneric sein.")
