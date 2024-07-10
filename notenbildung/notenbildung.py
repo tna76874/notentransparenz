@@ -440,10 +440,12 @@ class Notenberechnung:
             if show_warnings==True:
                 _ = [print(f"Warning: Softfail detected for limit with attributes: {limit['sum']}: Anzahl der Leistungen {limit['result']}<{limit['min']}") if not limit['passed'] and limit['softfail'] else None for limit in checks['result']]
 
-            _ = [print(f"Error: Hardfail detected for limit with attributes: {limit['sum']}: Anzahl der Leistungen {limit['result']}>{limit['max']}") for limit in checks['result'] if not limit['passed'] and limit['hardfail']]
+            _ = [print(f"Fehler: zu viele Leistungen: {limit['sum']}: Anzahl der Leistungen {limit['result']}>{limit['max']}") for limit in checks['result'] if not limit['passed'] and limit['hardfail']]
             
             if any(not limit['passed'] and limit['hardfail'] for limit in checks['result']):
-                raise ValueError("Error: Hardfails detected.")
+                raise ValueError("Fehler: zu viele Leistungen")
+        
+        return checks
             
     def _set_SJ(self):
          dates = [note.date for note in self.noten]
@@ -532,7 +534,7 @@ class Notenberechnung:
     def berechne_gesamtnote(self, show_warnings = True):
         #First run checks on noten
         self._check_time_range()
-        self._check_limits(show_warnings = show_warnings)
+        _ = self._check_limits(show_warnings = show_warnings)
         
         # Calculate
         result = Note(datum=self.noten[-1].date)
