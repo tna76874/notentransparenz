@@ -160,6 +160,7 @@ class Notenberechnung:
         self.noten = []
         self.sj_start, self.sj_ende = None, None
         self._v_enabled = v_enabled
+        self._art = ['m', 'KT', 'KA', 'GFS']
 
     def _set_SJ(self):
          dates = [note['datum'] for note in self.noten]
@@ -196,15 +197,35 @@ class Notenberechnung:
         for _,row in df.iterrows():
             self.note_hinzufuegen(**row)
 
+    def _get_noten_filled_with_nr(self):
+        updated_notenliste = self.noten.copy()
+        for art in self._art:
+            current_nr = 1
+            filtered_noten = [note for note in updated_notenliste if note['art'] == art]
+            filtered_noten.sort(key=lambda x: x['datum'])
+            for note in filtered_noten:
+                if note['nr'] is None:
+                    last_note_same_art = next((n for n in reversed(filtered_noten) if n.get('nr') is not None and n['datum'] < note['datum']), None)
+                    if last_note_same_art:
+                        current_nr = last_note_same_art['nr'] + 1
+                    note['nr'] = current_nr
+                    current_nr += 1
+        return updated_notenliste
+
     def note_hinzufuegen(self, **kwargs):
         mandatory_keys = ['art', 'note', 'date']
         if all(key in kwargs for key in mandatory_keys):
+            art = kwargs.get('art')
+            if art not in self._art:
+                raise ValueError(f'Mögliche Arten der Note: {", ".join(self._art)} an.')
             note_dict = {
                 'art': kwargs.get('art'),
                 'note': kwargs.get('note'),
                 'status': kwargs.get('status', '---'),
                 'datum': self.parse_date(kwargs.get('date')),
+                'nr': kwargs.get('nr'),
             }
+
             if kwargs.get('art') in ['m', 'GFS']:
                 note_dict['status'] = '---'
             self.noten.append(note_dict)
