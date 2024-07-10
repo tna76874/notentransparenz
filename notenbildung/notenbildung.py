@@ -146,6 +146,38 @@ class LeistungGFS(LeistungGeneric):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
         self._art = 'GFS'
+        
+class FachGeneric:
+    def __init__(self):
+        self._ist_kernfach = None
+        self.name = None
+        self.long = None
+        
+    def _get_name(self):
+        if self.long!=None:
+            return self.long
+        return ''
+
+class FachM(FachGeneric):
+    def __init__(self):
+        super().__init__()
+        self.name = 'M'
+        self.long = 'Mathematik'
+        self._ist_kernfach = True
+
+class FachPH(FachGeneric):
+    def __init__(self):
+        super().__init__()
+        self.name = 'Ph'
+        self.long = 'Physik'
+        self._ist_kernfach = False
+
+class FachINF(FachGeneric):
+    def __init__(self):
+        super().__init__()
+        self.name = 'Inf'
+        self.long = 'Informatik'
+        self._ist_kernfach = False
 
 class Note:
     def __init__(self, system = 'N', **kwargs):
@@ -181,7 +213,13 @@ class Note:
         return self._print()
 
 class Notenberechnung:
-    def __init__(self, w_sm = 3, w_th = 0.25, w_s0 = 1, n_KT_0 = 3, system = 'N', v_enabled = True):        
+    def __init__(self, w_sm = 3, w_th = 0.25, w_s0 = 1, n_KT_0 = 3, system = 'N', v_enabled = True, typ=None):
+        self._typ = None
+        if typ is not None:
+            if not isinstance(typ, FachGeneric):
+                raise ValueError("Der übergebene Typ muss eine Instanz der Klasse FachGeneric sein.")
+            else:
+                self._typ = typ
         if system not in ['N', 'NP']:
             raise ValueError("Das System muss entweder 'N' oder 'NP' sein.")
         if not 0 <= float(w_th) <= 0.5:
@@ -428,11 +466,16 @@ class Notenberechnung:
         ax.set_xlabel('Datum')
         ax.set_ylabel('Gesamtnote')
         if (sid!=None) and (parent!=None):
-            ax.set_title(f'{sid.vorname} {sid.nachname}, {parent.kurs}, {parent.fach}, Schuljahr {self.sj_start.year}/{self.sj_ende.year}')
+            title = f'{sid.vorname} {sid.nachname}, {parent.kurs}, {parent.fach}, Schuljahr {self.sj_start.year}/{self.sj_ende.year}'
         elif (sid!=None):
-            ax.set_title(f'{sid.vorname} {sid.nachname}, Schuljahr {self.sj_start.year}/{self.sj_ende.year}')
+            title = f'{sid.vorname} {sid.nachname}, Schuljahr {self.sj_start.year}/{self.sj_ende.year}'
         else:
-            ax.set_title(f'Entwicklung der Leistungen in dem Schuljahr {self.sj_start.year}/{self.sj_ende.year}')
+            title = f'Entwicklung der Leistungen in dem Schuljahr {self.sj_start.year}/{self.sj_ende.year}'
+        
+        if self._typ != None:
+            title += f', {self._typ._get_name()}'
+        
+        ax.set_title(title)
 
         # Legende
         ax.legend()
@@ -601,7 +644,7 @@ class LerngruppeEntity:
 
 if __name__ == "__main__":
     # Beispiel
-    self = Notenberechnung(w_s0=1, w_sm=3, system = 'N', v_enabled=True, w_th = 0.4)
+    self = Notenberechnung(w_s0=1, w_sm=3, system = 'N', v_enabled=True, w_th = 0.4, typ=FachM())
     self.note_hinzufuegen(art='KA', date = '2024-04-10', note=3, status='fertig')
     self.note_hinzufuegen(art='KA', date = '2024-04-15', note=2.5, status='fertig')
     self.note_hinzufuegen(art='KA', date = '2024-03-01', note=4, status='fertig')
