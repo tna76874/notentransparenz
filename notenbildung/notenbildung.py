@@ -168,7 +168,15 @@ class LeistungGeneric:
         return self._print()
 
     def _print(self):
-        return f"Note: {self.note}, System: {self.note.system}, Art: {self._art}"
+        output = f"{self.note}; {self._art}"
+        
+        if self.nr is not None:
+            output = f"{output}; nr {self.nr}"
+            
+            if self.status._enabled:
+                output += f", Status: {self.status}"
+        
+        return output
         
 class LeistungM(LeistungGeneric):
     def __init__(self, **kwargs):
@@ -301,6 +309,15 @@ class VerbesserungStatus:
     def _disable(self):
         self.text = '---'
         self._check()
+
+    def __str__(self):
+        return self._print()
+
+    def __repr__(self):
+        return self._print()
+
+    def _print(self):
+        return f"{self.text}"
         
 class FachGeneric:
     def __init__(self):
