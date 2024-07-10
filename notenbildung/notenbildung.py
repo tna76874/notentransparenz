@@ -212,6 +212,7 @@ class LeistungP(LeistungKT):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
         self._attribut = AttributP()
+        self.status._disable()
 
 class LeistungGFS(LeistungGeneric):
     def __init__(self, **kwargs):
