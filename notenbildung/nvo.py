@@ -29,11 +29,20 @@ class NoteEntity(np.ndarray):
         obj.system = system
         return obj
 
+    def _round(self,number):
+        if number % 1 == 0.5:
+            if self.system == 'N':
+                return np.ceil(number)
+            elif self.system == 'NP':
+                return np.floor(number)
+        else:
+            return np.round(number)
+
     def gerundet(self):
         result = dict()
-        Z = round(float(self))
+        Z = self._round(float(self))
         if self.system == 'N':
-            HJ = round(float(self) * 4) / 4
+            HJ = self._round(float(self) * 4) / 4
             result.update({'HJ': {'v': HJ, 's': self._num_to_string(HJ)}, 'Z': {'v': Z, 's': self._num_to_string(Z, ints=True)}})
         elif self.system == 'NP':
             result.update({'Z': {'v': Z, 's': self._num_to_string(Z)}})
@@ -52,12 +61,44 @@ class NoteEntity(np.ndarray):
         else:
             return self.gerundet().get('HJ',{}).get('v')
 
+    def _get_text(self):
+        rounded_note = int(self._get_Z(text=False))
+        if self.system == 'N':
+            if rounded_note == 1:
+                return "sehr gut"
+            elif rounded_note == 2:
+                return "gut"
+            elif rounded_note == 3:
+                return "befriedigend"
+            elif rounded_note == 4:
+                return "ausreichend"
+            elif rounded_note == 5:
+                return "mangelhaft"
+            elif rounded_note == 6:
+                return "ungenügend"
+        elif self.system == 'NP':
+            if 13 <= rounded_note <= 15:
+                return "sehr gut"
+            elif 10 <= rounded_note <= 12:
+                return "gut"
+            elif 7 <= rounded_note <= 9:
+                return "befriedigend"
+            elif 5 <= rounded_note <= 6:
+                return "ausreichend"
+            elif rounded_note == 4:
+                return "schwach ausreichend"
+            elif 1 <= rounded_note <= 3:
+                return "mangelhaft"
+            elif rounded_note == 0:
+                return "ungenügend"
+        return "Note nicht im gültigen Bereich für das System"
+
     def _num_to_string(self, note, ints=False):
         if self.system == 'NP':
-            return str(int(round(note)))
+            return str(int(self._round(note)))
         elif self.system == 'N':
-            if (ints == True) or (note == round(note)):
-                return str(int(round(note)))
+            if (ints == True) or (note == self._round(note)):
+                return str(int(self._round(note)))
             else:
                 whole_number = int(note)
                 decimal = note % 1
@@ -82,7 +123,7 @@ class NoteEntity(np.ndarray):
         return self.__str__()
 
     def __round__(self):
-        return round(float(self))
+        return self._round(float(self))
 
     def _operate(self, other, operation):
         if isinstance(other, NoteEntity):
