@@ -8,6 +8,23 @@ import sys
 sys.path.append(os.path.dirname(os.path.abspath(os.path.dirname(__file__))))
 from notenbildung.models import *
 
+class NotenberechnungFTW(NotenberechnungGeneric):
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+
+    def _calculate(self):       
+        noten_ka = self._get_leistung_for_types(LeistungKA, LeistungGFS)
+        noten_kt = self._get_leistung_for_types(LeistungKT, LeistungP)
+        noten_muendlich = self._get_leistung_for_types(LeistungM)
+
+        m_KA = self.mittelwert(noten_ka)
+        m_KT = self.mittelwert(noten_kt)
+        m_m = self.mittelwert(noten_muendlich)
+
+        result = Note(datum=self.noten[-1].date, gesamtnote=1)
+        
+        return result
+
 class LimitsTest(LimitsGeneric):
     _type = 'TestLimit'
     limits = LimitsGeneric.limits + [
@@ -34,7 +51,7 @@ class FachTest(FachGeneric):
     limits = LimitsTest
 
 meinfach = FachTest
-note = Notenberechnung(w_s0=1, w_sm=3, system = 'N', v_enabled=True, w_th = 0.4, fach=meinfach)
+note = NotenberechnungFTW(w_s0=1, w_sm=3, system = 'N', v_enabled=True, w_th = 0.4, fach=meinfach)
 # note = NotenberechnungSimple(w_s0=1, w_sm=3, system = 'N', v_enabled=True, w_th = 0.4, fach=meinfach)
 note.note_hinzufuegen(art='KA', date = '2024-04-10', note=3, status='fertig')
 note.note_hinzufuegen(art='KA', date = '2024-04-15', note=2.5, status='fertig')
