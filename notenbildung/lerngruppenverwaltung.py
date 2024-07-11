@@ -1,9 +1,11 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-Notenberechnung
+Generische Notenberechnung
 """
 import os
+import sys
+
 import numpy as np
 import pandas as pd
 from datetime import datetime
@@ -13,364 +15,9 @@ import matplotlib.pyplot as plt
 import matplotlib.patches as patches
 import matplotlib.dates as mdates
 
-class NoteEntity(np.ndarray):
-    def __new__(cls, note, system=None):
-        if note==None:
-            note = np.nan
-        else:
-            if system not in ['N', 'NP']:
-                raise ValueError("Das System muss entweder 'N' oder 'NP' sein.")
-            if system == 'N' and not (1 <= note <= 6):
-                raise ValueError("Die Note muss zwischen 1 und 6 für das System 'N' liegen.")
-            elif system == 'NP' and not (0 <= note <= 15):
-                raise ValueError("Die Note muss zwischen 0 und 15 für das System 'NP' liegen.")
+sys.path.append(os.path.dirname(os.path.abspath(os.path.dirname(__file__))))
+from notenbildung.nvo import *
         
-        obj = np.asarray(note).view(cls)
-        obj.system = system
-        return obj
-
-    def gerundet(self):
-        result = dict()
-        Z = round(float(self))
-        if self.system == 'N':
-            HJ = round(float(self) * 4) / 4
-            result.update({'HJ': {'v': HJ, 's': self._num_to_string(HJ)}, 'Z': {'v': Z, 's': self._num_to_string(Z, ints=True)}})
-        elif self.system == 'NP':
-            result.update({'Z': {'v': Z, 's': self._num_to_string(Z)}})
-            result['HJ'] = result['Z']
-        return result
-
-    def _get_Z(self, text=False):
-        if text:
-            return self.gerundet().get('Z',{}).get('s')
-        else:
-            return self.gerundet().get('Z',{}).get('v')
-        
-    def _get_HJ(self, text=False):
-        if text:
-            return self.gerundet().get('HJ',{}).get('s')
-        else:
-            return self.gerundet().get('HJ',{}).get('v')
-
-    def _num_to_string(self, note, ints=False):
-        if self.system == 'NP':
-            return str(int(round(note)))
-        elif self.system == 'N':
-            if (ints == True) or (note == round(note)):
-                return str(int(round(note)))
-            else:
-                whole_number = int(note)
-                decimal = note % 1
-                if decimal <= 0.25:
-                    return str(whole_number) + '-'
-                elif decimal >= 0.75:
-                    return str(whole_number + 1) + '+'
-                elif 0.25 < decimal < 0.75:
-                    return f'{int(whole_number)}-{int(whole_number + 1)}'
-                else:
-                    return str(whole_number)
-
-    def __array_finalize__(self, obj):
-        if obj is None:
-            return
-        self.system = getattr(obj, 'system', None)
-
-    def __str__(self):
-        return f"{self}"
-
-    def __repr__(self):
-        return self.__str__()
-
-    def __round__(self):
-        return round(float(self))
-
-    def _operate(self, other, operation):
-        if isinstance(other, NoteEntity):
-            if self.system == other.system:
-                result = operation(float(self), float(other))
-                return NoteEntity(result, system = self.system)
-            else:
-                raise ValueError("Systeme sind nicht gleich und können nicht verrechnet werden")
-        else:
-            result = operation(float(self), float(other))
-            return NoteEntity(result, system = self.system)
-
-    def __add__(self, other):
-        return self._operate(other, lambda x, y: x + y)
-
-    def __sub__(self, other):
-        return self._operate(other, lambda x, y: x - y)
-
-    def __mul__(self, other):
-        return self._operate(other, lambda x, y: x * y)
-
-    def __truediv__(self, other):
-        return self._operate(other, lambda x, y: x / y)
-        
-class AttributGeneric:
-    _type = None
-    long = None
-
-    @classmethod
-    def __str__(cls):
-        return cls._print()
-
-    @classmethod
-    def __repr__(cls):
-        return cls._print()
-
-    @classmethod
-    def _print(cls):
-        return f"{cls.long}"
-
-class AttributM(AttributGeneric):
-    _type = 'm'
-    long = 'mündlich'
-
-class AttributS(AttributGeneric):
-    _type = 's'
-    long = 'schriftlich'
-
-class AttributP(AttributGeneric):
-    _type = 'p'
-    long = 'fachpraktisch'
-
-class LeistungGeneric:
-    def __init__(self, **kwargs):
-        missing_args = ", ".join([arg for arg in ['note', 'system', 'date'] if arg not in kwargs])
-        if any(arg not in kwargs for arg in ['note', 'system', 'date']):
-            raise ValueError(f"Die Argumente '{missing_args}' müssen angegeben werden.")
-
-        note = kwargs.get('note')
-        system = kwargs.get('system')
-        self.date = self._parse_date(kwargs.get('date'))
-        self._art = None
-        self._is_punctual = True
-        
-        self.status = VerbesserungStatus(kwargs.get('status','---'))
-        self.note = NoteEntity(note, system)
-        self.nr = kwargs.get('nr')
-        self.von = None
-        self.bis = None
-        
-    def _parse_date(self, date_str):
-        if isinstance(date_str, datetime):
-            return date_str
-        try:
-            return datetime.strptime(date_str, "%Y-%m-%d")
-        except (ValueError, TypeError):
-            raise ValueError("Ungültiges Datumsformat")
-
-    def _as_dict(self):
-        return {
-            'date': self.date,
-            'art': self._art,
-            'status': self.status.text,
-            'note': self.note,
-            'nr': self.nr,
-            'von': self.von,
-            'bis': self.bis,
-        }
-
-    def __str__(self):
-        return self._print()
-
-    def __repr__(self):
-        return self._print()
-
-    def _print(self):
-        output = f"{self.note}; {self._art}"
-        
-        if self.nr is not None:
-            output = f"{output}; nr {self.nr}"
-            
-            if self.status._enabled:
-                output += f", Status: {self.status}"
-        
-        return f'({output})'
-        
-class LeistungM(LeistungGeneric):
-    def __init__(self, **kwargs):
-        super().__init__(**kwargs)
-        self._art = 'm'
-        self._attribut = AttributM
-        self.status._disable()          
-        
-        self.von = self._parse_date(kwargs.get('von') or self.date)
-        self.bis = self._parse_date(kwargs.get('bis') or self.date)
-        
-        if self.von > self.bis:
-            raise ValueError(f"Ungültiger Zeitraum für die mündlichen noten.")
-            
-        if self.von != self.bis:
-            self._is_punctual = False      
-        
-class LeistungKA(LeistungGeneric):
-    def __init__(self, **kwargs):
-        super().__init__(**kwargs)
-        self._art = 'KA'
-        self._attribut = AttributS
-
-class LeistungGFS(LeistungKA):
-    def __init__(self, **kwargs):
-        super().__init__(**kwargs)
-        self._art = 'GFS'
-        self._attribut = AttributP
-        self.status._disable()
-
-class LeistungKT(LeistungGeneric):
-    def __init__(self, **kwargs):
-        super().__init__(**kwargs)
-        self._art = 'KT'
-        self._attribut = AttributS
-
-class LeistungP(LeistungKT):
-    def __init__(self, **kwargs):
-        super().__init__(**kwargs)
-        self._attribut = AttributP
-        self.status._disable()
-
-        
-class LimitsGeneric:
-    _type = None
-    limits =   [
-                    {
-                     'sum' : [AttributM,AttributS,AttributP],
-                     'min' : 1,
-                     'max' : None,
-                    },
-                ]
-
-    @classmethod
-    def check_limits(cls, leistungen):
-        limits = cls.limits.copy()
-        for limit in limits:
-            sum_attributes = 0
-            for leistung in leistungen:
-                if any(isinstance(obj, item) or obj == item for obj in [leistung, leistung._attribut] for item in limit['sum']):
-                    sum_attributes += 1
-            limit['result'] = sum_attributes
-            limit['passed'] = True
-            limit['softfail'] = False
-            limit['hardfail'] = False
-            
-            
-            if limit['min'] is not None and sum_attributes < limit['min']:
-                limit['passed'] = False
-                limit['softfail'] = True
-    
-            
-            if limit['max'] is not None and sum_attributes > limit['max']:
-                limit['passed'] = False
-                limit['hardfail'] = True
-                
-        result = {
-                  'passed' : all(limit['passed'] for limit in limits), 
-                  'softfail' : any(limit['softfail'] for limit in limits),                  
-                  'hardfail' : any(limit['hardfail'] for limit in limits),                  
-                  'result':limits,
-                  }
-        
-        return result
-    
-class LimitsKernfach(LimitsGeneric):
-    _type = 'Kernfach'
-    limits = LimitsGeneric.limits + [
-        {
-            'sum': [AttributM],
-            'min': 1,
-            'max': None,
-        },
-        {
-            'sum': [LeistungKA],
-            'min': 4,
-            'max': None,
-        },
-    ]
-    
-class LimitsNichtkernfach(LimitsGeneric):
-    _type = 'Nichtkernfach'
-    limits = LimitsGeneric.limits =  [ 
-                        {
-                         'sum' : [AttributS],
-                         'min' : None,
-                         'max' : 4,
-                        },
-                        {
-                         'sum' : [AttributM],
-                         'min' : 1,
-                         'max' : None,
-                        },
-                    ]
-    
-class LimitsLK(LimitsGeneric):
-    _type = 'LK'
-    limits = LimitsGeneric.limits + [
-        {
-            'sum': [AttributM],
-            'min': 1,
-            'max': None,
-        },
-        {
-            'sum': [LeistungKA],
-            'min': 2,
-            'max': None,
-        },
-    ]
-        
-class VerbesserungStatus:
-    def __init__(self, text):
-        self.text = text if text != None else '---'
-        self._check()
-    
-    def _check(self):
-        self._enabled = True if self.text != "---" else False
-        self.status = True if self.text == "fertig" else False if self.text == "fehlt" else None        
-    
-    def _disable(self):
-        self.text = '---'
-        self._check()
-
-    def __str__(self):
-        return self._print()
-
-    def __repr__(self):
-        return self._print()
-
-    def _print(self):
-        return f"{self.text}"
-        
-class FachGeneric:
-    name = None
-    long = None
-    limits = None
-    @classmethod
-    def _get_name(cls):
-        if cls.long is not None:
-            return cls.long
-        return ''
-
-class FachM(FachGeneric):
-    name = 'M'
-    long = 'Mathematik'
-    limits = LimitsKernfach
-
-class FachPH(FachGeneric):
-    name = 'Ph'
-    long = 'Physik'
-    limits = LimitsNichtkernfach
-
-class FachPHLK(FachGeneric):
-    name = 'Ph'
-    long = 'Physik'
-    limits = LimitsLK
-
-class FachINF(FachGeneric):
-    name = 'Inf'
-    long = 'Informatik'
-    limits = LimitsNichtkernfach
-    
-
 class Note:
     """
     Diese Klasse speichert die berechneten Schnitte inklusive einer Gesamtnote.
@@ -407,7 +54,7 @@ class Note:
     def __repr__(self):
         return self._print()
 
-class Notenberechnung:
+class NotenberechnungGeneric:
     """
     Mit dieser Klasse werden Noten berechnet und auf Gültigkeit der Notenbildungsverordnung überprüft.
     """
@@ -449,16 +96,7 @@ class Notenberechnung:
         if self._fach==None:
             return None
         
-        checks = self._fach.limits.check_limits(self.noten)
-
-        if not checks['passed']:
-            if show_warnings==True:
-                _ = [print(f"Warnung: Zu wenige Leistungen: {limit['sum']}: Anzahl der Leistungen {limit['result']}<{limit['min']}") if not limit['passed'] and limit['softfail'] else None for limit in checks['result']]
-
-            _ = [print(f"Fehler: zu viele Leistungen: {limit['sum']}: Anzahl der Leistungen {limit['result']}>{limit['max']}") for limit in checks['result'] if not limit['passed'] and limit['hardfail']]
-            
-            if any(not limit['passed'] and limit['hardfail'] for limit in checks['result']):
-                raise ValueError("Fehler: zu viele Leistungen")
+        checks = self._fach.limits.check_limits(self.noten, show_warnings=show_warnings)
         
         return checks
             
@@ -511,6 +149,9 @@ class Notenberechnung:
         noten = self._get_noten_filled_with_nr()
         return [note._as_dict() for note in noten]
 
+    def _get_leistung_for_types(self, *args):
+        return list(filter(lambda x: any(isinstance(x, arg) for arg in args), self.noten))
+
     def note_hinzufuegen(self, **kwargs):
         mandatory_keys = ['art', 'note', 'date']
         if all(key in kwargs for key in mandatory_keys):
@@ -553,83 +194,31 @@ class Notenberechnung:
             return None
         return np.mean(noten_werte)
 
+    def _calculate(self):
+        """
+        Dummy Methode zur Berechnung der Noten.
+        """
+        # Calculate
+        result = Note(datum=self.noten[-1].date)
+
+        #
+        # HIER DEN ALGORITHMUS ZUR NOTENBERECHNUNG HINZUFÜGEN
+        #
+        
+        return result
+        
+
     def berechne_gesamtnote(self, show_warnings = True):
         #First run checks on noten
         self._check_time_range()
         _ = self._check_limits(show_warnings = show_warnings)
         
-        # Calculate
-        result = Note(datum=self.noten[-1].date)
-        verbesserung_enabled = any(note.status._enabled for note in self.noten) and self._v_enabled
+        result = self._calculate()
+        if not isinstance(result, Note):
+            raise ValueError(f'Die interne Notenberechnungsmethode muss ein Objekt der Klasse Note zurückgeben')
         
-        # Filtern der Noten nach Art
-        noten_ka = list(filter(lambda x: isinstance(x, LeistungKA) or isinstance(x, LeistungGFS), self.noten))
-        noten_kt = list(filter(lambda x: isinstance(x, LeistungKT) or isinstance(x, LeistungP), self.noten))
-        noten_muendlich = list(filter(lambda x: isinstance(x, LeistungM), self.noten))
-        
-        # Zählen der verschiedenen Statusarten
-        verbesserung_enabled = [note for note in self.noten if note.status._enabled]
-        n_v_g = len(verbesserung_enabled)
-        n_v_o = len([note for note in verbesserung_enabled if note.status.status==None])
-        n_v_1 = len([note for note in verbesserung_enabled if note.status.status==False])
-        n_v_2 = len([note for note in verbesserung_enabled if note.status.status==True])
-
-        # Ermitteln der Anzahl der verschiedenen Leistungsarten
-        n_KA = len(noten_ka)
-        n_KT = len(noten_kt)
-        n_m = len(noten_muendlich)
-        
-        # Berechnung der Durchschnittsnote für jede Leistungsart
-        m_KA = self.mittelwert(noten_ka) or 0
-        m_KT = self.mittelwert(noten_kt) or 0
-        m_m = self.mittelwert(noten_muendlich) or 0
-        
-        # Gewichtung für mündliche Noten
-        w_m = 0 if n_m==0 else 1
-
-        # Randfall: nur mündliche Noten
-        if (n_KA + n_KT==0) and n_m>0:
-            result.update( gesamtnote=m_m, m_m=m_m )
-            return result
-        # Randfall: keine Noten
-        elif (n_KA + n_KT + n_m == 0):
-            return None
-        
-        # Berechnung der Mittelwerte von KT und KA
-        w_s = n_KT * self.w_s0/self.n_KT_0 if n_KT < self.n_KT_0 else self.w_s0
-        m_s1 = (n_KA * m_KA + w_s * m_KT) / (n_KA + w_s)
-
-        # Berechnung des Diskretisierungsfaktors
-        w_d = 1 if self.w_th == 0 else abs((0.5 - (m_s1 % 1)) / self.w_th) 
-        
-        # Berechnen der Gewichte je nach Notensystem
-        m_h = (np.ceil(m_s1)+np.floor(m_s1))/2
-        if self.system=='N':
-            w_v1 = 0 if w_d >= 1 else m_h + self.w_th if w_d < 1 else 0
-            w_v2 = 0 if w_d >= 1 else m_h - self.w_th if w_d < 1 else 0
-            w_0 = 6 - 1
-        elif self.system=='NP':
-            w_v1 = 0 if w_d >= 1 else m_h - self.w_th if w_d < 1 else 0
-            w_v2 = 0 if w_d >= 1 else m_h + self.w_th if w_d < 1 else 0
-            w_0 = 15 - 0
-            
-        w_v3 = 0 if w_d >= 1 else abs(w_0/self.w_th) if w_d < 1 else 0
-        
-        if (not verbesserung_enabled) or (n_v_g == 0) or (self.w_th==0) or (w_d >= 1):
-            w_v4 = 0
-            w_v3 = 0
-        else:
-            w_v4 = (n_v_1 * w_v1 + n_v_o * m_s1 + n_v_2 * w_v2)/n_v_g
-        
-        # Berechnung der schriftlichen Note
-        m_s = (n_KA * m_KA + w_s * m_KT + w_v3 * w_v4 ) / (n_KA + w_s + w_v3)
-
-        # Berechnung der Gesamtnote
-        gesamtnote = (self.w_sm * m_s + m_m) / (self.w_sm + w_m)
-                
-        result.update(m_s1=m_s1, m_s=m_s, gesamtnote=gesamtnote, m_m = self.mittelwert(noten_muendlich))
-
         return result
+
     
     def time_series(self):
         kopie = copy.deepcopy(self)
@@ -758,7 +347,7 @@ class SchuelerEntity:
         return self._print()
     
     def plot(self, parent = None, **kwargs):
-        if not isinstance(self._notenberechnung, Notenberechnung):
+        if not isinstance(self._notenberechnung, NotenberechnungGeneric):
             raise ValueError("Für {self.sid} {self.vorname} {self.nachname} wurden noch keine Noten gesetzt.")     
             
         self._notenberechnung.plot_time_series(sid=self, parent = parent, **kwargs)
@@ -767,7 +356,7 @@ class SchuelerEntity:
         return self._notenberechnung._get_dataframe()
 
     def setze_note(self, note):
-        if not isinstance(note, Notenberechnung):
+        if not isinstance(note, NotenberechnungGeneric):
             raise ValueError("Das übergebene Objekt ist keine Instanz der Klasse Notenberechnung.")
         self._notenberechnung = note
         self.note = self._notenberechnung.berechne_gesamtnote()
@@ -869,20 +458,19 @@ class LerngruppeEntity:
             raise RuntimeError(f"Error exporting DataFrame to Excel: {e}")
 
 if __name__ == "__main__":
+    pass
     # Beispiel
-    self = Notenberechnung(w_s0=1, w_sm=3, system = 'N', v_enabled=True, w_th = 0.4, fach=FachM)
+    self = NotenberechnungGeneric(w_s0=1, w_sm=3, system = 'N', v_enabled=True, w_th = 0.4, fach=FachM)
     self.note_hinzufuegen(art='KA', date = '2024-04-10', note=3, status='fertig')
     self.note_hinzufuegen(art='KA', date = '2024-04-15', note=2.5, status='fertig')
-    self.note_hinzufuegen(art='KA', date = '2024-03-01', note=4, status='fertig')
-    self.note_hinzufuegen(art='GFS', date = '2024-03-05', note=3.25)
-    self.note_hinzufuegen(art='KA', date = '2024-03-15', note=5, status='uv')
-    self.note_hinzufuegen(art='P', date = '2024-02-01', note=4)
-    self.note_hinzufuegen(art='KT', date = '2024-01-01', note=2.75, status='fehlt')
-    self.note_hinzufuegen(art='m', date = '2023-10-05', von = '2023-09-01', note=3.0)
-    self.note_hinzufuegen(art='m', date = '2023-12-05', von = '2023-10-06', note=3.25)
-    self.note_hinzufuegen(art='m', date = '2024-05-01', von = '2023-12-06', note=3.5)
+    # self.note_hinzufuegen(art='KA', date = '2024-03-01', note=4, status='fertig')
+    # self.note_hinzufuegen(art='GFS', date = '2024-03-05', note=3.25)
+    # self.note_hinzufuegen(art='KA', date = '2024-03-15', note=5, status='uv')
+    # self.note_hinzufuegen(art='P', date = '2024-02-01', note=4)
+    # self.note_hinzufuegen(art='KT', date = '2024-01-01', note=2.75, status='fehlt')
+    # self.note_hinzufuegen(art='m', date = '2023-10-05', von = '2023-09-01', note=3.0)
+    # self.note_hinzufuegen(art='m', date = '2023-12-05', von = '2023-10-06', note=3.25)
+    # self.note_hinzufuegen(art='m', date = '2024-05-01', von = '2023-12-06', note=3.5)
     
     gesamtnote = self.berechne_gesamtnote()
     print(gesamtnote)
-    self.plot_time_series()
-    
