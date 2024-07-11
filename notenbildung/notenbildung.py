@@ -106,38 +106,34 @@ class NoteEntity(np.ndarray):
 
     def __truediv__(self, other):
         return self._operate(other, lambda x, y: x / y)
-
+        
 class AttributGeneric:
-    def __init__(self):
-        self._type = None
-        self.long = None
+    _type = None
+    long = None
 
-    def __str__(self):
-        return self._print()
+    @classmethod
+    def __str__(cls):
+        return cls._print()
 
-    def __repr__(self):
-        return self._print()
+    @classmethod
+    def __repr__(cls):
+        return cls._print()
 
-    def _print(self):
-        return f"{self.long}"
+    @classmethod
+    def _print(cls):
+        return f"{cls.long}"
 
 class AttributM(AttributGeneric):
-    def __init__(self):
-        super().__init__()
-        self._type = 'm'
-        self.long = 'mündlich'
+    _type = 'm'
+    long = 'mündlich'
 
 class AttributS(AttributGeneric):
-    def __init__(self):
-        super().__init__()
-        self._type = 's'
-        self.long = 'schriftlich'
+    _type = 's'
+    long = 'schriftlich'
 
 class AttributP(AttributGeneric):
-    def __init__(self):
-        super().__init__()
-        self._type = 'p'
-        self.long = 'fachpraktisch'
+    _type = 'p'
+    long = 'fachpraktisch'
 
 class LeistungGeneric:
     def __init__(self, **kwargs):
@@ -154,6 +150,8 @@ class LeistungGeneric:
         self.status = VerbesserungStatus(kwargs.get('status','---'))
         self.note = NoteEntity(note, system)
         self.nr = kwargs.get('nr')
+        self.von = None
+        self.bis = None
         
     def _parse_date(self, date_str):
         if isinstance(date_str, datetime):
@@ -162,6 +160,17 @@ class LeistungGeneric:
             return datetime.strptime(date_str, "%Y-%m-%d")
         except (ValueError, TypeError):
             raise ValueError("Ungültiges Datumsformat")
+
+    def _as_dict(self):
+        return {
+            'date': self.date,
+            'art': self._art,
+            'status': self.status.text,
+            'note': self.note,
+            'nr': self.nr,
+            'von': self.von,
+            'bis': self.bis,
+        }
 
     def __str__(self):
         return self._print()
@@ -184,7 +193,7 @@ class LeistungM(LeistungGeneric):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
         self._art = 'm'
-        self._attribut = AttributM()
+        self._attribut = AttributM
         self.status._disable()          
         
         self.von = self._parse_date(kwargs.get('von') or self.date)
@@ -200,38 +209,45 @@ class LeistungKA(LeistungGeneric):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
         self._art = 'KA'
-        self._attribut = AttributS()
+        self._attribut = AttributS
 
 class LeistungGFS(LeistungKA):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
         self._art = 'GFS'
-        self._attribut = AttributP()
+        self._attribut = AttributP
         self.status._disable()
 
 class LeistungKT(LeistungGeneric):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
         self._art = 'KT'
-        self._attribut = AttributS()
+        self._attribut = AttributS
 
 class LeistungP(LeistungKT):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
-        self._attribut = AttributP()
+        self._attribut = AttributP
         self.status._disable()
 
+        
 class LimitsGeneric:
-    def __init__(self):
-        self._type = None
-        self.limits = []
+    _type = None
+    limits =   [
+                    {
+                     'sum' : [AttributM,AttributS,AttributP],
+                     'min' : 1,
+                     'max' : None,
+                    },
+                ]
 
-    def check_limits(self, leistungen):
-        limits = self.limits.copy()
+    @classmethod
+    def check_limits(cls, leistungen):
+        limits = cls.limits.copy()
         for limit in limits:
             sum_attributes = 0
             for leistung in leistungen:
-                if any(isinstance(obj, item) for obj in [leistung, leistung._attribut] for item in limit['sum']):
+                if any(isinstance(obj, item) or obj == item for obj in [leistung, leistung._attribut] for item in limit['sum']):
                     sum_attributes += 1
             limit['result'] = sum_attributes
             limit['passed'] = True
@@ -242,7 +258,7 @@ class LimitsGeneric:
             if limit['min'] is not None and sum_attributes < limit['min']:
                 limit['passed'] = False
                 limit['softfail'] = True
-
+    
             
             if limit['max'] is not None and sum_attributes > limit['max']:
                 limit['passed'] = False
@@ -256,57 +272,51 @@ class LimitsGeneric:
                   }
         
         return result
-        
+    
 class LimitsKernfach(LimitsGeneric):
-    def __init__(self):
-        super().__init__()
-        self._type = 'Kernfach'
-        self.limits =   [ 
-                            {
-                             'sum' : [AttributM],
-                             'min' : 1,
-                             'max' : None,
-                            },
-                            {
-                             'sum' : [LeistungKA],
-                             'min' : 4,
-                             'max' : None,
-                            },
-                        ]
-
+    _type = 'Kernfach'
+    limits = LimitsGeneric.limits + [
+        {
+            'sum': [AttributM],
+            'min': 1,
+            'max': None,
+        },
+        {
+            'sum': [LeistungKA],
+            'min': 4,
+            'max': None,
+        },
+    ]
+    
 class LimitsNichtkernfach(LimitsGeneric):
-    def __init__(self):
-        super().__init__()
-        self._type = 'Nichtkernfach'
-        self.limits =   [ 
-                            {
-                             'sum' : [AttributS],
-                             'min' : None,
-                             'max' : 4,
-                            },
-                            {
-                             'sum' : [AttributM],
-                             'min' : 1,
-                             'max' : None,
-                            },
-                        ]
-
+    _type = 'Nichtkernfach'
+    limits = LimitsGeneric.limits =  [ 
+                        {
+                         'sum' : [AttributS],
+                         'min' : None,
+                         'max' : 4,
+                        },
+                        {
+                         'sum' : [AttributM],
+                         'min' : 1,
+                         'max' : None,
+                        },
+                    ]
+    
 class LimitsLK(LimitsGeneric):
-    def __init__(self):
-        super().__init__()
-        self._type = 'LK'
-        self.limits =   [ 
-                            {
-                             'sum' : [AttributM],
-                             'min' : 1,
-                             'max' : None,
-                            },
-                            {
-                             'sum' : [LeistungKA],
-                             'min' : 2,
-                             'max' : None,
-                            },
-                        ]
+    _type = 'LK'
+    limits = LimitsGeneric.limits + [
+        {
+            'sum': [AttributM],
+            'min': 1,
+            'max': None,
+        },
+        {
+            'sum': [LeistungKA],
+            'min': 2,
+            'max': None,
+        },
+    ]
         
 class VerbesserungStatus:
     def __init__(self, text):
@@ -331,43 +341,35 @@ class VerbesserungStatus:
         return f"{self.text}"
         
 class FachGeneric:
-    def __init__(self):
-        self.name = None
-        self.long = None
-        self.limits = []
-        
-    def _get_name(self):
-        if self.long!=None:
-            return self.long
+    name = None
+    long = None
+    limits = None
+    @classmethod
+    def _get_name(cls):
+        if cls.long is not None:
+            return cls.long
         return ''
 
 class FachM(FachGeneric):
-    def __init__(self):
-        super().__init__()
-        self.name = 'M'
-        self.long = 'Mathematik'
-        self.limits = LimitsKernfach()
+    name = 'M'
+    long = 'Mathematik'
+    limits = LimitsKernfach
 
 class FachPH(FachGeneric):
-    def __init__(self):
-        super().__init__()
-        self.name = 'Ph'
-        self.long = 'Physik'
-        self.limits = LimitsNichtkernfach()
+    name = 'Ph'
+    long = 'Physik'
+    limits = LimitsNichtkernfach
 
 class FachPHLK(FachGeneric):
-    def __init__(self):
-        super().__init__()
-        self.name = 'Ph'
-        self.long = 'Physik'
-        self.limits = LimitsLK()
+    name = 'Ph'
+    long = 'Physik'
+    limits = LimitsLK
 
 class FachINF(FachGeneric):
-    def __init__(self):
-        super().__init__()
-        self.name = 'Inf'
-        self.long = 'Informatik'
-        self.limits = LimitsNichtkernfach()
+    name = 'Inf'
+    long = 'Informatik'
+    limits = LimitsNichtkernfach
+    
 
 class Note:
     def __init__(self, system = 'N', **kwargs):
@@ -407,8 +409,8 @@ class Notenberechnung:
         self._typ = None
         self._fach = None
         if fach is not None:
-            if not isinstance(fach, FachGeneric):
-                raise ValueError("Der übergebene Typ muss eine Instanz der Klasse FachGeneric sein.")
+            if not issubclass(fach, FachGeneric):
+                raise ValueError("Der übergebene Typ muss von der Klasse FachGeneric sein.")
             else:
                 self._fach = fach
         if system not in ['N', 'NP']:
@@ -437,7 +439,7 @@ class Notenberechnung:
             if pair[0].von <= pair[1].bis and pair[0].bis >= pair[1].von:
                 raise ValueError(f"Die Zeiträume der mündlichen Noten überschneiden sich: {pair[0]} von {pair[0].date} und {pair[1]} vom {pair[1].date}")
         
-    def _check_limits(self, show_warnings = True):
+    def _check_limits(self, show_warnings = False):
         if self._fach==None:
             return None
         
@@ -445,7 +447,7 @@ class Notenberechnung:
 
         if not checks['passed']:
             if show_warnings==True:
-                _ = [print(f"Warning: Softfail detected for limit with attributes: {limit['sum']}: Anzahl der Leistungen {limit['result']}<{limit['min']}") if not limit['passed'] and limit['softfail'] else None for limit in checks['result']]
+                _ = [print(f"Warnung: Zu wenige Leistungen: {limit['sum']}: Anzahl der Leistungen {limit['result']}<{limit['min']}") if not limit['passed'] and limit['softfail'] else None for limit in checks['result']]
 
             _ = [print(f"Fehler: zu viele Leistungen: {limit['sum']}: Anzahl der Leistungen {limit['result']}>{limit['max']}") for limit in checks['result'] if not limit['passed'] and limit['hardfail']]
             
@@ -495,6 +497,13 @@ class Notenberechnung:
                     note.nr = current_nr
                     current_nr += 1
         return updated_notenliste
+
+    def _get_dataframe(self):
+        return pd.DataFrame(self._get_list())
+
+    def _get_list(self):
+        noten = self._get_noten_filled_with_nr()
+        return [note._as_dict() for note in noten]
 
     def note_hinzufuegen(self, **kwargs):
         mandatory_keys = ['art', 'note', 'date']
@@ -748,6 +757,9 @@ class SchuelerEntity:
             raise ValueError("Für {self.sid} {self.vorname} {self.nachname} wurden noch keine Noten gesetzt.")     
             
         self._notenberechnung.plot_time_series(sid=self, parent = parent, **kwargs)
+        
+    def get_dataframe(self):
+        return self._notenberechnung._get_dataframe()
 
     def setze_note(self, note):
         if not isinstance(note, Notenberechnung):
@@ -763,8 +775,8 @@ class LerngruppeEntity:
             raise ValueError("Die Stufe muss zwischen 5 und 12 liegen.")
         
         self.fach = kwargs.get('fach', None)
-        if not isinstance(self.fach, FachGeneric):
-            raise ValueError(f"Bitte ein gültiges Objekt für ein Fach übergeben.")
+        if not issubclass(self.fach, FachGeneric):
+            raise ValueError(f"Bitte eine gültige Klasse für ein Fach übergeben.")
                     
         if self.stufe in [11, 12]:
             self.zug = None
@@ -853,7 +865,7 @@ class LerngruppeEntity:
 
 if __name__ == "__main__":
     # Beispiel
-    self = Notenberechnung(w_s0=1, w_sm=3, system = 'N', v_enabled=True, w_th = 0.4, fach=FachM())
+    self = Notenberechnung(w_s0=1, w_sm=3, system = 'N', v_enabled=True, w_th = 0.4, fach=FachM)
     self.note_hinzufuegen(art='KA', date = '2024-04-10', note=3, status='fertig')
     self.note_hinzufuegen(art='KA', date = '2024-04-15', note=2.5, status='fertig')
     self.note_hinzufuegen(art='KA', date = '2024-03-01', note=4, status='fertig')

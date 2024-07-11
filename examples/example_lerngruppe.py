@@ -23,8 +23,17 @@ note.note_hinzufuegen(art='m', date = '2023-11-01', note=3.5)
 schueler1 = SchuelerEntity(sid=1, vorname='Max', nachname='Mustermann')
 schueler1.setze_note(note)
 
+schueler2 = SchuelerEntity(sid='abc', vorname='Mini', nachname='Musterfrau')
+schueler2.setze_note(note)
+
+
 lerngruppe1 = LerngruppeEntity(stufe=7, fach=meinfach, zug='A')
 
 lerngruppe1.update_sid(schueler1)
+lerngruppe1.update_sid(schueler2)
 
 lerngruppe1.plot_sid(1)
+lerngruppe1.plot_sid('abc')
+
+print(lerngruppe1.get_dataframe())
+print(schueler1.get_dataframe())
