@@ -8,7 +8,7 @@ from notenbildung.notenbildung import *
 # es gibt die Fächer FachM(), FachPH() und FachINF()
 # eine fachpraktische Leistung P wird als Kurztest gezählt, zählt jedoch nicht in die Anzahl der schriftlichen Leistungen mit hinein.
 
-meinfach = FachM()
+meinfach = FachM
 note = Notenberechnung(w_s0=1, w_sm=3, system = 'N', v_enabled=True, w_th = 0.4, fach=meinfach)
 note.note_hinzufuegen(art='KA', date = '2024-04-10', note=3, status='fertig')
 note.note_hinzufuegen(art='KA', date = '2024-04-15', note=2.5, status='fertig')
@@ -25,7 +25,6 @@ schueler1.setze_note(note)
 
 schueler2 = SchuelerEntity(sid='abc', vorname='Mini', nachname='Musterfrau')
 schueler2.setze_note(note)
-
 
 lerngruppe1 = LerngruppeEntity(stufe=7, fach=meinfach, zug='A')
 
