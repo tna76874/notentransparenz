@@ -361,7 +361,7 @@ class LimitsKernfach(LimitsGeneric):
     
 class LimitsNichtkernfach(LimitsGeneric):
     _type = 'Nichtkernfach'
-    limits = LimitsGeneric.limits =  [ 
+    limits = LimitsGeneric.limits +  [ 
                         {
                          'sum' : [AttributS],
                          'min' : None,
