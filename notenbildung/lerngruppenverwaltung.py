@@ -418,7 +418,7 @@ class LerngruppeEntity:
                 'nachname': schueler_entity.nachname,
                 'stufe': self.stufe,
                 'zug' : self.zug,
-                'fach': self.fach,
+                'fach': self.fach.name if self.fach!=None else None,
                 'klasse' : self._name(),
                 'kurs' : self.kurs,
                 'note_s' : float(schueler_entity.note.m_s),

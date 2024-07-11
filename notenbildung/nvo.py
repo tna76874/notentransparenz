@@ -405,6 +405,14 @@ class FachGeneric:
         if cls.long is not None:
             return cls.long
         return ''
+    
+    @classmethod
+    def __str__(cls):
+        return f"Name: {self.name}, Long: {self.long}, Limits: {self.limits}"
+
+    @classmethod
+    def __repr__(cls):
+        return cls._get_name()
 
 class FachM(FachGeneric):
     name = 'M'
