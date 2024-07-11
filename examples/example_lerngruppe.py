@@ -5,7 +5,7 @@ Beispiel: Noten mit Lerngruppen
 """
 from notenbildung.notenbildung import *
 
-# es gibt die Fächer FachM(), FachPH() und FachINF()
+# es gibt die Fächer FachM, FachPH und FachINF
 # eine fachpraktische Leistung P wird als Kurztest gezählt, zählt jedoch nicht in die Anzahl der schriftlichen Leistungen mit hinein.
 
 meinfach = FachM

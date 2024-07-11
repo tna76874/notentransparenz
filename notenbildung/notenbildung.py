@@ -372,6 +372,9 @@ class FachINF(FachGeneric):
     
 
 class Note:
+    """
+    Diese Klasse speichert die berechneten Schnitte inklusive einer Gesamtnote.
+    """
     def __init__(self, system = 'N', **kwargs):
         if system not in ['N', 'NP']:
             raise ValueError("Das System muss entweder 'N' oder 'NP' sein.")
@@ -405,6 +408,9 @@ class Note:
         return self._print()
 
 class Notenberechnung:
+    """
+    Mit dieser Klasse werden Noten berechnet und auf Gültigkeit der Notenbildungsverordnung überprüft.
+    """
     def __init__(self, w_sm = 3, w_th = 0.25, w_s0 = 1, n_KT_0 = 3, system = 'N', v_enabled = True, fach=None):
         self._typ = None
         self._fach = None
@@ -560,7 +566,6 @@ class Notenberechnung:
         noten_ka = list(filter(lambda x: isinstance(x, LeistungKA) or isinstance(x, LeistungGFS), self.noten))
         noten_kt = list(filter(lambda x: isinstance(x, LeistungKT) or isinstance(x, LeistungP), self.noten))
         noten_muendlich = list(filter(lambda x: isinstance(x, LeistungM), self.noten))
-
         
         # Zählen der verschiedenen Statusarten
         verbesserung_enabled = [note for note in self.noten if note.status._enabled]
