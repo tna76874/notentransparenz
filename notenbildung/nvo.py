@@ -241,8 +241,12 @@ class LeistungGeneric:
         self.status = VerbesserungStatus(kwargs.get('status','---'))
         
         self.nr = kwargs.get('nr')
+        self._nr = None
         self.von = None
         self.bis = None
+        
+    def _get_nr(self):
+        return self._nr or self.nr
         
     def _parse_date(self, date_str):
         if isinstance(date_str, datetime):
@@ -258,7 +262,7 @@ class LeistungGeneric:
             'art': self._art,
             'status': self.status.text,
             'note': self.note,
-            'nr': self.nr,
+            'nr': self._get_nr(),
             'von': self.von,
             'bis': self.bis,
         }

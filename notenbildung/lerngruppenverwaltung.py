@@ -136,37 +136,34 @@ class NotenberechnungGeneric:
             for idx, nindex in enumerate(indices):
                 if nindex!=indices[-1]:
                     self.noten[indices[idx]].head = self.noten[indices[idx+1]]
-                    self.noten[indices[idx+1]].last = self.noten[indices[idx]]                  
-                
+                    self.noten[indices[idx+1]].last = self.noten[indices[idx]]
 
-    def _get_noten_filled_with_nr(self):
-        updated_notenliste = self.noten.copy()
-        for art in self._art:
-            current_nr = 1
-            filtered_noten = [note for note in updated_notenliste if note._art == art]
-            filtered_noten.sort(key=lambda x: x.date)
-            for note in filtered_noten:
-                if note.nr is None:
-                    last_note_same_art = next((n for n in reversed(filtered_noten) if n.nr is not None and n.date < note.date), None)
-                    if last_note_same_art:
-                        current_nr = last_note_same_art.nr + 1
-                    note.nr = current_nr
-                    current_nr += 1
-        return updated_notenliste
+                # Setze _nr-Attribute
+                if self.noten[indices[idx]].nr is None:
+                    if self.noten[indices[idx]].last is None:
+                        self.noten[indices[idx]]._nr = 1
+                    else:
+                        self.noten[indices[idx]]._nr = self.noten[indices[idx]].last._nr + 1
+                else:
+                    self.noten[indices[idx]]._nr = self.noten[indices[idx]].nr
+                
+                if self.noten[indices[idx]].last!=None:
+                    if self.noten[indices[idx]]._nr <= self.noten[indices[idx]].last._nr:
+                        raise ValueError("Ungültige Nummerierung.")
 
     def _get_dataframe(self):
         return pd.DataFrame(self._get_list())
 
     def _get_list(self):
-        noten = self._get_noten_filled_with_nr()
-        return [note._as_dict() for note in noten]
+        return [note._as_dict() for note in self.noten]
 
     def _get_leistung_for_types(self, *args):
         return list(filter(lambda x: any(isinstance(x, arg) for arg in args), self.noten))
     
     def _update_handler_after_added_leistung(self):
         self._sort_grade_after_date()
-        self._set_SJ()        
+        self._set_SJ()
+        self._update_links()
     
     def leistung_hinzufuegen(self, Leistung):
         if not isinstance(Leistung, LeistungGeneric):
