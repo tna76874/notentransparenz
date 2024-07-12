@@ -313,12 +313,13 @@ class LeistungKT(LeistungGeneric):
         self._art = 'KT'
         self._attribut = AttributS
 
-class LeistungP(LeistungKT):
+class LeistungP(LeistungGeneric):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
+        self._art = 'P'
         self._attribut = AttributP
         self.status._disable()
-        
+
 ##########################################
 ##########################################
 

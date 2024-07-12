@@ -151,6 +151,16 @@ class NotenberechnungGeneric:
 
     def _get_leistung_for_types(self, *args):
         return list(filter(lambda x: any(isinstance(x, arg) for arg in args), self.noten))
+    
+    def _update_handler_after_added_leistung(self):
+        self._sort_grade_after_date()
+        self._set_SJ()        
+    
+    def leistung_hinzufuegen(self, Leistung):
+        if not isinstance(Leistung, LeistungGeneric):
+            raise ValueError(f'Ungültiges Leistungsobjekt. Es muss ein Objekt der (Sub-)Klasse LeistungGeneric übergeben werden.')
+        self.noten.append(Leistung)
+        self._update_handler_after_added_leistung()
 
     def note_hinzufuegen(self, **kwargs):
         mandatory_keys = ['art', 'note', 'date']
@@ -170,21 +180,21 @@ class NotenberechnungGeneric:
                     }
             
             if art == 'm':
-                leistung_obj = LeistungM(**pars)
+                Leistung = LeistungM(**pars)
             elif art == 'KA':
-                leistung_obj = LeistungKA(**pars)
+                Leistung = LeistungKA(**pars)
             elif art == 'KT':
-                leistung_obj = LeistungKT(**pars)
+                Leistung = LeistungKT(**pars)
             elif art == 'P':
-                leistung_obj = LeistungP(**pars)
+                Leistung = LeistungP(**pars)
             elif art == 'GFS':
-                leistung_obj = LeistungGFS(**pars)
+                Leistung = LeistungGFS(**pars)
             else:
                 raise ValueError(f'Ungültige Art der Note: {art}')
+                
+            self.noten.append(Leistung)
+            self._update_handler_after_added_leistung()
 
-            self.noten.append(leistung_obj)
-            self._sort_grade_after_date()
-            self._set_SJ()
         else:
             raise ValueError(f'Fehlende Informationen. Bitte geben Sie {" und ".join(mandatory_keys)} an.')
 
