@@ -127,6 +127,18 @@ class NotenberechnungGeneric:
         for _,row in df.iterrows():
             self.note_hinzufuegen(**row)
 
+    def _update_links(self):
+        if not self.noten:
+            return
+        
+        for LeistungsTyp in list(set([type(item) for item in self.noten])):
+            indices = [index for index, item in enumerate(self.noten) if isinstance(item, LeistungsTyp)]
+            for idx, nindex in enumerate(indices):
+                if nindex!=indices[-1]:
+                    self.noten[indices[idx]].head = self.noten[indices[idx+1]]
+                    self.noten[indices[idx+1]].last = self.noten[indices[idx]]                  
+                
+
     def _get_noten_filled_with_nr(self):
         updated_notenliste = self.noten.copy()
         for art in self._art:
@@ -473,14 +485,14 @@ if __name__ == "__main__":
     self = NotenberechnungGeneric(w_s0=1, w_sm=3, system = 'N', v_enabled=True, w_th = 0.4, fach=FachM)
     self.note_hinzufuegen(art='KA', date = '2024-04-10', note=3, status='fertig')
     self.note_hinzufuegen(art='KA', date = '2024-04-15', note=2.5, status='fertig')
-    # self.note_hinzufuegen(art='KA', date = '2024-03-01', note=4, status='fertig')
-    # self.note_hinzufuegen(art='GFS', date = '2024-03-05', note=3.25)
-    # self.note_hinzufuegen(art='KA', date = '2024-03-15', note=5, status='uv')
-    # self.note_hinzufuegen(art='P', date = '2024-02-01', note=4)
-    # self.note_hinzufuegen(art='KT', date = '2024-01-01', note=2.75, status='fehlt')
-    # self.note_hinzufuegen(art='m', date = '2023-10-05', von = '2023-09-01', note=3.0)
-    # self.note_hinzufuegen(art='m', date = '2023-12-05', von = '2023-10-06', note=3.25)
-    # self.note_hinzufuegen(art='m', date = '2024-05-01', von = '2023-12-06', note=3.5)
+    self.note_hinzufuegen(art='KA', date = '2024-03-01', note=4, status='fertig')
+    self.note_hinzufuegen(art='GFS', date = '2024-03-05', note=3.25)
+    self.note_hinzufuegen(art='KA', date = '2024-03-15', note=5, status='uv')
+    self.note_hinzufuegen(art='P', date = '2024-02-01', note=4)
+    self.note_hinzufuegen(art='KT', date = '2024-01-01', note=2.75, status='fehlt')
+    self.note_hinzufuegen(art='m', date = '2023-10-05', von = '2023-09-01', note=3.0)
+    self.note_hinzufuegen(art='m', date = '2023-12-05', von = '2023-10-06', note=3.25)
+    self.note_hinzufuegen(art='m', date = '2024-05-01', von = '2023-12-06', note=3.5)
     
     gesamtnote = self.berechne_gesamtnote()
     print(gesamtnote)

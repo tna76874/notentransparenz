@@ -223,6 +223,8 @@ class VerbesserungStatus:
 #
 #
 class LeistungGeneric:
+    last = None
+    head = None
     def __init__(self, **kwargs):
         note = kwargs.get('note')
         self.system = kwargs.get('system')
@@ -268,7 +270,7 @@ class LeistungGeneric:
         return self._print()
 
     def _print(self):
-        output = f"{self.note}; {self._art}"
+        output = f'{self.note}; {self._art}; {self.date.strftime("%d.%m.%Y")}'
         
         if self.nr is not None:
             output = f"{output}; nr {self.nr}"
@@ -299,8 +301,8 @@ class LeistungKA(LeistungGeneric):
         super().__init__(**kwargs)
         self._art = 'KA'
         self._attribut = AttributS
-
-class LeistungGFS(LeistungKA):
+        
+class LeistungGFS(LeistungGeneric):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
         self._art = 'GFS'
