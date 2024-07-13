@@ -31,5 +31,11 @@ echo "${VERSION_REPO}" > ${VERSION_DIR}/VERSION_REPO.tex
 echo "\href{${REPO_COMMIT_URL}${commit_tex}}{${commit_tex}}" > ${VERSION_DIR}/commit_tex.tex
 echo "\href{${REPO_COMMIT_URL}${commit_repo}}{${commit_repo}}" > ${VERSION_DIR}/commit_repo.tex
 
-echo "\href{https://transparenz.hilberg.eu/${VERSION_REPO}/files/tex/notentransparenz.pdf}{${VERSION_DOC}}" > ${VERSION_DIR}/VERSION_DOC_href.tex
-echo "\href{https://transparenz.hilberg.eu/${VERSION_REPO}}{${VERSION_REPO}}" > ${VERSION_DIR}/VERSION_href.tex
+VERSION_REPO_URL="https://transparenz.hilberg.eu/${VERSION_REPO}"
+VERSION_DOC_URL="https://transparenz.hilberg.eu/${VERSION_REPO}/files/tex/notentransparenz.pdf"
+
+echo "\href{${VERSION_DOC_URL}}{${VERSION_DOC}}" > ${VERSION_DIR}/VERSION_DOC_href.tex
+echo "\href{${VERSION_REPO_URL}}{${VERSION_REPO}}" > ${VERSION_DIR}/VERSION_href.tex
+
+echo "\href{${VERSION_DOC_URL}}{${VERSION_DOC_URL}}" > ${VERSION_DIR}/VERSION_DOC_href_with_url.tex
+echo "\href{${VERSION_REPO_URL}}{${VERSION_REPO_URL}}" > ${VERSION_DIR}/VERSION_href_with_url.tex
