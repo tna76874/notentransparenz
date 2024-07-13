@@ -48,5 +48,6 @@ jobs:
       - run: |
           pip install -r requirements_docs.txt
       - run: |
-          mike deploy --branch gh-pages-dev --push --update-aliases ${{ github.sha }} latest
           mike set-default --push latest
+          mike deploy --branch gh-pages-dev --push ${{ github.sha }} latest
+          mike --branch gh-pages-dev --push --update-aliases ${{ github.sha }} latest
