@@ -21,11 +21,6 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: set CNAME
-        run: |
-          echo "transparenz.hilberg.eu" > ./docs/CNAME
-        shell: bash
-
       - name: Configure Git Credentials
         run: |
           git config user.name github-actions[bot]

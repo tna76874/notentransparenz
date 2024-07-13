@@ -33,10 +33,9 @@ jobs:
         run: |
           echo "changed=$(git diff --name-only HEAD^ HEAD | grep -Eq 'docs/files/tex' && echo 'true' || echo 'false')" >> $GITHUB_OUTPUT
 
-      - name: Create temporary tex ./docs/files and set CNAME
+      - name: Create temporary tex ./docs/files
         run: |
           ./generate_latex_metadata.sh
-          echo "transparenz.hilberg.eu" > ./docs/CNAME
         shell: bash
 
       - name: Generate markdown version of notentransparenz
