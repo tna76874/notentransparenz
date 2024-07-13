@@ -84,6 +84,7 @@ class NotenberechnungGeneric:
         self.w_th = float(w_th)
         self.system = system
         self.noten = []
+        self._verbesserungen = []
         self.sj_start, self.sj_ende = None, None
         self._v_enabled = v_enabled
         self._art = ['m', 'KT', 'KA', 'GFS']
@@ -152,12 +153,22 @@ class NotenberechnungGeneric:
                 if self.noten[indices[idx]].last!=None:
                     if self.noten[indices[idx]]._nr <= self.noten[indices[idx]].last._nr:
                         raise ValueError("Ungültige Nummerierung.")
+    
+    def _get_full_dataframe(self):
+        return self._get_dataframe(func=self._get_list_with_verbesserungen)
 
-    def _get_dataframe(self):
-        return pd.DataFrame(self._get_list())
+    def _get_dataframe(self, func=None):
+        if func==None:
+            func = self._get_full_dataframe
+        return pd.DataFrame(func())
 
     def _get_list(self):
         return [note._as_dict() for note in self.noten]
+    
+    def _get_list_with_verbesserungen(self):
+        full_list =  [note._as_dict() for note in self.noten] + [verbesserung._as_dict() for verbesserung in self._verbesserungen]
+        full_list.sort(key=lambda x: x['date'])
+        return full_list
 
     def _get_leistung_for_types(self, *args):
         return list(filter(lambda x: any(isinstance(x, arg) for arg in args), self.noten))

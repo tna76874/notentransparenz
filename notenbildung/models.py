@@ -124,9 +124,9 @@ class Notenberechnung(NotenberechnungGeneric):
 
         m_s1 = KA+KT
         
-        verbesserungen = [ LeistungV(mean=m_s1.mean, status = note.status, system = note.system, w_th = self.w_th, date=note.date) for note in self.noten ]
+        self._verbesserungen = [ LeistungV(mean=m_s1.mean, status = note.status, system = note.system, w_th = self.w_th, date=note.date) for note in self.noten ]
             
-        V = Weight(*verbesserungen)
+        V = Weight(*self._verbesserungen)
         w_v3 = abs(V.mean._get_system_range()/self.w_th)
         
         # schriftliche Note berechnen
