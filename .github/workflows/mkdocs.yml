@@ -72,6 +72,5 @@ jobs:
       - run: |
           pip install -r requirements_docs.txt
       - run: |
-          mike deploy --branch gh-pages --push ${{ github.sha }} latest
-          mike --branch gh-pages --push --update-aliases ${{ github.sha }} latest
+          mike deploy --branch gh-pages --update-aliases --push ${{ github.sha }} latest
           mike set-default --branch gh-pages --push latest
