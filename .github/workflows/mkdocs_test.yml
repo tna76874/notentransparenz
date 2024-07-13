@@ -1,0 +1,52 @@
+name: mkdocs 
+on:
+  push:
+    branches:
+      - dev 
+    paths:
+      - 'docs/**'
+      - 'examples/**'
+      - 'notenbildung/**'
+      - 'mkdocs.yml'
+      - '.github/workflows/mkdocs.yml'
+      - 'generate_latex_metadata.sh'
+      - 'generate_markdown_from_latex.sh'
+permissions:
+  contents: write
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: set CNAME
+        run: |
+          echo "transparenz.hilberg.eu" > ./docs/CNAME
+        shell: bash
+
+      - name: Configure Git Credentials
+        run: |
+          git config user.name github-actions[bot]
+          git config user.email 41898282+github-actions[bot]@users.noreply.github.com
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: 3.x
+      - run: |
+          echo "cache_id=$(date --utc '+%V')" >> $GITHUB_ENV
+          echo "build_doc_date=$(date -u '+%d.%m.%Y')" >> $GITHUB_ENV
+          echo "REPO_COMMIT=$(git log -1 --pretty=format:%H)" >> $GITHUB_ENV
+
+      - uses: actions/cache@v4
+        with:
+          key: mkdocs-material-${{ env.cache_id }}
+          path: .cache
+          restore-keys: |
+            mkdocs-material-
+      - run: |
+          pip install -r requirements_docs.txt
+      - run: |
+          mike deploy --branch gh-pages-dev --push --update-aliases ${{ github.sha }} latest
+          mike set-default --push latest
