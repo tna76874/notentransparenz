@@ -28,7 +28,7 @@
 
 \newcommand{\versiondir}{_version}
 \newcommand{\standtex}{\input{\versiondir/timestamp_tex.tex}v\input{\versiondir/commit_count_tex.tex}}
-\newcommand{\onlinedoc}{\href{https://transparenz.hilberg.eu}{transparenz.hilberg.eu}}
+\newcommand{\onlinedoc}{\href{https://transparenz.hilberg.eu}{https://transparenz.hilberg.eu}}
 
 % PARAMETERS
 % Mittelwerte
@@ -69,8 +69,8 @@
 	\fancyhead[L]{\large Notentransparenz}
     \fancyhead[C]{Seite \thepage\ von~\pageref{LastPage}}
 	\fancyhead[R]{Hilberg}
-	\fancyfoot[L]{Stand \standtex}
-	\fancyfoot[C]{\footnotesize Web-Version \input{\versiondir/commit_repo.tex} }
+	\fancyfoot[L]{\input{\versiondir/VERSION_href.tex}}
+	\fancyfoot[C]{\footnotesize ID: \input{\versiondir/commit_repo.tex} }
 	\fancyfoot[R]{\onlinedoc}
 }
 \pagestyle{meinpagestyle}
