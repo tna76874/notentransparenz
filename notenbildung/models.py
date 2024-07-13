@@ -208,4 +208,6 @@ if __name__ == "__main__":
     check = NotenberechnungLegacy(w_s0=1, w_sm=3, system = 'N', v_enabled=True, w_th = 0.4, fach=FachM)
     check.noten = self.noten
     checknote = check.berechne_gesamtnote()
-    print(f'CHECK: {checknote.gesamtnote==gesamtnote.gesamtnote}')
+    if checknote.gesamtnote!=gesamtnote.gesamtnote:
+        raise ValueError("Check failed")
+

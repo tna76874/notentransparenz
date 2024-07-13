@@ -338,10 +338,13 @@ class LeistungGeneric:
             return datetime.strptime(date_str, "%Y-%m-%d")
         except (ValueError, TypeError):
             raise ValueError("Ungültiges Datumsformat")
+    
+    def _get_date(self):
+        return self.date
 
     def _as_dict(self):
         return {
-            'date': self.date,
+            'date': self._get_date(),
             'art': self._art,
             'status': self.status.text,
             'note': self.note,
@@ -467,6 +470,9 @@ class LeistungV(LeistungGeneric):
         self._art = 'V'
         self._attribut = AttributS
         self.status._disable()
+
+    def _get_date(self):
+        return None
 
 ##########################################
 ##########################################

@@ -169,8 +169,9 @@ class NotenberechnungGeneric:
         return [note._as_dict() for note in self.noten]
     
     def _get_list_with_verbesserungen(self):
-        full_list =  [note._as_dict() for note in self.noten] + [verbesserung._as_dict() for verbesserung in self._get_verbesserungen()]
-        full_list.sort(key=lambda x: x['date'])
+        full_list = self.noten + self._get_verbesserungen()
+        full_list.sort(key=lambda x: x.date)
+        full_list = [item._as_dict() for item in full_list]
         return full_list
 
     def _get_leistung_for_types(self, *args):
