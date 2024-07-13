@@ -21,6 +21,11 @@ jobs:
         with:
           fetch-depth: 0
 
+      - name: Create temporary tex ./docs/files
+        run: |
+          ./generate_latex_metadata.sh
+        shell: bash
+
       - name: Configure Git Credentials
         run: |
           git config user.name github-actions[bot]
@@ -43,6 +48,5 @@ jobs:
       - run: |
           pip install -r requirements_docs.txt
       - run: |
-          mike deploy --branch gh-pages-dev --update-aliases --push ${{ github.sha }} latest
-          mike set-default --branch gh-pages-dev --push latest
+          bash deploy.sh -b gh-pages-dev
 
