@@ -28,6 +28,14 @@ class NoteEntity(np.ndarray):
         obj = np.asarray(note).view(cls)
         obj.system = system
         return obj
+    
+    def _get_system_range(self):
+        if self.system == 'N':
+            return 6-1
+        elif self.system == 'NP':
+            return 15-0
+        else:
+            raise ValueError("System-Range Error")
 
     def _round(self,number):
         if number % 1 == 0.5:
@@ -183,7 +191,82 @@ class AttributS(AttributGeneric):
 class AttributP(AttributGeneric):
     _type = 'p'
     long = 'fachpraktisch'
-    
+##########################################
+##########################################
+
+#
+#
+# Klasse zur Gewichtung
+#
+#
+class Weight:
+    def __init__(self, *noten):
+        self.mean = None
+        self.w = None
+        self._n = len(noten)
+        
+        if not all(isinstance(obj, LeistungGeneric) or isinstance(obj, NoteEntity) for obj in noten):
+            raise TypeError("Nicht alle Objekte sind Instanzen von LeistungGeneric oder NoteEntity")
+        
+        if all(isinstance(obj, LeistungGeneric) for obj in noten):
+            self.mean = self._mean(list([note.note for note in noten]))
+            self._type = [type(obj) for obj in noten]
+            
+        elif all(isinstance(obj, NoteEntity) for obj in noten):
+            self.mean = self._mean(noten)
+        else:
+            raise TypeError("Nicht erlaubte Klasse")
+        
+        
+
+    def __add__(self, other):
+        if not isinstance(other, Weight):
+            raise TypeError("Kann nur ein Weight-Objekt zu einem anderen Weight-Objekt hinzufügen")
+
+        if self.mean is None and self.w is None:
+            return other
+        if other.mean is None and other.w is None:
+            return self
+
+        if self.mean is not None and other.mean is not None:
+            if self.w is None or other.w is None:
+                raise ValueError("Die Gewichtung muss angegeben sein.")
+
+        new_weight = self.w + other.w
+        combined = NoteEntity((float(self.mean)*self.w + float(other.mean)*other.w)/new_weight, system=self.mean.system)
+        return_weight = Weight(combined).set_type(self._type+other._type).set_weight(new_weight)
+        return return_weight
+
+    def set_weight(self, w):
+        self.w = w if self.mean is not None else None
+        return self
+
+    def set_weight_for_each(self, w):
+        self.w = w * self._n if self.mean is not None else None
+        return self
+
+    def set_type(self, typelist):
+        if not isinstance(typelist, list):
+            raise TypeError("Es muss eine Liste übergeben werden")
+        self._type = list(set(typelist))
+        return self
+
+    def _mean(self, noten):
+        noten_werte = np.array([float(note) for note in noten if not np.isnan(float(note))])
+        self._n = len(noten_werte)
+        if len(noten_werte)==0:
+            return None
+        return NoteEntity(np.mean(noten_werte), system=noten[0].system)
+
+    def __str__(self):
+        return self._print()
+
+    def __repr__(self):
+        return self._print()
+
+    def _print(self):
+        return f"{self.w}*{self.mean}"
+
 ##########################################
 ##########################################
 
@@ -324,6 +407,66 @@ class LeistungP(LeistungGeneric):
         super().__init__(**kwargs)
         self._art = 'P'
         self._attribut = AttributP
+        self.status._disable()
+
+class LeistungKTP(LeistungGeneric):
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+        self._art = 'KTP'
+        self._attribut = AttributP
+        self.status._disable()
+
+class LeistungKAP(LeistungGeneric):
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+        self._art = 'KAP'
+        self._attribut = AttributP
+        self.status._disable()
+
+class LeistungV(LeistungGeneric):
+    def __init__(self, **kwargs):
+        mean = kwargs.get('mean')
+        
+        if isinstance(kwargs.get('status'), VerbesserungStatus):
+            status = kwargs.get('status')
+        else:
+            status = VerbesserungStatus(kwargs.get('status','---'))
+        kwargs['status'] = status.text
+            
+        system = kwargs.get('system')
+        w_th = kwargs.get('w_th')
+        self.w_th = w_th
+        self.mean = mean
+        if mean==None:
+            raise ValueError("Der Mittelwert der schriftlichen Noten muss angegeben werden.")
+        if w_th==None:
+            raise ValueError("Die Schranke w_th muss angeeben werden.")
+        mean = float(mean)
+        m_h = (np.ceil(mean)+np.floor(mean))/2
+        w_d = 1 if w_th == 0 else abs((0.5 - (mean % 1)) / w_th)
+
+        if system=='N':
+            w_v1 = None if w_d >= 1 else m_h + self.w_th if w_d < 1 else None
+            w_v2 = None if w_d >= 1 else m_h - self.w_th if w_d < 1 else None
+        elif system=='NP':
+            w_v1 = None if w_d >= 1 else m_h - self.w_th if w_d < 1 else None
+            w_v2 = None if w_d >= 1 else m_h + self.w_th if w_d < 1 else None
+        
+        if status._enabled == False:
+            kwargs['note'] = NoteEntity(None, system = system)
+        else:
+            if status.status==None:
+                kwargs['note'] = NoteEntity(mean, system = system)
+            elif status.status==False:
+                kwargs['note'] = NoteEntity(w_v1, system = system)
+            elif status.status==True:
+                kwargs['note'] = NoteEntity(w_v2, system = system)
+            else:
+                raise ValueError("Fehler beim Initialisieren des Verbesserungsobjektes")
+        
+        super().__init__(**kwargs)
+        self._art = 'V'
+        self._attribut = AttributS
         self.status._disable()
 
 ##########################################
@@ -495,4 +638,4 @@ if __name__ == "__main__":
     mein_fach = FachM
     
     checks = mein_fach.limits.check_limits(meine_leistungen)
-    pprint.pprint(checks)
+    # pprint.pprint(checks)

@@ -9,7 +9,7 @@ sys.path.append(os.path.dirname(os.path.abspath(os.path.dirname(__file__))))
 from notenbildung.nvo import *
 from notenbildung.lerngruppenverwaltung import *
 
-class Notenberechnung(NotenberechnungGeneric):
+class NotenberechnungLegacy(NotenberechnungGeneric):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
 
@@ -85,6 +85,57 @@ class Notenberechnung(NotenberechnungGeneric):
                 
         result.update(m_s1=m_s1, m_s=m_s, gesamtnote=gesamtnote, m_m = self.mittelwert(noten_muendlich))
 
+        return result
+    
+class Notenberechnung(NotenberechnungGeneric):
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+
+    def _calculate(self):       
+        # Calculate
+        result = Note(datum=self.noten[-1].date)
+        
+        # Filtern der Noten nach Art
+        noten_ka = self._get_leistung_for_types(LeistungKA, LeistungGFS)
+        noten_kt = self._get_leistung_for_types(LeistungKT, LeistungP)
+        noten_muendlich = self._get_leistung_for_types(LeistungM)
+
+        # Ermitteln der Anzahl der verschiedenen Leistungsarten
+        n_KA = len(noten_ka)
+        n_KT = len(noten_kt)
+        n_m = len(noten_muendlich)
+                
+        # mündliche Note
+        m_m = Weight(*noten_muendlich)
+
+        # Randfall: nur mündliche Noten
+        if (n_KA + n_KT==0) and n_m>0:
+            result.update( gesamtnote=m_m.mean, m_m=m_m.mean)
+            return result
+        # Randfall: keine Noten
+        elif (n_KA + n_KT + n_m == 0):
+            return None
+        
+        # Berechnung der Mittelwerte von KT und KA
+        w_s = n_KT * self.w_s0/self.n_KT_0 if n_KT < self.n_KT_0 else self.w_s0
+        
+        KA = Weight(*noten_ka).set_weight_for_each(1)
+        KT = Weight(*noten_kt).set_weight(w_s)
+
+        m_s1 = KA+KT
+        
+        verbesserungen = [ LeistungV(mean=m_s1.mean, status = note.status, system = note.system, w_th = self.w_th, date=note.date) for note in self.noten ]
+            
+        V = Weight(*verbesserungen)
+        w_v3 = abs(V.mean._get_system_range()/self.w_th)
+        
+        # schriftliche Note berechnen
+        m_s = m_s1+V.set_weight(w_v3)
+        
+        # Gesamtnote berechnen
+        GN = m_s.set_weight(self.w_sm) + m_m.set_weight(1)        
+        
+        result.update(m_s1=m_s1.mean, m_s=m_s.mean, gesamtnote=GN.mean, m_m = m_m.mean)
         return result
     
 class NotenberechnungSimple(NotenberechnungGeneric):

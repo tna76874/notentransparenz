@@ -35,8 +35,10 @@ class Note:
             value = kwargs.get(key, None)
             if isinstance(value, (int, float)) or value==None:
                 setattr(self, key, NoteEntity(value, system=self.system))
-            else:
+            elif isinstance(value, NoteEntity) or isinstance(value, datetime):
                 setattr(self, key, value)
+            else:
+                raise ValueError("Ungültiger Wert")
         
     def _print(self):
         return f'm_s1={self.m_s1}, m_s={self.m_s}, m_m={self.m_m}, gesamtnote={self.gesamtnote}, datum={self.datum.strftime("%d.%m.%Y")}'
