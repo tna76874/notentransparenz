@@ -431,7 +431,6 @@ class LeistungV(LeistungGeneric):
             status = kwargs.get('status')
         else:
             status = VerbesserungStatus(kwargs.get('status','---'))
-        kwargs['status'] = status.text
             
         system = kwargs.get('system')
         w_th = kwargs.get('w_th')
@@ -446,13 +445,13 @@ class LeistungV(LeistungGeneric):
         w_d = 1 if w_th == 0 else abs((0.5 - (mean % 1)) / w_th)
 
         if system=='N':
-            w_v1 = None if w_d >= 1 else m_h + self.w_th if w_d < 1 else None
-            w_v2 = None if w_d >= 1 else m_h - self.w_th if w_d < 1 else None
+            w_v1 = None if w_d >= 1 else m_h + w_th if w_d < 1 else None
+            w_v2 = None if w_d >= 1 else m_h - w_th if w_d < 1 else None
         elif system=='NP':
-            w_v1 = None if w_d >= 1 else m_h - self.w_th if w_d < 1 else None
-            w_v2 = None if w_d >= 1 else m_h + self.w_th if w_d < 1 else None
+            w_v1 = None if w_d >= 1 else m_h - w_th if w_d < 1 else None
+            w_v2 = None if w_d >= 1 else m_h + w_th if w_d < 1 else None
         
-        if status._enabled == False:
+        if status._enabled == False or (w_d >= 1):
             kwargs['note'] = NoteEntity(None, system = system)
         else:
             if status.status==None:

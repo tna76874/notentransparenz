@@ -123,14 +123,14 @@ class Notenberechnung(NotenberechnungGeneric):
         KT = Weight(*noten_kt).set_weight(w_s)
 
         m_s1 = KA+KT
+        w_v3 = abs(m_s1.mean._get_system_range()/self.w_th) if m_s1.mean!=None else None
         
         self._verbesserungen = [ LeistungV(mean=m_s1.mean, status = note.status, system = note.system, w_th = self.w_th, date=note.date) for note in self.noten ]
             
-        V = Weight(*self._verbesserungen)
-        w_v3 = abs(V.mean._get_system_range()/self.w_th)
+        V = Weight(*self._verbesserungen).set_weight(w_v3)
         
         # schriftliche Note berechnen
-        m_s = m_s1+V.set_weight(w_v3)
+        m_s = m_s1+V
         
         # Gesamtnote berechnen
         GN = m_s.set_weight(self.w_sm) + m_m.set_weight(1)        
