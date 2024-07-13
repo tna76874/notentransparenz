@@ -88,6 +88,9 @@ class NotenberechnungGeneric:
         self.sj_start, self.sj_ende = None, None
         self._v_enabled = v_enabled
         self._art = ['m', 'KT', 'KA', 'GFS']
+        
+    def _get_verbesserungen(self):
+        return [verbesserung for verbesserung in self._verbesserungen if not np.isnan(verbesserung.note)]
     
     def _check_time_range(self):
         noten_with_range = list(filter(lambda x: x._is_punctual==False, self.noten))
@@ -99,7 +102,7 @@ class NotenberechnungGeneric:
         if self._fach==None:
             return None
         
-        checks = self._fach.limits.check_limits(self.noten, show_warnings=show_warnings)
+        checks = self._fach.limits.check_limits(self.noten+self._get_verbesserungen(), show_warnings=show_warnings)
         
         return checks
             
@@ -166,7 +169,7 @@ class NotenberechnungGeneric:
         return [note._as_dict() for note in self.noten]
     
     def _get_list_with_verbesserungen(self):
-        full_list =  [note._as_dict() for note in self.noten] + [verbesserung._as_dict() for verbesserung in self._verbesserungen]
+        full_list =  [note._as_dict() for note in self.noten] + [verbesserung._as_dict() for verbesserung in self._get_verbesserungen()]
         full_list.sort(key=lambda x: x['date'])
         return full_list
 
@@ -242,12 +245,14 @@ class NotenberechnungGeneric:
 
     def berechne_gesamtnote(self, show_warnings = True):
         #First run checks on noten
+        self._update_handler_after_added_leistung()
         self._check_time_range()
-        _ = self._check_limits(show_warnings = show_warnings)
         
         result = self._calculate()
         if not isinstance(result, Note):
             raise ValueError(f'Die interne Notenberechnungsmethode muss ein Objekt der Klasse Note zurückgeben')
+            
+        _ = self._check_limits(show_warnings = show_warnings)
         
         return result
 

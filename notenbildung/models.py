@@ -190,7 +190,7 @@ if __name__ == "__main__":
     pass
     # Beispiel
     self = Notenberechnung(w_s0=1, w_sm=3, system = 'N', v_enabled=True, w_th = 0.4, fach=FachM)
-    self.note_hinzufuegen(art='KA', date = '2024-04-10', note=3, status='fertig')
+    self.note_hinzufuegen(art='KA', date = '2024-04-10', note=2.5, status='fertig')
     self.note_hinzufuegen(art='KA', date = '2024-04-15', note=2.5, status='fertig')
     self.note_hinzufuegen(art='KA', date = '2024-03-01', note=4, status='fertig')
     self.note_hinzufuegen(art='GFS', date = '2024-03-05', note=3.25)
@@ -205,3 +205,7 @@ if __name__ == "__main__":
     print(gesamtnote)
     self.plot_time_series()
     
+    check = NotenberechnungLegacy(w_s0=1, w_sm=3, system = 'N', v_enabled=True, w_th = 0.4, fach=FachM)
+    check.noten = self.noten
+    checknote = check.berechne_gesamtnote()
+    print(f'CHECK: {checknote.gesamtnote==gesamtnote.gesamtnote}')

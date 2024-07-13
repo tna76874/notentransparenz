@@ -553,7 +553,7 @@ class LimitsNichtkernfach(LimitsGeneric):
     _type = 'Nichtkernfach'
     limits = LimitsGeneric.limits +  [ 
                         {
-                         'sum' : [AttributS],
+                         'sum' : [LeistungKA, LeistungKT],
                          'min' : None,
                          'max' : 4,
                         },
