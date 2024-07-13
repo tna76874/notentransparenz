@@ -25,6 +25,8 @@ KT = Weight(*leistungen_kt).set_weight(0.5)
 
 ms1 = (KA+KT)
 w_th = 0.4
+w_v3 = abs(ms1.mean._get_system_range()/w_th) if ms1.mean!=None else None
+
 
 leistungen_v =  [
                   LeistungV(mean=ms1.mean, status = 'fertig', system = 'N', w_th = w_th, date='2024-05-05'),
@@ -32,10 +34,10 @@ leistungen_v =  [
                   LeistungV(mean=ms1.mean, status = '---', system = 'N', w_th = w_th, date='2024-05-05'),
                   LeistungV(mean=ms1.mean, status = 'uv', system = 'N', w_th = w_th, date='2024-05-05'),
                 ]
-V = Weight(*leistungen_v)
-w_v3 = abs(V.mean._get_system_range()/w_th)
+V = Weight(*leistungen_v).set_weight(w_v3)
 
-m_s = ms1+V.set_weight(w_v3)
+m_s = ms1+V
 
 M = Weight(*leistungen_m)
 GN = m_s.set_weight(3) + M.set_weight(1)
+print(GN)
