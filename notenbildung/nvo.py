@@ -49,9 +49,9 @@ class SystemGeneric:
 
     @classmethod
     def _get_lims(cls):
-        min_good = min(cls.good, cls.bad)
-        max_good = max(cls.good, cls.bad)
-        return [min_good, cls.bad, max_good, cls.bad]
+        lim_min = min(cls.good, cls.bad)
+        lim_max = max(cls.good, cls.bad)
+        return [lim_min, lim_max]
 
     @classmethod
     def __str__(cls):
@@ -98,6 +98,15 @@ class NoteEntity(np.ndarray):
         obj.system = system
         obj._norm = norm
         return obj
+
+    def to(self, newsystem):
+        if not issubclass(newsystem, SystemGeneric):
+            raise ValueError(f'Das System muss eine Instanz der SystemGeneric-Klasse sein.')
+        
+        if newsystem!=self.system:
+            new_note = newsystem._norm_to_value(self._norm)       
+            self.itemset(new_note)
+            self.system = newsystem
     
     def _get_system_range(self):
         return self.system._get_range()
@@ -392,6 +401,13 @@ class LeistungGeneric:
         self._nr = None
         self.von = None
         self.bis = None
+
+    def to(self, newsystem):
+        if not issubclass(newsystem, SystemGeneric):
+            raise ValueError(f'Das System muss eine Instanz der SystemGeneric-Klasse sein.')
+            
+        self.note.to(newsystem)     
+        self.system = newsystem
         
     def _get_nr(self):
         return self._nr or self.nr
@@ -512,12 +528,14 @@ class LeistungV(LeistungGeneric):
         m_h = (np.ceil(mean)+np.floor(mean))/2
         w_d = 1 if w_th == 0 else abs((0.5 - (mean % 1)) / w_th)
 
-        if issubclass(system, SystemN):
+        if system==SystemN:
             w_v1 = None if w_d >= 1 else m_h + w_th if w_d < 1 else None
             w_v2 = None if w_d >= 1 else m_h - w_th if w_d < 1 else None
-        elif issubclass(system, SystemN):
+        elif system==SystemNP:
             w_v1 = None if w_d >= 1 else m_h - w_th if w_d < 1 else None
             w_v2 = None if w_d >= 1 else m_h + w_th if w_d < 1 else None
+        else:
+            raise ValueError("Error getting System")
         
         if status._enabled == False or (w_d >= 1):
             kwargs['note'] = NoteEntity(None, system = system)

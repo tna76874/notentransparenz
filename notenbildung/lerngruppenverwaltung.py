@@ -88,6 +88,15 @@ class NotenberechnungGeneric:
         self.sj_start, self.sj_ende = None, None
         self._v_enabled = v_enabled
         self._art = ['m', 'KT', 'KA', 'GFS']
+
+    def to(self, newsystem):
+        if not issubclass(newsystem, SystemGeneric):
+            raise ValueError(f'Das System muss eine Instanz der SystemGeneric-Klasse sein.')
+        
+        _ = [note.to(newsystem) for note in self.noten]
+
+        if newsystem!=self.system:
+            self.system = newsystem
         
     def _get_verbesserungen(self):
         return [verbesserung for verbesserung in self._verbesserungen if not np.isnan(verbesserung.note)]
@@ -248,6 +257,7 @@ class NotenberechnungGeneric:
         #First run checks on noten
         self._update_handler_after_added_leistung()
         self._check_time_range()
+        self.to(self.system)
         
         result = self._calculate()
         if not isinstance(result, Note):

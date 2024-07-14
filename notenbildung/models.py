@@ -201,12 +201,14 @@ if __name__ == "__main__":
     self.note_hinzufuegen(art='m', date = '2023-12-05', von = '2023-10-06', note=3.25)
     self.note_hinzufuegen(art='m', date = '2024-05-01', von = '2023-12-06', note=3.5)
     
+    # self.to(SystemNP)
+    
     gesamtnote = self.berechne_gesamtnote()
     print(gesamtnote)
     self.plot_time_series()
     
     check = NotenberechnungLegacy(w_s0=1, w_sm=3, system = SystemN, v_enabled=True, w_th = 0.4, fach=FachM)
-    check.noten = self.noten
+    check.noten = self.noten.copy()
     checknote = check.berechne_gesamtnote()
     if checknote.gesamtnote!=gesamtnote.gesamtnote:
         raise ValueError("Check failed")
