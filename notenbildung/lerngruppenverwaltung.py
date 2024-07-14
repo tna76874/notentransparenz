@@ -22,7 +22,7 @@ class Note:
     """
     Diese Klasse speichert die berechneten Schnitte inklusive einer Gesamtnote.
     """
-    def __init__(self, system = None, **kwargs):
+    def __init__(self, system = ConfigNVO.system, **kwargs):
         if not issubclass(system, SystemGeneric):
             raise ValueError(f'Das System muss ein Objekt der SystemGeneric-Klasse sein.')
         else:
@@ -69,7 +69,7 @@ class NotenberechnungGeneric:
     """
     Mit dieser Klasse werden Noten berechnet und auf Gültigkeit der Notenbildungsverordnung überprüft.
     """
-    def __init__(self, w_sm = 3, w_th = 0.25, w_s0 = 1, n_KT_0 = 3, system = None, v_enabled = True, fach=None):
+    def __init__(self, w_sm = ConfigNVO.w_sm, w_th = ConfigNVO.w_th, w_s0 = ConfigNVO.w_s0, n_KT_0 = ConfigNVO.n_KT_0, system = ConfigNVO.system, v_enabled = ConfigNVO.v_enabled, fach=None):
         self._typ = None
         self._fach = None
         if fach is not None:

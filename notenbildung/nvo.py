@@ -8,7 +8,7 @@ import numpy as np
 from datetime import datetime
 import copy
 import pprint
- 
+
 #
 #
 # Defintion von Notensystemen
@@ -97,6 +97,40 @@ SystemNORM.add_convert_to(SystemNORM, SystemNP, SystemN, SystemNPS)
 
 ##########################################
 ##########################################
+    
+#
+#
+# Default Config Values
+#
+#
+
+class ConfigNVO:
+    w_th = 0.25
+    w_s0 = 1
+    w_sm = 3
+    n_KT_0 = 3
+    v_enabled = True
+    system = SystemN
+
+    @classmethod
+    def update(cls, new_values):
+        for key, value in new_values.items():
+            if hasattr(cls, key):
+                setattr(cls, key, value)
+
+    @classmethod
+    def get_config(cls):
+        return {
+            'w_th': cls.w_th,
+            'w_s0': cls.w_s0,
+            'w_sm': cls.w_sm,
+            'n_KT_0' : cls.n_KT_0,
+            'v_enabled': cls.v_enabled,
+            'system': cls.system,
+        }
+
+##########################################
+##########################################
 
 #
 #
@@ -104,7 +138,7 @@ SystemNORM.add_convert_to(SystemNORM, SystemNP, SystemN, SystemNPS)
 #
 #
 class NoteEntity(np.ndarray):
-    def __new__(cls, note, system=None):
+    def __new__(cls, note, system = ConfigNVO.system):
         if not issubclass(system, SystemGeneric):
             raise ValueError(f'Das System muss ein Objekt der SystemGeneric-Klasse sein.')
             
@@ -752,7 +786,8 @@ class FachINF(FachGeneric):
     name = 'Inf'
     long = 'Informatik'
     limits = LimitsNichtkernfach
-    
+
+
 if __name__ == "__main__":
     # Beispiel
     meine_note_1 = NoteEntity(2.25, system=SystemN)
