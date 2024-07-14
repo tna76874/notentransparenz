@@ -313,6 +313,7 @@ class Weight:
         self.mean = None
         self.w = None
         self._n = len(noten)
+        self._type = []
         
         if not all(isinstance(obj, LeistungGeneric) or isinstance(obj, NoteEntity) for obj in noten):
             raise TypeError("Nicht alle Objekte sind Instanzen von LeistungGeneric oder NoteEntity")
@@ -343,7 +344,7 @@ class Weight:
 
         new_weight = self.w + other.w
         combined = NoteEntity((float(self.mean)*self.w + float(other.mean)*other.w)/new_weight, system=self.mean.system)
-        return_weight = Weight(combined).set_type(self._type+other._type).set_weight(new_weight)
+        return_weight = Weight(combined).set_type(list(set(self._type+other._type))).set_weight(new_weight)
         return return_weight
 
     def set_weight(self, w):
