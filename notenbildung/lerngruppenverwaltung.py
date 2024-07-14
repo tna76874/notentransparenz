@@ -39,6 +39,15 @@ class Note:
                 setattr(self, key, value)
             else:
                 raise ValueError("Ungültiger Wert")
+
+    def to(self, newsystem):
+        if not issubclass(newsystem, SystemGeneric):
+            raise ValueError(f'Das System muss eine Instanz der SystemGeneric-Klasse sein.')
+        
+        _ = [note.to(newsystem) for note in [self.m_s1, self.m_s, self.m_m, self.gesamtnote]]
+
+        if newsystem!=self.system:
+            self.system = newsystem
         
     def _print(self):
         return f'm_s1={self.m_s1}, m_s={self.m_s}, m_m={self.m_m}, gesamtnote={self.gesamtnote}, datum={self.datum.strftime("%d.%m.%Y")}'

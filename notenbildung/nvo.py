@@ -549,7 +549,7 @@ class LeistungV(LeistungGeneric):
             w_v1 = None if w_d >= 1 else m_h - w_th if w_d < 1 else None
             w_v2 = None if w_d >= 1 else m_h + w_th if w_d < 1 else None
         else:
-            raise ValueError("Error getting System")
+            raise ValueError("Invalid System Class for Verbesserung.")
         
         if status._enabled == False or (w_d >= 1):
             kwargs['note'] = NoteEntity(None, system = system)
