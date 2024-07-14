@@ -345,6 +345,11 @@ class NotenberechnungGeneric:
         gesamtnoten = [entry.gesamtnote for entry in result]
         schriftlich = [entry.m_s for entry in result]
         muendlich = [entry.m_m for entry in result]
+        
+        # Einzelnoten
+        noten_ka = self._get_leistung_for_types(LeistungKA, LeistungGFS, LeistungKAP)
+        noten_kt = self._get_leistung_for_types(LeistungKT, LeistungKTP)
+        noten_muendlich = self._get_leistung_for_types(LeistungM)
 
         # Erstelle die Figure und Subplots
         fig, ax = plt.subplots(figsize=(10, 6))
@@ -359,10 +364,14 @@ class NotenberechnungGeneric:
                           verticalalignment='top', bbox=dict(facecolor='white', alpha=0.5))
         
         # Erstelle Plots
-        ax.plot(dates, gesamtnoten, marker='o', linestyle='-', color='r', label='Gesamtnote')
-        ax.plot(dates, schriftlich, marker='.', linestyle='--', color='b', label='schriftlich')
-        ax.plot(dates, muendlich, marker='+', linestyle=':', color='g', label='mündlich')
-        ax.plot(dates[-1], result[-1].gesamtnote._get_Z(), marker='x', color='k', linestyle='None', label='Stand')
+        ax.plot(dates, gesamtnoten, marker='None', linestyle='-', color='r', label='Gesamtnote')
+        ax.plot(dates, schriftlich, marker='None', linestyle='--', color='b', label='⌀ schriftlich')
+        ax.plot(dates, muendlich, marker='None', linestyle=':', color='g', label='⌀ mündlich')
+        
+        ax.plot([n.date for n in noten_ka], [n.note for n in noten_ka], marker='o', linestyle='None', color='r', label='KA')
+        ax.plot([n.date for n in noten_kt], [n.note for n in noten_kt], marker='x', linestyle='None', color='b', label='KT')
+        ax.plot([n.date for n in noten_muendlich], [n.note for n in noten_muendlich], marker='v', linestyle='None', color='g', label='mündlich')
+        ax.plot(dates[-1], result[-1].gesamtnote._get_Z(), marker='None', color='k', linestyle='None', label='Stand')
 
         # Setze die Zeitachsen-Begrenzungen
         ax.set_xlim(self.sj_start, self.sj_ende)
@@ -385,10 +394,10 @@ class NotenberechnungGeneric:
         if self._typ != None:
             title += f', {self._typ._get_name()}'
         
-        ax.set_title(title)
+        ax.set_title(title, pad=35)
 
         # Legende
-        ax.legend()
+        ax.legend(loc='upper center', bbox_to_anchor=(0.5, 1.1), ncol=len(ax.get_lines()))
         
         ax.yaxis.set_minor_locator(plt.MultipleLocator(0.5))
         ax.grid(which='minor', axis='y', linestyle=':', linewidth=0.5, color='black')
