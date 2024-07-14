@@ -130,8 +130,6 @@ class NoteEntity(np.ndarray):
             if newsystem not in self.system._convert_to:
                 raise ValueError(f'{self.system} kann nicht zu {newsystem} kovertiert werden.')
             
-            
-            
             if self.system==SystemNPS and newsystem==SystemN:
                 print("WARNING: Inkonsistent System conversion")
                 new_note = self
