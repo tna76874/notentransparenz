@@ -21,7 +21,7 @@ class NotenberechnungFTW(NotenberechnungGeneric):
         m_KT = self.mittelwert(noten_kt)
         m_m = self.mittelwert(noten_muendlich)
 
-        result = Note(datum=self.noten[-1].date, gesamtnote=1)
+        result = Note(datum=self.noten[-1].date, gesamtnote=1, system=self.system)
         
         return result
 
@@ -51,7 +51,7 @@ class FachTest(FachGeneric):
     limits = LimitsTest
 
 meinfach = FachTest
-note = NotenberechnungFTW(w_s0=1, w_sm=3, system = 'N', v_enabled=True, w_th = 0.4, fach=meinfach)
+note = NotenberechnungFTW(w_s0=1, w_sm=3, system = SystemN, v_enabled=True, w_th = 0.4, fach=meinfach)
 # note = NotenberechnungSimple(w_s0=1, w_sm=3, system = 'N', v_enabled=True, w_th = 0.4, fach=meinfach)
 note.note_hinzufuegen(art='KA', date = '2024-04-10', note=3, status='fertig')
 note.note_hinzufuegen(art='KA', date = '2024-04-15', note=2.5, status='fertig')

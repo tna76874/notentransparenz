@@ -6,7 +6,7 @@ Beispiel
 
 from notenbildung.notenbildung import *
 
-noten = Notenberechnung(w_s0=1, w_sm=3, system = 'N', v_enabled=True, w_th = 0.4)
+noten = Notenberechnung(w_s0=1, w_sm=3, system = SystemN, v_enabled=True, w_th = 0.4)
 noten.note_hinzufuegen(art='KA', date = '2024-04-10', note=2, status='fertig')
 noten.note_hinzufuegen(art='KA', date = '2024-04-15', note=2.5, status='fertig')
 noten.note_hinzufuegen(art='KA', date = '2024-03-01', note=3, status='fertig')

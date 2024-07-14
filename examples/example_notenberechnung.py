@@ -6,18 +6,18 @@ Beispiel: Notenberechnung
 from notenbildung.nvo import *
 
 leistungen_ka =  [
-                  LeistungKA(note=NoteEntity(2, system='N'), date='2024-05-05'),
-                  LeistungKA(note=NoteEntity(2, system='N'), date='2024-05-05'),
+                  LeistungKA(note=NoteEntity(2, system=SystemN), date='2024-05-05'),
+                  LeistungKA(note=NoteEntity(2, system=SystemN), date='2024-05-05'),
                  ]
 
 leistungen_kt =  [
-                  LeistungKT(note=NoteEntity(2, system='N'), date='2024-05-05'),
-                  LeistungKT(note=NoteEntity(2, system='N'), date='2024-05-05'),
+                  LeistungKT(note=NoteEntity(2, system=SystemN), date='2024-05-05'),
+                  LeistungKT(note=NoteEntity(2, system=SystemN), date='2024-05-05'),
                  ]
 
 leistungen_m =  [
-                  LeistungM(note=NoteEntity(1, system='N'), date='2024-05-05'),
-                  LeistungM(note=NoteEntity(1, system='N'), date='2024-05-05'),
+                  LeistungM(note=NoteEntity(1, system=SystemN), date='2024-05-05'),
+                  LeistungM(note=NoteEntity(1, system=SystemN), date='2024-05-05'),
                  ]
 
 KA = Weight(*leistungen_ka).set_weight_for_each(1)
@@ -29,10 +29,10 @@ w_v3 = abs(ms1.mean._get_system_range()/w_th) if ms1.mean!=None else None
 
 
 leistungen_v =  [
-                  LeistungV(mean=ms1.mean, status = 'fertig', system = 'N', w_th = w_th, date='2024-05-05'),
-                  LeistungV(mean=ms1.mean, status = 'fehlt', system = 'N', w_th = w_th, date='2024-05-05'),
-                  LeistungV(mean=ms1.mean, status = '---', system = 'N', w_th = w_th, date='2024-05-05'),
-                  LeistungV(mean=ms1.mean, status = 'uv', system = 'N', w_th = w_th, date='2024-05-05'),
+                  LeistungV(mean=ms1.mean, status = 'fertig', system = SystemN, w_th = w_th, date='2024-05-05'),
+                  LeistungV(mean=ms1.mean, status = 'fehlt', system = SystemN, w_th = w_th, date='2024-05-05'),
+                  LeistungV(mean=ms1.mean, status = '---', system = Syst´emN, w_th = w_th, date='2024-05-05'),
+                  LeistungV(mean=ms1.mean, status = 'uv', system = SystemN, w_th = w_th, date='2024-05-05'),
                 ]
 V = Weight(*leistungen_v).set_weight(w_v3)
 

@@ -9,8 +9,8 @@ from notenbildung.models import *
 # eine fachpraktische Leistung P wird als Kurztest gezählt, zählt jedoch nicht in die Anzahl der schriftlichen Leistungen mit hinein.
 
 meinfach = FachM
-note = Notenberechnung(w_s0=1, w_sm=3, system = 'N', v_enabled=True, w_th = 0.4, fach=meinfach)
-# note = NotenberechnungSimple(w_s0=1, w_sm=3, system = 'N', v_enabled=True, w_th = 0.4, fach=meinfach)
+note = Notenberechnung(w_s0=1, w_sm=3, system = SystemN, v_enabled=True, w_th = 0.4, fach=meinfach)
+# note = NotenberechnungSimple(w_s0=1, w_sm=3, system = SystemN, v_enabled=True, w_th = 0.4, fach=meinfach)
 note.note_hinzufuegen(art='KA', date = '2024-04-10', note=3, status='fertig')
 note.note_hinzufuegen(art='KA', date = '2024-04-15', note=2.5, status='fertig')
 note.note_hinzufuegen(art='KA', date = '2024-03-01', note=4, status='fertig')
