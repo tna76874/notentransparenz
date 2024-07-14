@@ -74,6 +74,11 @@ class SystemNP(SystemGeneric):
     name = 'NP'
     good = 15
     bad = 0
+    
+class SystemNORM(SystemGeneric):
+    name = 'norm'
+    good = 1
+    bad = 0
 
 ##########################################
 ##########################################
@@ -87,6 +92,10 @@ class NoteEntity(np.ndarray):
     def __new__(cls, note, system=None):
         if not issubclass(system, SystemGeneric):
             raise ValueError(f'Das System muss ein Objekt der SystemGeneric-Klasse sein.')
+    
+        sys_min, sys_max = system._get_lims()
+        if not sys_min <= note <= sys_max:
+            raise ValueError(f'Die Note >{note}< muss zwischen {sys_min} und {sys_max} liegen.')
             
         if note==None:
             note = np.nan
