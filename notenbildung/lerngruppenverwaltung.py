@@ -291,8 +291,9 @@ class NotenberechnungGeneric:
         
         return ergebnisse
     
-    def _analyse(self):
-        time_series = self.time_series()
+    def _analysis(self, time_series=None):
+        if time_series == None:
+            time_series = self.time_series()
         if not all(isinstance(element, Note) for element in time_series):
             raise ValueError("Es dürfen nur Noten-Objekte übergeben werden")
         
@@ -303,9 +304,14 @@ class NotenberechnungGeneric:
             correlation = np.corrcoef(X, Y)[0, 1]
             
             m, c = np.polyfit(X, Y, 1)
-            return m, correlation
+            
+            result =    {
+                        'corr' : correlation,
+                        'm' : m,
+                        }
+            return result
         else:
-            return None, None        
+            return {}      
     
     def plot_time_series(self, save=None, sid = None, parent = None, formats = ['jpg'], **kwargs):
         if not isinstance(sid, SchuelerEntity):
@@ -321,6 +327,7 @@ class NotenberechnungGeneric:
         cvars.update(kwargs)
         
         result = self.time_series()
+        analysis = self._analysis(time_series=result)
         
         # Extrahiere Daten für den Plot
         dates = [entry.datum for entry in result]
@@ -330,6 +337,15 @@ class NotenberechnungGeneric:
 
         # Erstelle die Figure und Subplots
         fig, ax = plt.subplots(figsize=(10, 6))
+        
+        corr = analysis.get('corr')
+        m = analysis.get('m')
+        if m!=None and corr!=None:
+            if abs(corr)>0.5 and (m!=0):
+                sign = '-' if m<0 else '+'
+                change = ''.join([sign]*int(abs(m)/0.025))
+                plt.text(0.01, 0.99, change, transform=ax.transAxes, fontsize=12,
+                          verticalalignment='top', bbox=dict(facecolor='white', alpha=0.5))
         
         # Erstelle Plots
         ax.plot(dates, gesamtnoten, marker='o', linestyle='-', color='r', label='Gesamtnote')
@@ -532,7 +548,7 @@ if __name__ == "__main__":
     self.note_hinzufuegen(art='KA', date = '2024-03-01', note=4, status='fertig')
     self.note_hinzufuegen(art='GFS', date = '2024-03-05', note=3.25)
     self.note_hinzufuegen(art='KA', date = '2024-03-15', note=5, status='uv')
-    self.note_hinzufuegen(art='P', date = '2024-02-01', note=4)
+    self.note_hinzufuegen(art='KTP', date = '2024-02-01', note=4)
     self.note_hinzufuegen(art='KT', date = '2024-01-01', note=2.75, status='fehlt')
     self.note_hinzufuegen(art='m', date = '2023-10-05', von = '2023-09-01', note=3.0)
     self.note_hinzufuegen(art='m', date = '2023-12-05', von = '2023-10-06', note=3.25)
