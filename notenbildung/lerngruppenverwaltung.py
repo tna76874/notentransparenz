@@ -291,6 +291,22 @@ class NotenberechnungGeneric:
         
         return ergebnisse
     
+    def _analyse(self):
+        time_series = self.time_series()
+        if not all(isinstance(element, Note) for element in time_series):
+            raise ValueError("Es dürfen nur Noten-Objekte übergeben werden")
+        
+        if len(time_series)>4:
+            X = (np.array([note.datum.timestamp() for note in time_series]) -time_series[0].datum.timestamp()) / (time_series[-1].datum.timestamp()-time_series[0].datum.timestamp())
+            Y = np.array([note.gesamtnote._norm for note in time_series])
+            
+            correlation = np.corrcoef(X, Y)[0, 1]
+            
+            m, c = np.polyfit(X, Y, 1)
+            return m, correlation
+        else:
+            return None, None        
+    
     def plot_time_series(self, save=None, sid = None, parent = None, formats = ['jpg'], **kwargs):
         if not isinstance(sid, SchuelerEntity):
             sid = None
