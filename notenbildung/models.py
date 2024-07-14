@@ -15,7 +15,7 @@ class NotenberechnungLegacy(NotenberechnungGeneric):
 
     def _calculate(self):       
         # Calculate
-        result = Note(datum=self.noten[-1].date)
+        result = Note(datum=self.noten[-1].date, system=self.system)
         verbesserung_enabled = any(note.status._enabled for note in self.noten) and self._v_enabled
         
         # Filtern der Noten nach Art
@@ -60,11 +60,11 @@ class NotenberechnungLegacy(NotenberechnungGeneric):
         
         # Berechnen der Gewichte je nach Notensystem
         m_h = (np.ceil(m_s1)+np.floor(m_s1))/2
-        if self.system=='N':
+        if self.system==SystemN:
             w_v1 = 0 if w_d >= 1 else m_h + self.w_th if w_d < 1 else 0
             w_v2 = 0 if w_d >= 1 else m_h - self.w_th if w_d < 1 else 0
             w_0 = 6 - 1
-        elif self.system=='NP':
+        elif self.system==SystemNP:
             w_v1 = 0 if w_d >= 1 else m_h - self.w_th if w_d < 1 else 0
             w_v2 = 0 if w_d >= 1 else m_h + self.w_th if w_d < 1 else 0
             w_0 = 15 - 0
@@ -93,7 +93,7 @@ class Notenberechnung(NotenberechnungGeneric):
 
     def _calculate(self):       
         # Calculate
-        result = Note(datum=self.noten[-1].date)
+        result = Note(datum=self.noten[-1].date, system=self.system)
         
         # Filtern der Noten nach Art
         noten_ka = self._get_leistung_for_types(LeistungKA, LeistungGFS)
@@ -145,7 +145,7 @@ class NotenberechnungSimple(NotenberechnungGeneric):
 
     def _calculate(self):       
         # Calculate
-        result = Note(datum=self.noten[-1].date)
+        result = Note(datum=self.noten[-1].date, system=self.system)
         
         # Filtern der Noten nach Art
         noten_ka = self._get_leistung_for_types(LeistungKA, LeistungGFS)
@@ -189,7 +189,7 @@ class NotenberechnungSimple(NotenberechnungGeneric):
 if __name__ == "__main__":
     pass
     # Beispiel
-    self = Notenberechnung(w_s0=1, w_sm=3, system = 'N', v_enabled=True, w_th = 0.4, fach=FachM)
+    self = Notenberechnung(w_s0=1, w_sm=3, system = SystemN, v_enabled=True, w_th = 0.4, fach=FachM)
     self.note_hinzufuegen(art='KA', date = '2024-04-10', note=2.5, status='fertig')
     self.note_hinzufuegen(art='KA', date = '2024-04-15', note=2.5, status='fertig')
     self.note_hinzufuegen(art='KA', date = '2024-03-01', note=4, status='fertig')
@@ -205,7 +205,7 @@ if __name__ == "__main__":
     print(gesamtnote)
     self.plot_time_series()
     
-    check = NotenberechnungLegacy(w_s0=1, w_sm=3, system = 'N', v_enabled=True, w_th = 0.4, fach=FachM)
+    check = NotenberechnungLegacy(w_s0=1, w_sm=3, system = SystemN, v_enabled=True, w_th = 0.4, fach=FachM)
     check.noten = self.noten
     checknote = check.berechne_gesamtnote()
     if checknote.gesamtnote!=gesamtnote.gesamtnote:

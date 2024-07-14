@@ -8,6 +8,76 @@ import numpy as np
 from datetime import datetime
 import copy
 import pprint
+ 
+#
+#
+# Defintion von Notensystemen
+#
+#
+class SystemGeneric:
+    good = None
+    bad = None
+    name = None
+    
+    @classmethod
+    def _value_to_norm(cls, z):
+        if z == None:
+            return None
+        norm = (abs((z - cls.bad)) / cls._get_range())
+        if not 0 <= norm <= 1:
+            raise ValueError("Die normierte Note muss zwischen 0 und 1 liegen")
+        return norm
+
+    @classmethod
+    def _norm_to_value(cls, norm):
+        if norm == None:
+            return None
+        if not 0 <= norm <= 1:
+            raise ValueError("Die normierte Note muss zwischen 0 und 1 liegen")
+        if not cls._is_inverted():
+            return norm * cls._get_range() + cls.bad
+        else:
+            return cls.bad - norm * cls._get_range()
+
+    @classmethod
+    def _is_inverted(cls):
+        return cls.bad>cls.good
+            
+    @classmethod
+    def _get_range(cls):
+        return abs(cls.good-cls.bad)
+
+    @classmethod
+    def _get_lims(cls):
+        min_good = min(cls.good, cls.bad)
+        max_good = max(cls.good, cls.bad)
+        return [min_good, cls.bad, max_good, cls.bad]
+
+    @classmethod
+    def __str__(cls):
+        return cls._print()
+
+    @classmethod
+    def __repr__(cls):
+        return cls._print()
+
+    @classmethod
+    def _print(cls):
+        return f"{cls.name}"
+
+class SystemN(SystemGeneric):
+    name = 'N'
+    good = 1
+    bad = 6
+
+class SystemNP(SystemGeneric):
+    name = 'NP'
+    good = 15
+    bad = 0
+
+##########################################
+##########################################
+
 #
 #
 # NoteEntity stellt sicher, dass eine gültige Zahl als Note übergeben wurde. Es gibt Methoden um entsprechend die Leistung in Text auszugeben.
@@ -15,33 +85,28 @@ import pprint
 #
 class NoteEntity(np.ndarray):
     def __new__(cls, note, system=None):
+        if not issubclass(system, SystemGeneric):
+            raise ValueError(f'Das System muss ein Objekt der SystemGeneric-Klasse sein.')
+            
         if note==None:
             note = np.nan
+            norm = None
         else:
-            if system not in ['N', 'NP']:
-                raise ValueError("Das System muss entweder 'N' oder 'NP' sein.")
-            if system == 'N' and not (1 <= note <= 6):
-                raise ValueError("Die Note muss zwischen 1 und 6 für das System 'N' liegen.")
-            elif system == 'NP' and not (0 <= note <= 15):
-                raise ValueError("Die Note muss zwischen 0 und 15 für das System 'NP' liegen.")
+            norm = system._value_to_norm(note)
         
         obj = np.asarray(note).view(cls)
         obj.system = system
+        obj._norm = norm
         return obj
     
     def _get_system_range(self):
-        if self.system == 'N':
-            return 6-1
-        elif self.system == 'NP':
-            return 15-0
-        else:
-            raise ValueError("System-Range Error")
+        return self.system._get_range()
 
     def _round(self,number):
         if number % 1 == 0.5:
-            if self.system == 'N':
+            if self.system == SystemN:
                 return np.ceil(number)
-            elif self.system == 'NP':
+            elif self.system == SystemNP:
                 return np.floor(number)
         else:
             return np.round(number)
@@ -49,10 +114,10 @@ class NoteEntity(np.ndarray):
     def gerundet(self):
         result = dict()
         Z = self._round(float(self))
-        if self.system == 'N':
+        if self.system == SystemN:
             HJ = self._round(float(self) * 4) / 4
             result.update({'HJ': {'v': HJ, 's': self._num_to_string(HJ)}, 'Z': {'v': Z, 's': self._num_to_string(Z, ints=True)}})
-        elif self.system == 'NP':
+        elif self.system == SystemNP:
             result.update({'Z': {'v': Z, 's': self._num_to_string(Z)}})
             result['HJ'] = result['Z']
         return result
@@ -447,10 +512,10 @@ class LeistungV(LeistungGeneric):
         m_h = (np.ceil(mean)+np.floor(mean))/2
         w_d = 1 if w_th == 0 else abs((0.5 - (mean % 1)) / w_th)
 
-        if system=='N':
+        if issubclass(system, SystemN):
             w_v1 = None if w_d >= 1 else m_h + w_th if w_d < 1 else None
             w_v2 = None if w_d >= 1 else m_h - w_th if w_d < 1 else None
-        elif system=='NP':
+        elif issubclass(system, SystemN):
             w_v1 = None if w_d >= 1 else m_h - w_th if w_d < 1 else None
             w_v2 = None if w_d >= 1 else m_h + w_th if w_d < 1 else None
         
@@ -632,8 +697,8 @@ class FachINF(FachGeneric):
     
 if __name__ == "__main__":
     # Beispiel
-    meine_note_1 = NoteEntity(2.25, system='N')
-    meine_note_2 = NoteEntity(2.5, system='N')
+    meine_note_1 = NoteEntity(2.25, system=SystemN)
+    meine_note_2 = NoteEntity(2.5, system=SystemN)
     
     meine_leistungen =  [
                         LeistungM(note=meine_note_1, date='2024-05-05'),

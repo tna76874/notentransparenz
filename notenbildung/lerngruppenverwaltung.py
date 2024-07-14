@@ -22,9 +22,9 @@ class Note:
     """
     Diese Klasse speichert die berechneten Schnitte inklusive einer Gesamtnote.
     """
-    def __init__(self, system = 'N', **kwargs):
-        if system not in ['N', 'NP']:
-            raise ValueError("Das System muss entweder 'N' oder 'NP' sein.")
+    def __init__(self, system = None, **kwargs):
+        if not issubclass(system, SystemGeneric):
+            raise ValueError(f'Das System muss ein Objekt der SystemGeneric-Klasse sein.')
         else:
             self.system = system
         
@@ -60,7 +60,7 @@ class NotenberechnungGeneric:
     """
     Mit dieser Klasse werden Noten berechnet und auf Gültigkeit der Notenbildungsverordnung überprüft.
     """
-    def __init__(self, w_sm = 3, w_th = 0.25, w_s0 = 1, n_KT_0 = 3, system = 'N', v_enabled = True, fach=None):
+    def __init__(self, w_sm = 3, w_th = 0.25, w_s0 = 1, n_KT_0 = 3, system = None, v_enabled = True, fach=None):
         self._typ = None
         self._fach = None
         if fach is not None:
@@ -68,8 +68,8 @@ class NotenberechnungGeneric:
                 raise ValueError("Der übergebene Typ muss von der Klasse FachGeneric sein.")
             else:
                 self._fach = fach
-        if system not in ['N', 'NP']:
-            raise ValueError("Das System muss entweder 'N' oder 'NP' sein.")
+        if not issubclass(system, SystemGeneric):
+            raise ValueError(f'Das System muss ein Objekt der SystemGeneric-Klasse sein.')
         if not 0 <= float(w_th) <= 0.5:
             raise ValueError("Die Schranke w_th muss im Bereich  [0; 0.5] liegen.")
         if not 0 <= float(w_s0) <= 2:
@@ -235,7 +235,7 @@ class NotenberechnungGeneric:
         Dummy Methode zur Berechnung der Noten.
         """
         # Calculate
-        result = Note(datum=self.noten[-1].date)
+        result = Note(datum=self.noten[-1].date, system=self.system)
 
         #
         # HIER DEN ALGORITHMUS ZUR NOTENBERECHNUNG HINZUFÜGEN
@@ -310,12 +310,9 @@ class NotenberechnungGeneric:
         ax.set_xlim(self.sj_start, self.sj_ende)
         
         # Y-Achsen Skalierung basierend auf noten.system
-        if self.system == 'N':
-            ax.set_ylim(1, 6)
+        ax.set_ylim(*self.system._get_lims())
+        if self.system._is_inverted():
             ax.invert_yaxis()
-        elif self.system == 'NP':
-            ax.set_ylim(0, 15)
-        
         
         # Achsenbeschriftungen und Titel
         ax.set_xlabel('Datum')
@@ -498,7 +495,7 @@ class LerngruppeEntity:
 if __name__ == "__main__":
     pass
     # Beispiel
-    self = NotenberechnungGeneric(w_s0=1, w_sm=3, system = 'N', v_enabled=True, w_th = 0.4, fach=FachM)
+    self = NotenberechnungGeneric(w_s0=1, w_sm=3, system = SystemN, v_enabled=True, w_th = 0.4, fach=FachM)
     self.note_hinzufuegen(art='KA', date = '2024-04-10', note=3, status='fertig')
     self.note_hinzufuegen(art='KA', date = '2024-04-15', note=2.5, status='fertig')
     self.note_hinzufuegen(art='KA', date = '2024-03-01', note=4, status='fertig')
