@@ -298,7 +298,9 @@ class NotenberechnungGeneric:
             raise ValueError("Es dürfen nur Noten-Objekte übergeben werden")
         
         if len(time_series)>4:
-            X = (np.array([note.datum.timestamp() for note in time_series]) -time_series[0].datum.timestamp()) / (time_series[-1].datum.timestamp()-time_series[0].datum.timestamp())
+            X = (np.array([note.datum.timestamp() for note in time_series]) -time_series[0].datum.timestamp())
+            # Normalize time on multiple of 4*weeks
+            X = X / (60*60*24*7*4)
             Y = np.array([note.gesamtnote._norm for note in time_series])
             
             correlation = np.corrcoef(X, Y)[0, 1]
@@ -342,8 +344,8 @@ class NotenberechnungGeneric:
         m = analysis.get('m')
         if m!=None and corr!=None:
             if abs(corr)>0.5 and (m!=0):
-                sign = '-' if m<0 else '+'
-                change = ''.join([sign]*int(abs(m)/0.025))
+                sign = 'x' if m<0 else '+'
+                change = ''.join([sign]*int(abs(m)/0.005))
                 plt.text(0.01, 0.99, change, transform=ax.transAxes, fontsize=12,
                           verticalalignment='top', bbox=dict(facecolor='white', alpha=0.5))
         
