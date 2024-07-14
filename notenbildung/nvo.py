@@ -18,6 +18,11 @@ class SystemGeneric:
     good = None
     bad = None
     name = None
+    _convert_to = []
+
+    @classmethod
+    def add_convert_to(cls, *new_convert_to):
+        cls._convert_to = list(set(list(cls._convert_to) + list(new_convert_to)))
     
     @classmethod
     def _value_to_norm(cls, z):
@@ -70,6 +75,11 @@ class SystemN(SystemGeneric):
     good = 1
     bad = 6
 
+class SystemNPS(SystemGeneric):
+    name = 'N Pseudo'
+    good = float(2/3)
+    bad = float(5+2/3)
+
 class SystemNP(SystemGeneric):
     name = 'NP'
     good = 15
@@ -79,6 +89,11 @@ class SystemNORM(SystemGeneric):
     name = 'norm'
     good = 1
     bad = 0
+
+SystemN.add_convert_to(SystemNORM)
+SystemNPS.add_convert_to(SystemNORM, SystemNP, SystemN)
+SystemNP.add_convert_to(SystemNORM, SystemNPS)
+SystemNORM.add_convert_to(SystemNORM, SystemNP, SystemN, SystemNPS)
 
 ##########################################
 ##########################################
@@ -102,7 +117,7 @@ class NoteEntity(np.ndarray):
                 raise ValueError(f'Die Note >{note}< muss zwischen {sys_min} und {sys_max} liegen.')
             norm = system._value_to_norm(note)
         
-        obj = np.asarray(note).view(cls)
+        obj = np.asarray(float(note)).view(cls)
         obj.system = system
         obj._norm = norm
         return obj
@@ -112,7 +127,19 @@ class NoteEntity(np.ndarray):
             raise ValueError(f'Das System muss eine Instanz der SystemGeneric-Klasse sein.')
         
         if newsystem!=self.system:
-            new_note = newsystem._norm_to_value(self._norm)       
+            if newsystem not in self.system._convert_to:
+                raise ValueError(f'{self.system} kann nicht zu {newsystem} kovertiert werden.')
+            
+            
+            
+            if self.system==SystemNPS and newsystem==SystemN:
+                print("WARNING: Inkonsistent System conversion")
+                new_note = self
+                if new_note<1 or new_note>5.5:
+                    new_note = np.round(new_note)
+            else:
+                new_note = newsystem._norm_to_value(self._norm)
+                       
             self.itemset(new_note)
             self.system = newsystem
     
