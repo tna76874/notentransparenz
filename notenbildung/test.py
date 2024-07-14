@@ -64,6 +64,8 @@ note.note_hinzufuegen(art='m', date = '2023-09-01', note=3.0)
 note.note_hinzufuegen(art='m', date = '2023-10-01', note=3.25)
 note.note_hinzufuegen(art='m', date = '2023-11-01', note=3.5)
 
+note.to(SystemNP)
+
 gesamtnote = note.berechne_gesamtnote()
 print(gesamtnote)
 

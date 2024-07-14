@@ -176,9 +176,9 @@ class NoteEntity(np.ndarray):
         return "Note nicht im gültigen Bereich für das System"
 
     def _num_to_string(self, note, ints=False):
-        if self.system == 'NP':
+        if self.system == SystemNP:
             return str(int(self._round(note)))
-        elif self.system == 'N':
+        elif self.system == SystemN:
             if (ints == True) or (note == self._round(note)):
                 return str(int(self._round(note)))
             else:
@@ -192,6 +192,8 @@ class NoteEntity(np.ndarray):
                     return f'{int(whole_number)}-{int(whole_number + 1)}'
                 else:
                     return str(whole_number)
+        else:
+            raise ValueError("Unknows System")
 
     def __array_finalize__(self, obj):
         if obj is None:
