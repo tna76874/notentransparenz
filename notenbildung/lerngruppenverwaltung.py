@@ -185,6 +185,9 @@ class NotenberechnungGeneric:
 
     def _get_leistung_for_types(self, *args):
         return list(filter(lambda x: any(isinstance(x, arg) for arg in args), self.noten))
+
+    def _get_weight_for_types(self, *args):
+        return Weight(*self._get_leistung_for_types(*args))
     
     def _update_handler_after_added_leistung(self):
         self._sort_grade_after_date()
@@ -220,8 +223,10 @@ class NotenberechnungGeneric:
                 Leistung = LeistungKA(**pars)
             elif art == 'KT':
                 Leistung = LeistungKT(**pars)
-            elif art == 'P':
-                Leistung = LeistungP(**pars)
+            elif art == 'KTP':
+                Leistung = LeistungKTP(**pars)
+            elif art == 'KAP':
+                Leistung = LeistungKAP(**pars)
             elif art == 'GFS':
                 Leistung = LeistungGFS(**pars)
             else:

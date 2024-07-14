@@ -19,10 +19,10 @@ class NotenberechnungLegacy(NotenberechnungGeneric):
         verbesserung_enabled = any(note.status._enabled for note in self.noten) and self._v_enabled
         
         # Filtern der Noten nach Art
-        noten_ka = self._get_leistung_for_types(LeistungKA, LeistungGFS)
-        noten_kt = self._get_leistung_for_types(LeistungKT, LeistungP)
+        noten_ka = self._get_leistung_for_types(LeistungKA, LeistungGFS, LeistungKAP)
+        noten_kt = self._get_leistung_for_types(LeistungKT, LeistungKTP)
         noten_muendlich = self._get_leistung_for_types(LeistungM)
-        
+                
         # Zählen der verschiedenen Statusarten
         verbesserung_enabled = [note for note in self.noten if note.status._enabled]
         n_v_g = len(verbesserung_enabled)
@@ -96,21 +96,25 @@ class Notenberechnung(NotenberechnungGeneric):
         result = Note(datum=self.noten[-1].date, system=self.system)
         
         # Filtern der Noten nach Art
-        noten_ka = self._get_leistung_for_types(LeistungKA, LeistungGFS)
-        noten_kt = self._get_leistung_for_types(LeistungKT, LeistungP)
+        noten_ka = self._get_leistung_for_types(LeistungKA, LeistungGFS, LeistungKAP)
+        noten_kt = self._get_leistung_for_types(LeistungKT, LeistungKTP)
         noten_muendlich = self._get_leistung_for_types(LeistungM)
-
+        
         # Ermitteln der Anzahl der verschiedenen Leistungsarten
         n_KA = len(noten_ka)
         n_KT = len(noten_kt)
         n_m = len(noten_muendlich)
+
+        # Validate count
+        if len(self.noten)!=n_KA+n_KT+n_m:
+            raise ValueError("Counting Error")
                 
         # mündliche Note
         m_m = Weight(*noten_muendlich)
 
         # Randfall: nur mündliche Noten
         if (n_KA + n_KT==0) and n_m>0:
-            result.update( gesamtnote=m_m.mean, m_m=m_m.mean)
+            result.update(gesamtnote=m_m.mean, m_m=m_m.mean)
             return result
         # Randfall: keine Noten
         elif (n_KA + n_KT + n_m == 0):
@@ -148,41 +152,32 @@ class NotenberechnungSimple(NotenberechnungGeneric):
         result = Note(datum=self.noten[-1].date, system=self.system)
         
         # Filtern der Noten nach Art
-        noten_ka = self._get_leistung_for_types(LeistungKA, LeistungGFS)
-        noten_kt = self._get_leistung_for_types(LeistungKT, LeistungP)
-        noten_muendlich = self._get_leistung_for_types(LeistungM)
-        
+        noten_ka = self._get_weight_for_types(LeistungKA, LeistungGFS)
+        noten_kt = self._get_weight_for_types(LeistungKT)
+        noten_muendlich = self._get_weight_for_types(LeistungM)
 
-        # Ermitteln der Anzahl der verschiedenen Leistungsarten
-        n_KA = len(noten_ka)
-        n_KT = len(noten_kt)
-        n_m = len(noten_muendlich)
         
-        # Berechnung der Durchschnittsnote für jede Leistungsart
-        m_KA = self.mittelwert(noten_ka) or 0
-        m_KT = self.mittelwert(noten_kt) or 0
-        m_m = self.mittelwert(noten_muendlich) or 0
-        
-        # Gewichtung für mündliche Noten
-        w_m = 0 if n_m==0 else 1
-
         # Randfall: nur mündliche Noten
-        if (n_KA + n_KT==0) and n_m>0:
-            result.update( gesamtnote=m_m, m_m=m_m )
+        if (noten_ka._n + noten_kt._n==0) and noten_muendlich._n>0:
+            result.update( gesamtnote=noten_muendlich.mean, m_m=noten_muendlich.mean )
             return result
         # Randfall: keine Noten
-        elif (n_KA + n_KT + n_m == 0):
+        elif (noten_ka._n + noten_kt._n + noten_muendlich._n == 0):
             return None
         
         # Berechnung Mittelwert schriftliche Note
-        w_s = n_KT * self.w_s0/self.n_KT_0 if n_KT < self.n_KT_0 else self.w_s0
-        m_s = (n_KA * m_KA + w_s * m_KT) / (n_KA + w_s)
-
-
+        w_s = noten_kt._n * self.w_s0/self.n_KT_0 if noten_kt._n < self.n_KT_0 else self.w_s0
+        noten_ka.normalize()
+        noten_kt.set_weight(w_s)
+        m_s = noten_ka + noten_kt
+        
+        m_s.set_weight(self.w_sm)
+        noten_muendlich.set_weight(1)
+        
         # Berechnung der Gesamtnote
-        gesamtnote = (self.w_sm * m_s + w_m * m_m) / (self.w_sm + w_m)
+        gesamtnote = m_s + noten_muendlich
                 
-        result.update(m_s=m_s, m_m = m_m, gesamtnote=gesamtnote)
+        result.update(m_s=m_s.mean, m_m = noten_muendlich.mean, gesamtnote=gesamtnote.mean)
 
         return result
 
@@ -195,7 +190,7 @@ if __name__ == "__main__":
     self.note_hinzufuegen(art='KA', date = '2024-03-01', note=4, status='fertig')
     self.note_hinzufuegen(art='GFS', date = '2024-03-05', note=3.25)
     self.note_hinzufuegen(art='KA', date = '2024-03-15', note=5, status='uv')
-    self.note_hinzufuegen(art='P', date = '2024-02-01', note=4)
+    self.note_hinzufuegen(art='KTP', date = '2024-02-01', note=4)
     self.note_hinzufuegen(art='KT', date = '2024-01-01', note=2.75, status='fehlt')
     self.note_hinzufuegen(art='m', date = '2023-10-05', von = '2023-09-01', note=3.0)
     self.note_hinzufuegen(art='m', date = '2023-12-05', von = '2023-10-06', note=3.25)

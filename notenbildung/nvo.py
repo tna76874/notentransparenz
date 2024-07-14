@@ -321,6 +321,10 @@ class Weight:
         self.w = w * self._n if self.mean is not None else None
         return self
 
+    def normalize(self):
+        self.w = self._n if self.mean is not None else None
+        return self
+
     def set_type(self, typelist):
         if not isinstance(typelist, list):
             raise TypeError("Es muss eine Liste übergeben werden")

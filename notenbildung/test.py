@@ -57,7 +57,7 @@ note.note_hinzufuegen(art='KA', date = '2024-04-10', note=3, status='fertig')
 note.note_hinzufuegen(art='KA', date = '2024-04-15', note=2.5, status='fertig')
 # Wenn die nächste Zeile einkommentiert wird, dann erscheint ein Fehler nach den obigen Limits
 # note.note_hinzufuegen(art='KA', date = '2024-03-01', note=4, status='fertig')
-note.note_hinzufuegen(art='P', date = '2024-03-15', note=5, status='fertig')
+note.note_hinzufuegen(art='KTP', date = '2024-03-15', note=5, status='fertig')
 note.note_hinzufuegen(art='KT', date = '2024-02-01', note=4)
 note.note_hinzufuegen(art='KT', date = '2024-01-01', note=2.75, status='fertig')
 note.note_hinzufuegen(art='m', date = '2023-09-01', note=3.0)
