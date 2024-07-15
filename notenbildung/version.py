@@ -34,7 +34,7 @@ class TransparenzPDF:
             if response.status_code == 200:
                 self._download_file()
             else:
-                print("Die Datei ist nicht erreichbar.")
+                print(f'Für die Version {PackageInfo.version} ist kein Dokument zur Notentransparenz hinterlegt.')
         except requests.ConnectionError:
             print("Verbindung fehlgeschlagen.")
 
