@@ -22,7 +22,7 @@ def main():
         excel_loader.export()
         
     if args.download:
-        download_transparency_document()
+        TransparenzPDF()
 
 if __name__ == "__main__":
     main()
