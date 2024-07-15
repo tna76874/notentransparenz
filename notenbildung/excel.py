@@ -155,7 +155,7 @@ class ExcelFileLoader:
         self.klassen = []
         self._load_and_validate_excel_file()
 
-    def export(self):
+    def export(self, typ='pdf'):
         for key, _ in enumerate(self.klassen):
             gruppe = self.klassen[key].gruppe
             dataframe = gruppe.get_dataframe()
@@ -169,6 +169,12 @@ class ExcelFileLoader:
                 dataframe.to_excel(writer, index=False, sheet_name='Gesamt')
                 for schueler in gruppe.schueler.values():
                     schueler.get_dataframe().to_excel(writer, index=False, sheet_name=schueler._get_name())
+            
+            #Export Plots
+            for sid in gruppe.schueler.keys():
+                file_name = f"{gruppe._name()}_{gruppe.fach.name}_{gruppe.schueler[sid].nachname}_{gruppe.schueler[sid].vorname}"
+                file_path = os.path.join(folder_name, file_name)
+                gruppe.plot_sid(sid, save=file_path, formats=[typ])
     
     def _generate_nvo_objects(self):
         for idx, _ in enumerate(self.klassen):
@@ -198,4 +204,5 @@ def main():
     excel_loader.export()
 
 if __name__ == "__main__":
-    self = ExcelFileLoader("data.xlsx")
+    self = ExcelFileLoader("../examples/meine_notenliste.xlsx")
+    self.export()
