@@ -36,3 +36,5 @@ setup(
         ],
     },
 )
+
+NVOPackage.checkout_info_file()

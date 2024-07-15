@@ -42,10 +42,15 @@ class GitVersion:
         result = subprocess.run(['git', 'rev-parse', '--show-toplevel'], stdout=subprocess.PIPE)
         git_root = result.stdout.decode('utf-8').strip()
         return os.path.abspath(git_root)
-        
+    
+    def _get_info_file(self):
+        return os.path.join(self._get_git_root(), 'notenbildung' ,'info.py')
+    
+    def checkout_info_file(self):
+        subprocess.run(['git', 'checkout', self._get_info_file()])
+    
     def write_to_file(self):
-        file_path = os.path.join(self._get_git_root(), 'notenbildung' ,'info.py')
-        with open(file_path, 'w') as f:
+        with open(self._get_info_file(), 'w') as f:
             f.write("class PackageInfo:\n")
             f.write(f'    version = "{self.version()}"\n')
             f.write(f'    hash = "{self.commit_hash}"\n')
