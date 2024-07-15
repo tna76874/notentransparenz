@@ -6,7 +6,6 @@ Excel Wrapper
 import os
 import sys
 import re
-import argparse
 sys.path.append(os.path.dirname(os.path.abspath(os.path.dirname(__file__))))
 from notenbildung.models import *
 
@@ -193,15 +192,6 @@ class ExcelFileLoader:
         except Exception as e:
             print(f"Fehler beim Laden der Excel-Datei: {e}")
             return None
-        
-def main():
-    parser = argparse.ArgumentParser(description='Noten aus einer Excel-Datei berechnen und exportieren')
-    parser.add_argument('file', type=str, help='Dateipfad der Excel Datei')
-    
-    args = parser.parse_args()
-    
-    excel_loader = ExcelFileLoader(args.file)
-    excel_loader.export()
 
 if __name__ == "__main__":
     self = ExcelFileLoader("../examples/meine_notenliste.xlsx")
