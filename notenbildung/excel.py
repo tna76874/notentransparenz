@@ -44,10 +44,12 @@ class ExcelSheetConfig:
             schueler = SchuelerEntity(sid=sid, vorname=self.df.iloc[index,1], nachname=self.df.iloc[index,2])
             noten = Notenberechnung(**self.parse_config)
             
-            noten_dict = dict(zip(self.df.iloc[0,3:], self.df.iloc[index,3:]))
-            for key, note in noten_dict.items():
+            for column in range(3, self.df.shape[1]):
+                typ_and_nr = types.get(self.df.iloc[0,column], {})
+                date = self.df.iloc[1,column]
+                note = self.df.iloc[index,column]
                 if not pd.isnull(note):
-                    noten.leistung_hinzufuegen(types.get(key,{}).get('type')(system=self.parse_config.get('system'), note=note, nr=types.get(key,{}).get('nr'),date=dates.get(key)))
+                    noten.leistung_hinzufuegen(typ_and_nr.get('type')(system=self.parse_config.get('system'), note=note, nr=typ_and_nr.get('nr'),date=date))
             schueler.setze_note(noten)
             self.gruppe.update_sid(schueler)
             
@@ -183,5 +185,4 @@ class ExcelFileLoader:
             return None
 
 if __name__ == "__main__":
-    pass
     self = ExcelFileLoader("data.xlsx")
