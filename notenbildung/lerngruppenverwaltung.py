@@ -484,7 +484,13 @@ class LerngruppeEntity:
             self.kurs = self._name()
         
         self.schueler = dict()
-
+    
+    def _get_sj(self):
+        start_years = {self.schueler[key]._notenberechnung.sj_start.year for key in self.schueler}
+        if len(start_years) > 1:
+            raise ValueError("Mehr als ein Startjahr gefunden")
+        return start_years.pop() if start_years else None
+    
     def _name(self):
         if self.stufe in range(5, 11):
             return f"{self.stufe:02d}{self.zug}"
