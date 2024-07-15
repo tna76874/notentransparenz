@@ -436,6 +436,9 @@ class SchuelerEntity:
         if None in (self.sid, self.vorname, self.nachname):
             raise ValueError("Alle Werte (sid, vorname, nachname) müssen beim Initialisieren gesetzt werden.")
 
+    def _get_name(self):
+        return f"{self.nachname}, {self.vorname}"
+
     def _print(self):
         note = ""
         if self.note != None:

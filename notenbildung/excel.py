@@ -164,7 +164,10 @@ class ExcelFileLoader:
                 os.makedirs(folder_name)
             file_name = f"{gruppe._name()}_{gruppe.fach.name}.xlsx"
             file_path = os.path.join(folder_name, file_name)
-            dataframe.to_excel(file_path, index=False)
+            with pd.ExcelWriter(file_path) as writer:
+                dataframe.to_excel(writer, index=False, sheet_name='Gesamt')
+                for schueler in gruppe.schueler.values():
+                    schueler.get_dataframe().to_excel(writer, index=False, sheet_name=schueler._get_name())
     
     def _generate_nvo_objects(self):
         for idx, _ in enumerate(self.klassen):
