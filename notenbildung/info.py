@@ -1,3 +1,3 @@
 class PackageInfo:
-    version = None
+    version = 'latest'
     hash = None

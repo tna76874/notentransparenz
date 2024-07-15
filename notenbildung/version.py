@@ -9,6 +9,42 @@ import subprocess
 from datetime import datetime, timedelta
 from dateutil import parser
 import argparse
+import sys
+import requests
+sys.path.append(os.path.dirname(os.path.abspath(os.path.dirname(__file__))))
+from notenbildung.info import *
+
+class TransparenzPDF:
+    def __init__(self, save_dir=None):
+        if save_dir is None:
+            self.save_dir = os.getcwd()
+        else:
+            self.save_dir = save_dir
+
+        if not os.path.exists(self.save_dir):
+            os.makedirs(self.save_dir)
+        
+        self.url = f'https://transparenz.hilberg.eu/{PackageInfo.version}/files/tex/notentransparenz.pdf'
+        
+        self._check_download()
+
+    def _check_download(self):
+        try:
+            response = requests.head(self.url)
+            if response.status_code == 200:
+                self._download_file()
+            else:
+                print("Die Datei ist nicht erreichbar.")
+        except requests.ConnectionError:
+            print("Verbindung fehlgeschlagen.")
+
+    def _download_file(self):
+        response = requests.get(self.url)
+        file_name = self.url.split('/')[-1]
+        file_path = os.path.join(self.save_dir, file_name)
+        with open(file_path, 'wb') as file:
+            file.write(response.content)
+        print(f"Die Datei wurde erfolgreich heruntergeladen und unter {file_path} gespeichert.")
 
 class GitVersion:
     def __init__(self, path):
@@ -77,5 +113,7 @@ def main():
     print(version_info.version())
 
 if __name__ == "__main__":
+    pass
+    self = TransparenzPDF('/tmp')
     # self = GitVersion('../docs/files/')
-    main()
+    # main()
