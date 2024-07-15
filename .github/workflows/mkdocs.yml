@@ -1,8 +1,8 @@
-name: mkdocs 
+name: mkdocs
 on:
   push:
     branches:
-      - master 
+      - master
       - main
     paths:
       - 'docs/**'
