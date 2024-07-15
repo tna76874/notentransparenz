@@ -42,7 +42,7 @@ class GitVersion:
         result = subprocess.run(['git', 'rev-parse', '--show-toplevel'], stdout=subprocess.PIPE)
         git_root = result.stdout.decode('utf-8').strip()
         return os.path.abspath(git_root)
-    
+        
     def write_to_file(self):
         file_path = os.path.join(self._get_git_root(), 'notenbildung' ,'info.py')
         with open(file_path, 'w') as f:

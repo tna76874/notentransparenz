@@ -3,6 +3,9 @@
 from setuptools import find_packages, setup
 
 import notenbildung
+from notenbildung.version import *
+
+NVOPackage = GitVersion('.')
 
 setup(
     name='notenbildung',
