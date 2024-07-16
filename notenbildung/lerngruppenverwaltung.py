@@ -537,9 +537,9 @@ class LerngruppeEntity:
                 'sid': schueler_entity.sid,
                 'vorname': schueler_entity.vorname,
                 'nachname': schueler_entity.nachname,
-                'note_s' : float(schueler_entity.note.m_s),
-                'note_m' : float(schueler_entity.note.m_m),
-                'note' : float(schueler_entity.note.gesamtnote),
+                'note_s' : schueler_entity.note.m_s,
+                'note_m' : schueler_entity.note.m_m,
+                'note' : schueler_entity.note.gesamtnote,
                 'note_hj' : schueler_entity.note.gesamtnote._get_HJ(text=True),
                 'note_z' : schueler_entity.note.gesamtnote._get_Z(text=True),
             })
