@@ -68,13 +68,12 @@ class NotenberechnungLegacy(NotenberechnungGeneric):
             w_v1 = 0 if w_d >= 1 else m_h - self.w_th if w_d < 1 else 0
             w_v2 = 0 if w_d >= 1 else m_h + self.w_th if w_d < 1 else 0
             w_0 = 15 - 0
-            
-        w_v3 = 0 if w_d >= 1 else abs(w_0/self.w_th) if w_d < 1 else 0
-        
+                    
         if (not verbesserung_is_enabled) or (n_v_g == 0) or (self.w_th==0) or (w_d >= 1):
-            w_v4 = 0
             w_v3 = 0
+            w_v4 = 0
         else:
+            w_v3 = 0 if (w_d >= 1) else abs(w_0/self.w_th) if w_d < 1 else 0
             w_v4 = (n_v_1 * w_v1 + n_v_o * m_s1 + n_v_2 * w_v2)/n_v_g
         
         # Berechnung der schriftlichen Note
