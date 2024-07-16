@@ -20,6 +20,7 @@ setup(
         "numpy",
         "pandas",
         "datetime",
+        "python-dateutil",
         "matplotlib",
     ],
     classifiers=[
