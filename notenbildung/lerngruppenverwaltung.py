@@ -403,7 +403,7 @@ class NotenberechnungGeneric:
         self._ax.set_title(title, pad=35)
 
         # Legende
-        self._ax.legend(loc='upper center', bbox_to_anchor=(0.5, 1.1), ncol=len(ax.get_lines()))
+        self._ax.legend(loc='upper center', bbox_to_anchor=(0.5, 1.1), ncol=len(self._ax.get_lines()))
         
         self._ax.yaxis.set_minor_locator(plt.MultipleLocator(0.5))
         self._ax.grid(which='minor', axis='y', linestyle=':', linewidth=0.5, color='black')
