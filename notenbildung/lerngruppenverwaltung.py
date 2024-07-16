@@ -519,25 +519,30 @@ class LerngruppeEntity:
                 raise ValueError("Dieses Objekt enthält keine sid {sid}")
         
             self.schueler[sid].plot(parent=self, **kwargs)
+            
+    def _get_group_vars_as_dict(self):
+        group_vars = {
+            'stufe': self.stufe,
+            'zug' : self.zug,
+            'fach': self.fach.name if self.fach!=None else None,
+            'klasse' : self._name(),
+            'kurs' : self.kurs,
+        }    
+        return group_vars
 
     def _export(self):
         export_list = []
         for schueler_entity in self.schueler.values():
-            schueler_dict = {
+            schueler_dict = self._get_group_vars_as_dict().update({
                 'sid': schueler_entity.sid,
                 'vorname': schueler_entity.vorname,
                 'nachname': schueler_entity.nachname,
-                'stufe': self.stufe,
-                'zug' : self.zug,
-                'fach': self.fach.name if self.fach!=None else None,
-                'klasse' : self._name(),
-                'kurs' : self.kurs,
                 'note_s' : float(schueler_entity.note.m_s),
                 'note_m' : float(schueler_entity.note.m_m),
                 'note' : float(schueler_entity.note.gesamtnote),
                 'note_hj' : schueler_entity.note.gesamtnote._get_HJ(text=True),
                 'note_z' : schueler_entity.note.gesamtnote._get_Z(text=True),
-            }
+            })
             
             export_list.append(schueler_dict)
         
