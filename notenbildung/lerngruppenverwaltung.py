@@ -97,6 +97,8 @@ class NotenberechnungGeneric:
         self.sj_start, self.sj_ende = None, None
         self._v_enabled = v_enabled
         self._art = ['m', 'KT', 'KA', 'GFS']
+        self._fig = None
+        self._ax = None
 
     def to(self, newsystem):
         if not issubclass(newsystem, SystemGeneric):
@@ -324,6 +326,10 @@ class NotenberechnungGeneric:
         else:
             return {}      
     
+    def _close_plot(self):
+        if self._fig is not None:
+            plt.close(self._fig)
+    
     def plot_time_series(self, save=None, sid = None, parent = None, formats = ['jpg'], **kwargs):
         if not isinstance(sid, SchuelerEntity):
             sid = None
@@ -352,7 +358,7 @@ class NotenberechnungGeneric:
         noten_muendlich = self._get_leistung_for_types(LeistungM)
 
         # Erstelle die Figure und Subplots
-        fig, ax = plt.subplots(figsize=(10, 6))
+        self._fig, self._ax = plt.subplots(figsize=(10, 6))
         
         corr = analysis.get('corr')
         m = analysis.get('m')
@@ -360,30 +366,30 @@ class NotenberechnungGeneric:
             if abs(corr)>0.5 and (m!=0):
                 sign = 'x' if m<0 else '+'
                 change = ''.join([sign]*int(abs(m)/0.005))
-                plt.text(0.01, 0.99, change, transform=ax.transAxes, fontsize=12,
+                plt.text(0.01, 0.99, change, transform=self._ax.transAxes, fontsize=12,
                           verticalalignment='top', bbox=dict(facecolor='white', alpha=0.5))
         
         # Erstelle Plots
-        ax.plot(dates, gesamtnoten, marker='None', linestyle='-', color='r', label='Gesamtnote')
-        ax.plot(dates, schriftlich, marker='None', linestyle='--', color='b', label='⌀ schriftlich')
-        ax.plot(dates, muendlich, marker='None', linestyle=':', color='g', label='⌀ mündlich')
+        self._ax.plot(dates, gesamtnoten, marker='None', linestyle='-', color='r', label='Gesamtnote')
+        self._ax.plot(dates, schriftlich, marker='None', linestyle='--', color='b', label='⌀ schriftlich')
+        self._ax.plot(dates, muendlich, marker='None', linestyle=':', color='g', label='⌀ mündlich')
         
-        ax.plot([n.date for n in noten_ka], [n.note for n in noten_ka], marker='o', linestyle='None', color='r', label='KA')
-        ax.plot([n.date for n in noten_kt], [n.note for n in noten_kt], marker='x', linestyle='None', color='b', label='KT')
-        ax.plot([n.date for n in noten_muendlich], [n.note for n in noten_muendlich], marker='v', linestyle='None', color='g', label='mündlich')
-        ax.plot(dates[-1], result[-1].gesamtnote._get_Z(), marker='None', color='k', linestyle='None', label='Stand')
+        self._ax.plot([n.date for n in noten_ka], [n.note for n in noten_ka], marker='o', linestyle='None', color='r', label='KA')
+        self._ax.plot([n.date for n in noten_kt], [n.note for n in noten_kt], marker='x', linestyle='None', color='b', label='KT')
+        self._ax.plot([n.date for n in noten_muendlich], [n.note for n in noten_muendlich], marker='v', linestyle='None', color='g', label='mündlich')
+        self._ax.plot(dates[-1], result[-1].gesamtnote._get_Z(), marker='None', color='k', linestyle='None', label='Stand')
 
         # Setze die Zeitachsen-Begrenzungen
-        ax.set_xlim(self.sj_start, self.sj_ende)
+        self._ax.set_xlim(self.sj_start, self.sj_ende)
         
         # Y-Achsen Skalierung basierend auf noten.system
-        ax.set_ylim(*self.system._get_lims())
+        self._ax.set_ylim(*self.system._get_lims())
         if self.system._is_inverted():
-            ax.invert_yaxis()
+            self._ax.invert_yaxis()
         
         # Achsenbeschriftungen und Titel
-        ax.set_xlabel('Datum')
-        ax.set_ylabel('Gesamtnote')
+        self._ax.set_xlabel('Datum')
+        self._ax.set_ylabel('Gesamtnote')
         if (sid!=None) and (parent!=None):
             title = f'{sid.vorname} {sid.nachname}, {parent.kurs}, {parent.fach.name}, Schuljahr {self.sj_start.year}/{self.sj_ende.year}'
         elif (sid!=None):
@@ -394,24 +400,24 @@ class NotenberechnungGeneric:
         if self._typ != None:
             title += f', {self._typ._get_name()}'
         
-        ax.set_title(title, pad=35)
+        self._ax.set_title(title, pad=35)
 
         # Legende
-        ax.legend(loc='upper center', bbox_to_anchor=(0.5, 1.1), ncol=len(ax.get_lines()))
+        self._ax.legend(loc='upper center', bbox_to_anchor=(0.5, 1.1), ncol=len(ax.get_lines()))
         
-        ax.yaxis.set_minor_locator(plt.MultipleLocator(0.5))
-        ax.grid(which='minor', axis='y', linestyle=':', linewidth=0.5, color='black')
-        fig.tight_layout()
+        self._ax.yaxis.set_minor_locator(plt.MultipleLocator(0.5))
+        self._ax.grid(which='minor', axis='y', linestyle=':', linewidth=0.5, color='black')
+        self._fig.tight_layout()
         
         if self._v_enabled:
             # Diskretisierungsbereich
             baseline = (np.ceil(float(gesamtnoten[-1]))+np.floor(float(gesamtnoten[-1])))/2
-            xlims = ax.get_xlim()
+            xlims = self._ax.get_xlim()
             rect = patches.Rectangle((xlims[0], baseline - self.w_th), xlims[1]-xlims[0], 2*self.w_th, linewidth=1, edgecolor='none', facecolor='red', alpha=0.15)
-            ax.add_patch(rect)
+            self._ax.add_patch(rect)
 
         # Datumsformatierung der x-Achse
-        fig.autofmt_xdate()
+        self._fig.autofmt_xdate()
 
         # Speichern der Figur, falls save angegeben ist
         if save is not None:
@@ -421,7 +427,8 @@ class NotenberechnungGeneric:
             # Speichern der Figur
             for exp_format in list(set(['pdf','svg','jpg']).intersection(set(formats))):
                 cvars['format'] = exp_format
-                fig.savefig(save+'.'+exp_format, **cvars)
+                self._fig.savefig(save+'.'+exp_format, **cvars)
+            self._close_plot()
         else:
             # Anzeigen der Figur
             plt.show()
