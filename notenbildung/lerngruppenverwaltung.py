@@ -377,7 +377,7 @@ class NotenberechnungGeneric:
         self._ax.plot([n.date for n in noten_ka], [n.note for n in noten_ka], marker='o', linestyle='None', color='r', label='KA')
         self._ax.plot([n.date for n in noten_kt], [n.note for n in noten_kt], marker='x', linestyle='None', color='b', label='KT')
         self._ax.plot([n.date for n in noten_muendlich], [n.note for n in noten_muendlich], marker='v', linestyle='None', color='g', label='mündlich')
-        self._ax.plot(dates[-1], result[-1].gesamtnote._get_Z(), marker='+', color='k', linestyle='None', label='Stand')
+        self._ax.plot(dates[-1], result[-1].gesamtnote._get_Z(), marker='p', color='k', linestyle='None', label='Stand')
 
         # Setze die Zeitachsen-Begrenzungen
         self._ax.set_xlim(self.sj_start, self.sj_ende)
