@@ -69,7 +69,16 @@ class NotenberechnungGeneric:
     """
     Mit dieser Klasse werden Noten berechnet und auf Gültigkeit der Notenbildungsverordnung überprüft.
     """
-    def __init__(self, w_sm = ConfigNVO.w_sm, w_th = ConfigNVO.w_th, w_s0 = ConfigNVO.w_s0, n_KT_0 = ConfigNVO.n_KT_0, system = ConfigNVO.system, v_enabled = ConfigNVO.v_enabled, fach=None):
+    def __init__(self,
+                 w_sm = ConfigNVO.w_sm,
+                 w_th = ConfigNVO.w_th,
+                 w_s0 = ConfigNVO.w_s0,
+                 n_KT_0 = ConfigNVO.n_KT_0,
+                 system = ConfigNVO.system,
+                 v_enabled = ConfigNVO.v_enabled,
+                 fach=None,
+                 parent = None,
+                 ):
         self._typ = None
         self._fach = None
         if fach is not None:
@@ -77,6 +86,9 @@ class NotenberechnungGeneric:
                 raise ValueError("Der übergebene Typ muss von der Klasse FachGeneric sein.")
             else:
                 self._fach = fach
+        
+        self._set_parent(parent)
+
         if not issubclass(system, SystemGeneric):
             raise ValueError(f'Das System muss ein Objekt der SystemGeneric-Klasse sein.')
         if not 0 <= float(w_th) <= 0.5:
@@ -99,6 +111,16 @@ class NotenberechnungGeneric:
         self._art = ['m', 'KT', 'KA', 'GFS']
         self._fig = None
         self._ax = None
+    
+    def _set_parent(self, parent):
+        self.info = {}
+        self.parent = None
+        if parent is not None:
+            if not isinstance(parent, SchuelerEntity):
+                raise ValueError("Das übergebene Objekt  muss von der Klasse SchuelerEntity sein.")
+            else:
+                self.parent = parent
+                self.info = self.parent._get_sid_vars_as_dict()        
 
     def to(self, newsystem):
         if not issubclass(newsystem, SystemGeneric):
@@ -122,7 +144,11 @@ class NotenberechnungGeneric:
         if self._fach==None:
             return None
         
-        checks = self._fach.limits.check_limits(self.noten+self._get_verbesserungen(), show_warnings=show_warnings)
+        checks = self._fach.limits.check_limits(
+                                                self.noten+self._get_verbesserungen(),
+                                                show_warnings=show_warnings,
+                                                info = self.info,
+                                                )
         
         return checks
             
@@ -226,6 +252,7 @@ class NotenberechnungGeneric:
                     'nr' : kwargs.get('nr'),
                     'von' : kwargs.get('von'),
                     'bis' : kwargs.get('bis'),
+                    'due' : kwargs.get('due'),
                     }
             
             if art == 'm':
@@ -478,6 +505,7 @@ class SchuelerEntity:
     def setze_note(self, note):
         if not isinstance(note, NotenberechnungGeneric):
             raise ValueError("Das übergebene Objekt ist keine Instanz der Klasse Notenberechnung.")
+        note._set_parent(self)
         self._notenberechnung = note
         self.note = self._notenberechnung.berechne_gesamtnote()
 

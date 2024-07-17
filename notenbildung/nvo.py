@@ -424,17 +424,37 @@ class Weight:
 #
 #
 class VerbesserungStatus:
-    def __init__(self, text):
-        self.text = text if text != None else '---'
+    def __init__(self, text, due=None):
+        self._text = text if text != None else '---'
+        self.text = None
+        self.due = self._parse_date(due) if due is not None else None
         self._check()
     
     def _check(self):
-        self._enabled = True if self.text != "---" else False
-        self.status = True if self.text == "fertig" else False if self.text == "fehlt" else None        
+        self._enabled = True if self._text != "---" else False
+        self.status = True if self._text == "fertig" else False if self._text == "fehlt" else None    
+        self.text = self._text
+
+        if (self.due is not None) and self._enabled:
+            current_date = datetime.now()
+            if current_date > self.due and self._text == 'offen':
+                self.text = 'fehlt'
+                self.status = False
+            elif current_date < self.due:
+                self.text = f'offen bis {self.due.strftime("%d.%m.%Y")}'
     
     def _disable(self):
         self.text = '---'
+        self._text = '---'
         self._check()
+
+    def _parse_date(self, date_str):
+        if isinstance(date_str, datetime):
+            return date_str
+        try:
+            return datetime.strptime(date_str, "%Y-%m-%d")
+        except (ValueError, TypeError):
+            raise ValueError("Ungültiges Datumsformat")
 
     def __str__(self):
         return self._print()
@@ -469,7 +489,7 @@ class LeistungGeneric:
         self._art = None
         self._is_punctual = True
         
-        self.status = VerbesserungStatus(kwargs.get('status','---'))
+        self.status = VerbesserungStatus(kwargs.get('status','---'), due = kwargs.get('due'))
         
         self.nr = kwargs.get('nr')
         self._nr = None
@@ -506,6 +526,7 @@ class LeistungGeneric:
             'nr': self._get_nr(),
             'von': self.von,
             'bis': self.bis,
+            'due': self.status.due,
         }
 
     def __str__(self):
@@ -623,7 +644,16 @@ class LeistungV(LeistungGeneric):
             else:
                 raise ValueError("Fehler beim Initialisieren des Verbesserungsobjektes")
         
+        
+        # cleanup kwargs
+        if 'due' in kwargs:
+            _ = kwargs.pop('due')
+            kwargs['status'] = '---'
+        
+        # init parent class
         super().__init__(**kwargs)
+        
+        # class parameters
         self._art = 'V'
         self._attribut = AttributS
         self.status._disable()
@@ -683,14 +713,15 @@ class LimitsGeneric:
         return result
 
     @classmethod
-    def check_limits(cls, leistungen, show_warnings=True):
+    def check_limits(cls, leistungen, show_warnings=True, info = {}):
         checks = cls._check_limits(leistungen)
+        infoprint = "\n".join([f"{key}: {value}" for key, value in info.items()])
 
         if not checks['passed']:
             if show_warnings==True:
-                _ = [print(f"Warnung: Zu wenige Leistungen: {limit['sum']}: Anzahl der Leistungen {limit['result']}<{limit['min']}") if not limit['passed'] and limit['softfail'] else None for limit in checks['result']]
+                _ = [print(f"{infoprint}\nWarnung: Zu wenige Leistungen: {limit['sum']}: Anzahl der Leistungen {limit['result']}<{limit['min']}") if not limit['passed'] and limit['softfail'] else None for limit in checks['result']]
 
-            _ = [print(f"Fehler: zu viele Leistungen: {limit['sum']}: Anzahl der Leistungen {limit['result']}>{limit['max']}") for limit in checks['result'] if not limit['passed'] and limit['hardfail']]
+            _ = [print(f"{infoprint}\nFehler: zu viele Leistungen: {limit['sum']}: Anzahl der Leistungen {limit['result']}>{limit['max']}") for limit in checks['result'] if not limit['passed'] and limit['hardfail']]
             
             if any(not limit['passed'] and limit['hardfail'] for limit in checks['result']):
                 raise ValueError("Fehler: zu viele Leistungen")
