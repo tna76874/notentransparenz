@@ -442,6 +442,14 @@ class SchuelerEntity:
         
         if None in (self.sid, self.vorname, self.nachname):
             raise ValueError("Alle Werte (sid, vorname, nachname) müssen beim Initialisieren gesetzt werden.")
+        
+    def _get_sid_vars_as_dict(self):
+        sid_vars = {
+                    'sid' : self.sid,
+                    'vorname' : self.vorname,
+                    'nachname' : self.nachname,
+                    }
+        return sid_vars
 
     def _get_name(self):
         return f"{self.nachname}, {self.vorname}"
@@ -555,8 +563,28 @@ class LerngruppeEntity:
         
         return export_list
     
+    def _export_sid_dict(self, full=False):
+        note_list = []
+        for schueler_entity in self.schueler.values():
+            if full==True:
+                leistungen = schueler_entity._notenberechnung._get_list_with_verbesserungen()
+            else:
+                schueler_entity._notenberechnung._get_list()
+                
+            for note in leistungen:
+                    note_dict = self._get_group_vars_as_dict()
+                    note_dict.update(schueler_entity._get_sid_vars_as_dict())
+                    note_dict.update(note)
+                    note_list.append(note_dict)
+               
+        
+        return note_list
+    
     def get_dataframe(self):
         return pd.DataFrame(self._export())
+
+    def get_sid_dataframes(self, full = False):
+        return pd.DataFrame(self._export_sid_dict(full=full))
     
     def save_excel(self, path):
         path = os.path.abspath(os.path.splitext(path)[0] + '.xlsx')
