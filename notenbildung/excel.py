@@ -42,7 +42,7 @@ class ExcelSheetConfig:
         for index in self.df.iloc[2:,0].index:
             sid = self.df.iloc[index,0]
             schueler = SchuelerEntity(sid=sid, vorname=self.df.iloc[index,1], nachname=self.df.iloc[index,2])
-            noten = Notenberechnung(**self.parse_config)
+            noten = NotenberechnungSimple(**self.parse_config)
             
             for column in range(3, self.df.shape[1]):
                 typ_and_nr = types.get(self.df.iloc[0,column], {})

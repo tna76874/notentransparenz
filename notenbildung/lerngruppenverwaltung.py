@@ -69,6 +69,7 @@ class NotenberechnungGeneric:
     """
     Mit dieser Klasse werden Noten berechnet und auf Gültigkeit der Notenbildungsverordnung überprüft.
     """
+    _leistungs_types = {}
     def __init__(self,
                  w_sm = ConfigNVO.w_sm,
                  w_th = ConfigNVO.w_th,
@@ -111,8 +112,16 @@ class NotenberechnungGeneric:
         self._art = ['m', 'KT', 'KA', 'GFS']
         self._fig = None
         self._ax = None
+                
+        self._validate_leistungs_types()
+
+    def _validate_leistungs_types(self):
+        is_valid = len(self._get_list_of_allowed_leistungen())==len(list(set(self._get_list_of_allowed_leistungen())))
+        if not is_valid:
+            raise ValueError("Mehrfache Definition der Leistungstypen in dem Modell.")
         
-        self._leistungs_types = {}
+    def _get_list_of_allowed_leistungen(self):
+        return sum(self._leistungs_types.values(), [])
     
     def _set_parent(self, parent):
         self.info = {}
@@ -236,6 +245,9 @@ class NotenberechnungGeneric:
     def leistung_hinzufuegen(self, Leistung):
         if not isinstance(Leistung, LeistungGeneric):
             raise ValueError(f'Ungültiges Leistungsobjekt. Es muss ein Objekt der (Sub-)Klasse LeistungGeneric übergeben werden.')
+        if not type(Leistung) in self._get_list_of_allowed_leistungen():
+            raise ValueError(f'Die Leistung ist in dem aktuellen Modell nicht mit einbezogen.')
+            
         self.noten.append(Leistung)
         self._update_handler_after_added_leistung()
 
@@ -274,8 +286,7 @@ class NotenberechnungGeneric:
             else:
                 raise ValueError(f'Ungültige Art der Note: {art}')
                 
-            self.noten.append(Leistung)
-            self._update_handler_after_added_leistung()
+            self.leistung_hinzufuegen(Leistung)
 
         else:
             raise ValueError(f'Fehlende Informationen. Bitte geben Sie {" und ".join(mandatory_keys)} an.')

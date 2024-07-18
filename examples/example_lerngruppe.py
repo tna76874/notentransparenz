@@ -3,9 +3,6 @@
 """
 Beispiel: Noten mit Lerngruppen
 """
-import os
-import sys
-sys.path.append(os.path.dirname(os.path.abspath(os.path.dirname(__file__))))
 from notenbildung.models import *
 
 # es gibt die Fächer FachM, FachPH und FachINF

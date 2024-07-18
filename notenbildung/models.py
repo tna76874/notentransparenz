@@ -10,13 +10,13 @@ from notenbildung.nvo import *
 from notenbildung.lerngruppenverwaltung import *
     
 class Notenberechnung(NotenberechnungGeneric):
+    _leistungs_types = {
+                            'KA' : [LeistungKA, LeistungGFS, LeistungKAP],
+                            'KT' : [LeistungKT, LeistungS, LeistungKTP],
+                            'm'  : [LeistungM],
+                            }
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
-        self._leistungs_types = {
-                                'KA' : [LeistungKA, LeistungGFS, LeistungKAP],
-                                'KT' : [LeistungKT, LeistungS, LeistungKTP],
-                                'm'  : [LeistungM],
-                                }
 
     def _calculate(self):       
         # Calculate
@@ -75,14 +75,15 @@ class Notenberechnung(NotenberechnungGeneric):
         return result
     
 class NotenberechnungSimple(NotenberechnungGeneric):
+    _leistungs_types = {
+                            'KA' : [LeistungKA, LeistungGFS],
+                            'KT' : [LeistungKT],
+                            'm'  : [LeistungM],
+                            }
     def __init__(self, **kwargs):
         kwargs['v_enabled'] = False
         super().__init__(**kwargs)
-        self._leistungs_types = {
-                                'KA' : [LeistungKA, LeistungGFS],
-                                'KT' : [LeistungKT],
-                                'm'  : [LeistungM],
-                                }
+
 
     def _calculate(self):       
         # Calculate

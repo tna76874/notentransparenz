@@ -547,10 +547,10 @@ class LeistungGeneric:
         return f'({output})'
         
 class LeistungM(LeistungGeneric):
+    _art = 'm'
+    _attribut = AttributM
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
-        self._art = 'm'
-        self._attribut = AttributM
         self.status._disable()          
         
         self.von = self._parse_date(kwargs.get('von') or self.date)
@@ -563,46 +563,48 @@ class LeistungM(LeistungGeneric):
             self._is_punctual = False      
         
 class LeistungKA(LeistungGeneric):
+    _art = 'KA'
+    _attribut = AttributS
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
-        self._art = 'KA'
-        self._attribut = AttributS
         
 class LeistungGFS(LeistungGeneric):
+    _art = 'GFS'
+    _attribut = AttributP
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
-        self._art = 'GFS'
-        self._attribut = AttributP
         self.status._disable()
 
 class LeistungKAP(LeistungGeneric):
+    _art = 'KAP'
+    _attribut = AttributP
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
-        self._art = 'KAP'
-        self._attribut = AttributP
         self.status._disable()
 
 class LeistungKT(LeistungGeneric):
+    _art = 'KT'
+    _attribut = AttributS
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
-        self._art = 'KT'
-        self._attribut = AttributS
 
 class LeistungS(LeistungGeneric):
+    _art = 'S'
+    _attribut = AttributS
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
-        self._art = 'S'
-        self._attribut = AttributS
         self.status._disable()
 
 class LeistungKTP(LeistungGeneric):
+    _art = 'KTP'
+    _attribut = AttributP
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
-        self._art = 'KTP'
-        self._attribut = AttributP
         self.status._disable()
 
 class LeistungV(LeistungGeneric):
+    _art = 'V'
+    _attribut = AttributS
     def __init__(self, **kwargs):
         mean = kwargs.get('mean')
         
@@ -654,8 +656,6 @@ class LeistungV(LeistungGeneric):
         super().__init__(**kwargs)
         
         # class parameters
-        self._art = 'V'
-        self._attribut = AttributS
         self.status._disable()
 
     def _get_date(self):
