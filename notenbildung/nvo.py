@@ -575,30 +575,30 @@ class LeistungGFS(LeistungGeneric):
         self._attribut = AttributP
         self.status._disable()
 
+class LeistungKAP(LeistungGeneric):
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+        self._art = 'KAP'
+        self._attribut = AttributP
+        self.status._disable()
+
 class LeistungKT(LeistungGeneric):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
         self._art = 'KT'
         self._attribut = AttributS
 
-class LeistungP(LeistungGeneric):
+class LeistungS(LeistungGeneric):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
-        self._art = 'P'
-        self._attribut = AttributP
+        self._art = 'S'
+        self._attribut = AttributS
         self.status._disable()
 
 class LeistungKTP(LeistungGeneric):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
         self._art = 'KTP'
-        self._attribut = AttributP
-        self.status._disable()
-
-class LeistungKAP(LeistungGeneric):
-    def __init__(self, **kwargs):
-        super().__init__(**kwargs)
-        self._art = 'KAP'
         self._attribut = AttributP
         self.status._disable()
 

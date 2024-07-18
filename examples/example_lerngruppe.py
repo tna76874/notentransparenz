@@ -3,6 +3,9 @@
 """
 Beispiel: Noten mit Lerngruppen
 """
+import os
+import sys
+sys.path.append(os.path.dirname(os.path.abspath(os.path.dirname(__file__))))
 from notenbildung.models import *
 
 # es gibt die Fächer FachM, FachPH und FachINF
@@ -16,7 +19,7 @@ note.note_hinzufuegen(art='KA', date = '2024-04-15', note=2.5, status='fertig')
 note.note_hinzufuegen(art='KA', date = '2024-03-01', note=4, status='fertig')
 note.note_hinzufuegen(art='KTP', date = '2024-03-15', note=5, status='fertig')
 note.note_hinzufuegen(art='KT', date = '2024-02-01', note=4)
-note.note_hinzufuegen(art='KT', date = '2024-01-01', note=2.75, status='offen', due = '2024-05-05')
+note.note_hinzufuegen(art='S', date = '2024-01-01', note=2.75, status='offen', due = '2024-05-05')
 note.note_hinzufuegen(art='m', date = '2023-09-01', note=3.0)
 note.note_hinzufuegen(art='m', date = '2023-10-01', note=3.25)
 note.note_hinzufuegen(art='m', date = '2023-11-01', note=3.5)

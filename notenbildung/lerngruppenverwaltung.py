@@ -111,6 +111,8 @@ class NotenberechnungGeneric:
         self._art = ['m', 'KT', 'KA', 'GFS']
         self._fig = None
         self._ax = None
+        
+        self._leistungs_types = {}
     
     def _set_parent(self, parent):
         self.info = {}
@@ -259,14 +261,16 @@ class NotenberechnungGeneric:
                 Leistung = LeistungM(**pars)
             elif art == 'KA':
                 Leistung = LeistungKA(**pars)
-            elif art == 'KT':
-                Leistung = LeistungKT(**pars)
-            elif art == 'KTP':
-                Leistung = LeistungKTP(**pars)
             elif art == 'KAP':
                 Leistung = LeistungKAP(**pars)
             elif art == 'GFS':
                 Leistung = LeistungGFS(**pars)
+            elif art == 'KT':
+                Leistung = LeistungKT(**pars)
+            elif art == 'KTP':
+                Leistung = LeistungKTP(**pars)
+            elif art == 'S':
+                Leistung = LeistungS(**pars)
             else:
                 raise ValueError(f'Ungültige Art der Note: {art}')
                 
@@ -379,10 +383,10 @@ class NotenberechnungGeneric:
         schriftlich = [entry.m_s for entry in result]
         muendlich = [entry.m_m for entry in result]
         
-        # Einzelnoten
-        noten_ka = self._get_leistung_for_types(LeistungKA, LeistungGFS, LeistungKAP)
-        noten_kt = self._get_leistung_for_types(LeistungKT, LeistungKTP)
-        noten_muendlich = self._get_leistung_for_types(LeistungM)
+        # Einzelnoten       
+        noten_ka = self._get_leistung_for_types(*self._leistungs_types.get('KA'))
+        noten_kt = self._get_leistung_for_types(*self._leistungs_types.get('KT'))
+        noten_muendlich = self._get_leistung_for_types(*self._leistungs_types.get('m'))
 
         # Erstelle die Figure und Subplots
         self._fig, self._ax = plt.subplots(figsize=(10, 6))
