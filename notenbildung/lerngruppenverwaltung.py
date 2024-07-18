@@ -233,7 +233,13 @@ class NotenberechnungGeneric:
 
     def _get_leistung_for_types(self, *args):
         return list(filter(lambda x: any(isinstance(x, arg) for arg in args), self.noten))
-
+    
+    def _get_leistung_for_category(self, key):
+        if key not in self._leistungs_types.keys():
+            raise ValueError(f"Unbekannte Kathegorie. Erlaubt ist: {', '.join(self._leistungs_types.keys())}")
+            
+        return self._get_leistung_for_types(*self._leistungs_types.get(key))
+        
     def _get_weight_for_types(self, *args):
         return Weight(*self._get_leistung_for_types(*args))
     
@@ -395,9 +401,9 @@ class NotenberechnungGeneric:
         muendlich = [entry.m_m for entry in result]
         
         # Einzelnoten       
-        noten_ka = self._get_leistung_for_types(*self._leistungs_types.get('KA'))
-        noten_kt = self._get_leistung_for_types(*self._leistungs_types.get('KT'))
-        noten_muendlich = self._get_leistung_for_types(*self._leistungs_types.get('m'))
+        noten_ka = self._get_leistung_for_category('KA')
+        noten_kt = self._get_leistung_for_category('KT')
+        noten_muendlich = self._get_leistung_for_category('m')
 
         # Erstelle die Figure und Subplots
         self._fig, self._ax = plt.subplots(figsize=(10, 6))

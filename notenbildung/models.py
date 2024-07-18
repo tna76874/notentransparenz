@@ -11,10 +11,10 @@ from notenbildung.lerngruppenverwaltung import *
     
 class Notenberechnung(NotenberechnungGeneric):
     _leistungs_types = {
-                            'KA' : [LeistungKA, LeistungGFS, LeistungKAP],
-                            'KT' : [LeistungKT, LeistungS, LeistungKTP],
-                            'm'  : [LeistungM],
-                            }
+                        'KA' : [LeistungKA, LeistungGFS, LeistungKAP],
+                        'KT' : [LeistungKT, LeistungS, LeistungKTP],
+                        'm'  : [LeistungM],
+                        }
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
 
@@ -25,9 +25,9 @@ class Notenberechnung(NotenberechnungGeneric):
         verbesserung_is_enabled = any(note.status._enabled for note in self.noten) and self._v_enabled
         
         # Filtern der Noten nach Art
-        noten_ka = self._get_leistung_for_types(*self._leistungs_types.get('KA'))
-        noten_kt = self._get_leistung_for_types(*self._leistungs_types.get('KT'))
-        noten_muendlich = self._get_leistung_for_types(*self._leistungs_types.get('m'))
+        noten_ka = self._get_leistung_for_category('KA')
+        noten_kt = self._get_leistung_for_category('KT')
+        noten_muendlich = self._get_leistung_for_category('m')
         
         # Ermitteln der Anzahl der verschiedenen Leistungsarten
         n_KA = len(noten_ka)
@@ -36,7 +36,7 @@ class Notenberechnung(NotenberechnungGeneric):
 
         # Validate count
         if len(self.noten)!=n_KA+n_KT+n_m:
-            raise ValueError("Counting Error")
+            raise ValueError("Validation Error: Die Anzahl der erfassten Leistungen stimmt nicht mit den Leistungen in der Berechnung überein.")
                 
         # mündliche Note
         m_m = Weight(*noten_muendlich)
@@ -76,10 +76,10 @@ class Notenberechnung(NotenberechnungGeneric):
     
 class NotenberechnungSimple(NotenberechnungGeneric):
     _leistungs_types = {
-                            'KA' : [LeistungKA, LeistungGFS],
-                            'KT' : [LeistungKT],
-                            'm'  : [LeistungM],
-                            }
+                        'KA' : [LeistungKA, LeistungGFS],
+                        'KT' : [LeistungKT],
+                        'm'  : [LeistungM],
+                        }
     def __init__(self, **kwargs):
         kwargs['v_enabled'] = False
         super().__init__(**kwargs)
@@ -90,9 +90,9 @@ class NotenberechnungSimple(NotenberechnungGeneric):
         result = Note(datum=self.noten[-1].date, system=self.system)
         
         # Filtern der Noten nach Art
-        noten_ka = self._get_weight_for_types(*self._leistungs_types.get('KA'))
-        noten_kt = self._get_weight_for_types(*self._leistungs_types.get('KT'))
-        noten_muendlich = self._get_weight_for_types(*self._leistungs_types.get('m'))
+        noten_ka = self._get_leistung_for_category('KA')
+        noten_kt = self._get_leistung_for_category('KT')
+        noten_muendlich = self._get_leistung_for_category('m')
 
         
         # Randfall: nur mündliche Noten
