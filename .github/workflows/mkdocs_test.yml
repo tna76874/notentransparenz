@@ -10,7 +10,7 @@ on:
       - 'mkdocs.yml'
       - '.github/workflows/mkdocs_test.yml'
       - 'generate_latex_metadata.sh'
-      - 'generate_markdown_from_latex.sh'
+      - 'generate_markdown.sh'
 permissions:
   contents: write
 jobs:

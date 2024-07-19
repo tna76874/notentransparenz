@@ -1,7 +1,10 @@
+examples/notebooks/*.md
 examples/2023_2024
 docs/files/tex/notentransparenz.md
 docs/files/tex/notentransparenz.pdf
 docs/files/tex/_version
+docs/*_files
+docs/*.md
 site
 # Byte-compiled / optimized / DLL files
 __pycache__/

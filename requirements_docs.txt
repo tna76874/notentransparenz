@@ -3,3 +3,5 @@ mkdocs-macros-plugin
 mkdocs-glightbox
 python-markdown-math
 mike
+jupyter
+nbconvert

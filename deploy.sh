@@ -13,15 +13,17 @@ done
 
 deploy() {
   if [ -n "$deploy_branch" ]; then
+    ./generate_markdown.sh
     mike deploy --branch ${deploy_branch} --update-aliases --push ${VERSION_REPO} latest || mike deploy --branch ${deploy_branch} --push ${VERSION_REPO} latest
     mike set-default --branch ${deploy_branch} --push latest
   else
     ./generate_latex_metadata.sh
-    ./generate_markdown_from_latex.sh
-    deploy_branch="gh-pages-local"
-    mike deploy --branch ${deploy_branch} --update-aliases ${VERSION_REPO} latest || mike deploy --branch ${deploy_branch} ${VERSION_REPO} latest
-    mike set-default --branch ${deploy_branch} latest
-    mike serve --branch ${deploy_branch}
+    ./generate_markdown.sh
+    # deploy_branch="gh-pages-local"
+    # mike deploy --branch ${deploy_branch} --update-aliases ${VERSION_REPO} latest || mike deploy --branch ${deploy_branch} ${VERSION_REPO} latest
+    # mike set-default --branch ${deploy_branch} latest
+    # mike serve --branch ${deploy_branch}
+    mkdocs serve
   fi
 }
 

@@ -11,7 +11,7 @@ on:
       - 'mkdocs.yml'
       - '.github/workflows/mkdocs.yml'
       - 'generate_latex_metadata.sh'
-      - 'generate_markdown_from_latex.sh'
+      - 'generate_markdown.sh'
 permissions:
   contents: write
 jobs:
@@ -36,11 +36,6 @@ jobs:
       - name: Create temporary tex ./docs/files
         run: |
           ./generate_latex_metadata.sh
-        shell: bash
-
-      - name: Generate markdown version of notentransparenz
-        run: |
-          ./generate_markdown_from_latex.sh
         shell: bash
 
       - name: Compile LaTeX document
