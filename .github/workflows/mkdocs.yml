@@ -38,11 +38,24 @@ jobs:
           ./generate_latex_metadata.sh
         shell: bash
 
-      - name: Compile LaTeX document
+      - name: Compile Full LaTeX document
         uses: xu-cheng/latex-action@v3
         with:
           root_file: notentransparenz.tex
           working_directory: ./docs/files/tex
+          args: '-pdf -file-line-error -halt-on-error -interaction=nonstopmode -jobname=notentransparenz'
+
+      - name: Generate Latex pipeline file
+        run: |
+          ./generate_latex_pipeline_doc.sh
+        shell: bash
+
+      - name: Compile Lite LaTeX document
+        uses: xu-cheng/latex-action@v3
+        with:
+          root_file: notentransparenz.tex
+          working_directory: ./docs/files/tex
+          args: '-pdf -file-line-error -halt-on-error -interaction=nonstopmode -jobname=nt'
 
       - name: Configure Git Credentials
         run: |

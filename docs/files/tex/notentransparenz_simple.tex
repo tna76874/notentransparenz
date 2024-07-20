@@ -1,7 +1,15 @@
 \section{Notenbildung (verbalisiert, vereinfachte Darstellung)}
-{\small
+
+
+{
+	
+\ifthenelse{\boolean{simple}}{}{\small}
+
 \begin{enumerate}[label=\textbf{(\arabic*)}]
 	\item Schriftliche und mündliche Noten sind im Verhältnis $\wsm : 1$ gewichtet.
+
+	\ifthenelse{\boolean{simple}}{
+	}{
 	\item Verbesserungen können in die schriftliche Note mit einfließen.
 	\begin{enumerate}[label=\textbf{(\alph*)}]
 		\item Verbesserungen werden immer in Bezug zu der aktuellen Note aus Kurztests und Klassenarbeiten gewichtet.
@@ -10,7 +18,10 @@
 		\item Die Gewichtung der Verbesserungen entspricht, äquivalent umgerechnet auf die jeweiligen Randbereiche des Notensystems in Bezug zu dem relativen Anteil des Einflussbereichs $\wth$, zwei Klassenarbeiten.
 		\item Die Änderung der schriftlichen Note durch Verbesserungen ist auf höchstens $2 \cdot \wth$ begrenzt.
 	\end{enumerate}
+	}
+	
 	\item Eine Anzahl von $\nktnull$ Kurztests werden zusammen wie $\wsnull$ Klassenarbeiten gewertet. Unterschreitet die Anzahl der Kurztests $\nktnull$, wird anteilig gewertet. Bei Überschreitung werden alle Kurztests zusammen wie  $\wsnull$ Klassenarbeiten gewertet. \textit{Beispiel}:  $\nktnull = 3$; $\wsnull=1$; Werden nur zwei Kurztests geschrieben, dann werden diese zusammen soviel gewertet wie $\frac{2}{3}$ Klassenarbeiten. Werden fünf Kurztests geschrieben, werden diese zusammen soviel gewertet wie eine Klassenarbeit.
 \end{enumerate}
+
 }
 

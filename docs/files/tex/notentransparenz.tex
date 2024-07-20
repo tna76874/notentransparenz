@@ -1,4 +1,5 @@
 \documentclass{article}
+\usepackage{ifthen}
 \usepackage[a4paper, left=1.5cm, right=1.5cm, top=1.6cm, bottom=1.5cm]{geometry}
 \usepackage{amsmath}
 \usepackage{parskip}
@@ -27,6 +28,16 @@
 {\normalsize\bfseries}{\thesection}{1em}{}
 \titlespacing*{\section}{0pt}{0.5ex plus 0.2ex minus 0.1ex}{0.3ex plus 0.1ex}
 
+%%%%%%%%%%%%%%% TOGGLE %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\newboolean{simple}
+\setboolean{simple}{false}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%%%%%%%%%%%%%%% IMPORTING PIPELINE TEX FILE IF PRESENT %%%%%
+\IfFileExists{pipeline.tex}{\input{pipeline.tex}}{}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% NEWCOMMANDS
 \newcommand{\versiondir}{_version}
 \newcommand{\standtex}{\input{\versiondir/timestamp_tex.tex}v\input{\versiondir/commit_count_tex.tex}}
 \newcommand{\onlinedoc}{\href{https://transparenz.hilberg.eu}{https://transparenz.hilberg.eu}}
@@ -68,16 +79,31 @@
 \newcommand{\wsm}{w_{\mathrm{sm}}}
 
 
-\fancypagestyle{meinpagestyle}{
+\fancypagestyle{pagestylesimple}{
 	\fancyhf{}
 	\fancyhead[L]{\large Notentransparenz}
-    \fancyhead[C]{Seite \thepage\ von~\pageref{LastPage}}
+	\fancyhead[C]{Seite \thepage\ von~\pageref{LastPage}}
+	\fancyhead[R]{}
+	\fancyfoot[L]{\input{\versiondir/VERSION_DOC_LITE.tex}}
+	\fancyfoot[C]{\footnotesize ID: \input{\versiondir/commit_tex.tex} }
+	\fancyfoot[R]{}
+}
+
+\fancypagestyle{pagestylefull}{
+	\fancyhf{}
+	\fancyhead[L]{\large Notentransparenz}
+	\fancyhead[C]{Seite \thepage\ von~\pageref{LastPage}}
 	\fancyhead[R]{Hilberg}
 	\fancyfoot[L]{\input{\versiondir/VERSION_href.tex}}
 	\fancyfoot[C]{\footnotesize ID: \input{\versiondir/commit_repo.tex} }
 	\fancyfoot[R]{\onlinedoc}
 }
-\pagestyle{meinpagestyle}
+
+\ifthenelse{\boolean{simple}}{
+\pagestyle{pagestylesimple}
+}{
+\pagestyle{pagestylefull}
+}
 
 
 \begin{document}
@@ -86,10 +112,16 @@
 
 	Die Notenbildung ist in Abschnitt C exakt definiert. Zur besseren Verständlichkeit wird diese in Abschnitt A vereinfacht und exemplarisch dargestellt. Die Reduktion in Abschnitt A hat keinen Anspruch auf Vollständigkeit.
 
+	\ifthenelse{\boolean{simple}}{
+	\begin{description}
+		\item[Version Notentransparenz] \input{\versiondir/VERSION_DOC_LITE.tex}\\abrufbar unter \input{\versiondir/VERSION_DOC_LITE_href_with_url.tex}\\ID: \input{\versiondir/commit_tex.tex}
+	\end{description}
+	}{
 	\begin{description}
 		\item[Version Notentransparenz] \input{\versiondir/VERSION_href.tex}\\abrufbar unter \input{\versiondir/VERSION_href_with_url.tex}\\ ID: \input{\versiondir/commit_repo.tex}
 		\item[Version dieses Dokumentes] \input{\versiondir/VERSION_DOC_href.tex}\\abrufbar unter \input{\versiondir/VERSION_DOC_href_with_url.tex}\\ ID: \input{\versiondir/commit_tex.tex}
 	\end{description}
+	}
 		
 	\rule{\linewidth}{2pt}
 	\renewcommand{\contentsname}{Abschnitte der Notentransparenz}
