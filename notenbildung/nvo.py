@@ -446,6 +446,7 @@ class VerbesserungStatus:
     def _disable(self):
         self.text = '---'
         self._text = '---'
+        self.due = None
         self._check()
 
     def _parse_date(self, date_str):

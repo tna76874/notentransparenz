@@ -141,6 +141,13 @@ class NotenberechnungGeneric:
 
         if newsystem!=self.system:
             self.system = newsystem
+            
+    def _set_verbesserungen(self, mean=None):
+        if not isinstance(mean, NoteEntity):
+            raise ValueError("Es muss ein gültiges Notenobjekt übergeben werden")
+        
+        verbesserungen = [ LeistungV(mean=mean, status = note.status, system = note.system, w_th = self.w_th, date=note.date, due=note.status.due) for note in self.noten ]
+        self._verbesserungen = [verbesserung for verbesserung in verbesserungen if not np.isnan(verbesserung.note)]
         
     def _get_verbesserungen(self):
         return [verbesserung for verbesserung in self._verbesserungen if not np.isnan(verbesserung.note)]
@@ -597,7 +604,8 @@ class LerngruppeEntity:
     def _export(self):
         export_list = []
         for schueler_entity in self.schueler.values():
-            schueler_dict = self._get_group_vars_as_dict().update({
+            schueler_dict = self._get_group_vars_as_dict()
+            schueler_dict.update({
                 'sid': schueler_entity.sid,
                 'vorname': schueler_entity.vorname,
                 'nachname': schueler_entity.nachname,
