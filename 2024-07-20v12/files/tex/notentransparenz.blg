@@ -1,0 +1,51 @@
+This is BibTeX, Version 0.99d (TeX Live 2024)
+Capacity: max_strings=200000, hash_size=200000, hash_prime=170003
+The top-level auxiliary file: notentransparenz.aux
+The style file: plain.bst
+Database file #1: references.bib
+Warning--to sort, need author or key in wikigaussklammer
+Warning--to sort, need author or key in wikibetrag
+Warning--to sort, need author or key in wikimodulo
+Warning--to sort, need author or key in wikilog
+You've used 5 entries,
+            2118 wiz_defined-function locations,
+            516 strings with 4784 characters,
+and the built_in function-call counts, 905 in all, are:
+= -- 89
+> -- 11
+< -- 0
++ -- 7
+- -- 2
+* -- 27
+:= -- 121
+add.period$ -- 16
+call.type$ -- 5
+change.case$ -- 16
+chr.to.int$ -- 0
+cite$ -- 9
+duplicate$ -- 35
+empty$ -- 115
+format.name$ -- 2
+if$ -- 216
+int.to.chr$ -- 0
+int.to.str$ -- 5
+missing$ -- 0
+newline$ -- 29
+num.names$ -- 2
+pop$ -- 50
+preamble$ -- 1
+purify$ -- 11
+quote$ -- 0
+skip$ -- 25
+stack$ -- 0
+substring$ -- 25
+swap$ -- 5
+text.length$ -- 0
+text.prefix$ -- 0
+top$ -- 0
+type$ -- 20
+warning$ -- 4
+while$ -- 2
+width$ -- 6
+write$ -- 49
+(There were 4 warnings)
