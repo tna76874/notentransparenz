@@ -95,9 +95,9 @@ class NotenberechnungSimple(NotenberechnungGeneric):
         result = Note(datum=self.noten[-1].date, system=self.system)
         
         # Filtern der Noten nach Art
-        noten_ka = self._get_leistung_for_category('KA')
-        noten_kt = self._get_leistung_for_category('KT')
-        noten_muendlich = self._get_leistung_for_category('m')
+        noten_ka = Weight(*self._get_leistung_for_category('KA'))
+        noten_kt = Weight(*self._get_leistung_for_category('KT'))
+        noten_muendlich = Weight(*self._get_leistung_for_category('m'))
 
         
         # Randfall: nur mündliche Noten
