@@ -5,8 +5,8 @@ Die [Notenbildungsverordnung (NVO)]({{ extra.urls.nvo.html }}) ist [hier]({{ ext
 <object data="{{ extra.urls.docfile }}" type="application/pdf" width="700px" height="700px">
     <embed src="{{ extra.urls.docfile }}">
         <p>Dieser Browser unterstützt die Anzeige von PDFs nicht. Bitte herunterladen:<br>
-        <a href="{{ extra.urls.docfile }}">Download: Notentransparenz</a></p>   
+        </p>   
     </embed>
 </object>
 
-
+<p><a href="{{ extra.urls.docfile }}">Download: Notentransparenz</a></p> 
