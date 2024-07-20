@@ -9,7 +9,4 @@ Die [Notenbildungsverordnung (NVO)]({{ extra.urls.nvo.html }}) ist [hier]({{ ext
     </embed>
 </object>
 
-<p>Hier geht es zu einer Web-Absicht des PDF-Dokuments:<br>
-<a href="{{ extra.urls.markdown_transparenz }}">Web-Absicht</a></p>
-
 

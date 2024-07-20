@@ -22,17 +22,6 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Install pandoc
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y pandoc pandoc-citeproc
-        shell: bash
-
-      - name: Check for changes in LaTeX file
-        id: check_changes
-        run: |
-          echo "changed=$(git diff --name-only HEAD^ HEAD | grep -Eq 'docs/files/tex' && echo 'true' || echo 'false')" >> $GITHUB_OUTPUT
-
       - name: Create temporary tex ./docs/files
         run: |
           ./generate_latex_metadata.sh
