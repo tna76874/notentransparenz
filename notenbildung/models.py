@@ -60,10 +60,14 @@ class Notenberechnung(NotenberechnungGeneric):
         if (verbesserung_is_enabled==True) and (self.w_th != 0):
             w_v3 = abs(m_s1.mean._get_system_range()/self.w_th) if (m_s1.mean!=None) else None
             self._verbesserungen = [ LeistungV(mean=m_s1.mean, status = note.status, system = note.system, w_th = self.w_th, date=note.date) for note in self.noten ]
-            V = Weight(*self._verbesserungen).set_weight(w_v3)
-        
-            # schriftliche Note berechnen
-            m_s = m_s1+V
+            nv1 = sum(1 for v in self._verbesserungen if v.count == False)
+            nv2 = sum(1 for v in self._verbesserungen if v.count == True)
+            if nv1==nv2:
+                m_s = m_s1
+            else:
+                V = Weight(*self._verbesserungen).set_weight(w_v3)
+                # schriftliche Note berechnen
+                m_s = m_s1+V
         else:
             # schriftliche Note
             m_s = m_s1

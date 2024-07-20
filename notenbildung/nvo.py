@@ -560,13 +560,18 @@ class LeistungM(LeistungGeneric):
             raise ValueError(f"Ungültiger Zeitraum für die mündlichen noten.")
             
         if self.von != self.bis:
-            self._is_punctual = False      
+            self._is_punctual = False   
+
+        self._art = 'm'
+        self._attribut = AttributM
         
 class LeistungKA(LeistungGeneric):
     _art = 'KA'
     _attribut = AttributS
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
+        self._art = 'KA'
+        self._attribut = AttributS
         
 class LeistungGFS(LeistungGeneric):
     _art = 'GFS'
@@ -574,6 +579,8 @@ class LeistungGFS(LeistungGeneric):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
         self.status._disable()
+        self._art = 'GFS'
+        self._attribut = AttributP
 
 class LeistungKAP(LeistungGeneric):
     _art = 'KAP'
@@ -581,12 +588,16 @@ class LeistungKAP(LeistungGeneric):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
         self.status._disable()
+        self._art = 'KAP'
+        self._attribut = AttributP
 
 class LeistungKT(LeistungGeneric):
     _art = 'KT'
     _attribut = AttributS
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
+        self._art = 'KT'
+        self._attribut = AttributS
 
 class LeistungS(LeistungGeneric):
     _art = 'S'
@@ -594,6 +605,8 @@ class LeistungS(LeistungGeneric):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
         self.status._disable()
+        self._art = 'S'
+        self._attribut = AttributS
 
 class LeistungKTP(LeistungGeneric):
     _art = 'KTP'
@@ -601,6 +614,8 @@ class LeistungKTP(LeistungGeneric):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
         self.status._disable()
+        self._art = 'KTP'
+        self._attribut = AttributP
 
 class LeistungV(LeistungGeneric):
     _art = 'V'
@@ -634,15 +649,19 @@ class LeistungV(LeistungGeneric):
         else:
             raise ValueError("Invalid System Class for Verbesserung.")
         
+        count = '---'
         if status._enabled == False or (w_d >= 1):
             kwargs['note'] = NoteEntity(None, system = system)
         else:
             if status.status==None:
                 kwargs['note'] = NoteEntity(mean, system = system)
+                count = None
             elif status.status==False:
                 kwargs['note'] = NoteEntity(w_v1, system = system)
+                count = False
             elif status.status==True:
                 kwargs['note'] = NoteEntity(w_v2, system = system)
+                count = True
             else:
                 raise ValueError("Fehler beim Initialisieren des Verbesserungsobjektes")
         
@@ -657,6 +676,9 @@ class LeistungV(LeistungGeneric):
         
         # class parameters
         self.status._disable()
+        self.count = count
+        self._art = 'V'
+        self._attribut = AttributS
 
     def _get_date(self):
         return None
