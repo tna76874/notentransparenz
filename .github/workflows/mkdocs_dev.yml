@@ -2,8 +2,7 @@ name: mkdocs
 on:
   push:
     branches:
-      - master
-      - main
+      - dev 
     paths:
       - 'docs/**'
       - 'examples/**'
@@ -12,9 +11,10 @@ on:
       - '.github/workflows/mkdocs.yml'
       - 'generate_latex_metadata.sh'
       - 'generate_markdown.sh'
+
 env:
-  PAGES_DOMAIN: transparenz.hilberg.eu
-  GH_BRANCH: gh-pages
+  PAGES_DOMAIN: dev.transparenz.hilberg.eu
+  GH_BRANCH: gh-pages-dev
 
 permissions:
   contents: write
@@ -48,7 +48,7 @@ jobs:
             git commit -m "Add CNAME"
           git push
         fi
-
+        
   deploy:
     runs-on: ubuntu-latest
     steps:
