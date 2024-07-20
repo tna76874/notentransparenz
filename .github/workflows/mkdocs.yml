@@ -81,7 +81,7 @@ jobs:
     - name: Checkout-Code
       uses: actions/checkout@v4
       with:
-        ref: ${GH_BRANCH}
+        ref: ${{env.GH_BRANCH}}
         fetch-depth: 0
 
     - name: Configure Git Credentials
