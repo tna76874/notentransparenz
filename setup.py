@@ -20,8 +20,9 @@ setup(
         "numpy",
         "pandas",
         "datetime",
-        "python-dateutil",
         "matplotlib",
+        "requests",
+        "openpyxl",
     ],
     classifiers=[
         'Development Status :: 1 - Planning',

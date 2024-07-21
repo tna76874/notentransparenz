@@ -7,12 +7,18 @@ Versioning Classes
 import os
 import subprocess
 from datetime import datetime, timedelta
-from dateutil import parser
 import argparse
+
+try:
+    import requests
+except:
+    pass
+
 import sys
-import requests
 sys.path.append(os.path.dirname(os.path.abspath(os.path.dirname(__file__))))
 from notenbildung.info import *
+
+
 
 class TransparenzPDF:
     def __init__(self, save_dir=None):
@@ -65,7 +71,7 @@ class GitVersion:
         last_change_info = result.stdout.decode('utf-8').strip().split()
         last_change_date_str = " ".join(last_change_info[:-1])
         self.commit_hash = last_change_info[-1]
-        self.change_date = parser.parse(last_change_date_str)
+        self.change_date = datetime.strptime(last_change_date_str, "%Y-%m-%d %H:%M:%S %z")
 
     def _get_change_count(self):
         from_time = self.change_date.strftime('%Y-%m-%d')
