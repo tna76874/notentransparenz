@@ -62,9 +62,29 @@ class GitVersion:
         self.commit_hash = None
         self.change_count = 0
         
+        self.checkpoints =  {
+                            'major' : 0,
+                            'minor' : 1,
+                            'last_minor_commit' : '0f8517748259553c10be57bba7b27e632c4c7cf0',
+                            }
+        
         self._get_last_change_date()
         self._get_change_count()
         self.write_to_file()
+        
+    def _get_semantic_version(self):
+        return f'{self.checkpoints.get("major")}.{self.checkpoints.get("minor")}.{self.count_commits_since_last_minor()}'
+
+    def count_commits_since_last_minor(self):
+        if 'minor' in self.checkpoints:
+            minor_commit_hash = self.checkpoints['last_minor_commit']
+            
+            result = subprocess.run(['git', 'rev-list', '--count', f'{minor_commit_hash}..HEAD', '--', self._get_git_root()], stdout=subprocess.PIPE)
+            commit_count_since_minor = int(result.stdout.decode('utf-8').strip())
+            
+            return commit_count_since_minor
+        else:
+            return 0
 
     def _get_last_change_date(self):
         result = subprocess.run(['git', 'log', '-1', '--format=%cd %H', '--date=iso', '--' ,self.path], stdout=subprocess.PIPE)
@@ -120,6 +140,5 @@ def main():
 
 if __name__ == "__main__":
     pass
-    self = TransparenzPDF('/tmp')
-    # self = GitVersion('../docs/files/')
+    self = GitVersion('../docs/files/')
     # main()

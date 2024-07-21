@@ -9,7 +9,7 @@ NVOPackage = GitVersion('.')
 
 setup(
     name='notenbildung',
-    version=notenbildung.__version__,
+    version=NVOPackage._get_semantic_version(),
     description='notentransparenz',
     url='https://github.com/tna76874/notentransparenz.git',
     author='lmh',
