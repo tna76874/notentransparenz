@@ -1,10 +1,15 @@
 [
   {
-    "version": "2024-07-21v5",
-    "title": "2024-07-21v5",
+    "version": "2024-07-21v6",
+    "title": "2024-07-21v6",
     "aliases": [
       "latest"
     ]
+  },
+  {
+    "version": "2024-07-21v5",
+    "title": "2024-07-21v5",
+    "aliases": []
   },
   {
     "version": "2024-07-21v4",
