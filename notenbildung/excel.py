@@ -156,8 +156,12 @@ class ExcelFileLoader:
 
     def export(self, typ='pdf'):
         for key, _ in enumerate(self.klassen):
+            pass
             gruppe = self.klassen[key].gruppe
             dataframe = gruppe.get_dataframe()
+            for fkey in ['note_s', 'note_m', 'note']:
+                dataframe[fkey] = dataframe[fkey].apply(lambda k: float(k))
+
             schuljahr = gruppe._get_sj()
             folder_name = os.path.join(os.path.dirname(self.file_path), f'{schuljahr}_{schuljahr+1}')
             if not os.path.exists(folder_name):
@@ -165,9 +169,13 @@ class ExcelFileLoader:
             file_name = f"{gruppe._name()}_{gruppe.fach.name}.xlsx"
             file_path = os.path.join(folder_name, file_name)
             with pd.ExcelWriter(file_path) as writer:
-                dataframe.to_excel(writer, index=False, sheet_name='Gesamt')
+                dataframe.to_excel(writer, index=False, sheet_name='Gesamt', float_format="%.2f")
                 for schueler in gruppe.schueler.values():
-                    schueler.get_dataframe().to_excel(writer, index=False, sheet_name=schueler._get_name())
+                    df_schueler = schueler.get_dataframe()[[ 'date', 'art', 'nr', 'note' ]]
+                    df_schueler['date'] = df_schueler['date'].apply(lambda x: x.strftime('%d.%m.%Y'))
+                    df_schueler['note_text'] = df_schueler['note'].apply(lambda k: k._get_HJ(text=True))
+                    df_schueler['note'] = df_schueler['note'].apply(lambda k: float(k))
+                    df_schueler.to_excel(writer, index=False, sheet_name=schueler._get_name(), float_format="%.2f")
             
             #Export Plots
             for sid in gruppe.schueler.keys():
