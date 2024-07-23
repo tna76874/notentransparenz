@@ -1,10 +1,16 @@
 [
   {
+    "version": "2024-07-23v3",
+    "title": "2024-07-23v3",
+    "aliases": [
+      "latest",
+      "2bc6c188deb960727ce6981a82612f767c5f5096"
+    ]
+  },
+  {
     "version": "2024-07-23v1",
     "title": "2024-07-23v1",
-    "aliases": [
-      "latest"
-    ]
+    "aliases": []
   },
   {
     "version": "2024-07-21v5",
