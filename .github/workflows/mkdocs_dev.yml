@@ -11,6 +11,7 @@ on:
       - '.github/workflows/mkdocs.yml'
       - 'generate_latex_metadata.sh'
       - 'generate_markdown.sh'
+      - 'deploy.sh'
 
 env:
   PAGES_DOMAIN: dev.transparenz.hilberg.eu
