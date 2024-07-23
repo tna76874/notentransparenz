@@ -339,15 +339,91 @@ class AttributP(AttributGeneric):
 
 #
 #
-# Klasse zur Gewichtung
+# Klassen zur Gewichtung
 #
 #
+class WeightHistory:
+    def __init__(self, left=None, right=None):
+        if not (isinstance(left, Weight) or left==None) or not (isinstance(right, Weight) or right==None):
+            raise TypeError("Die left und right Argumente müssen Weight-Objekte oder None sein")
+        
+        if left == None and right == None:
+            raise ValueError("Mindestens ein Wert muss angegeben sein.")
+        
+        self.left = left
+        self.right = right
+
+    def calculate_total_weight(self, total_weight=None):
+        if total_weight is None:
+            total_weight = {}
+        
+        weight_left = {}
+        weight_right = {}
+        
+        if self.left is not None:
+            if self.left._history is not None:
+                weight_left = self.left._history.calculate_total_weight()
+            weight_left = self._update_total_weight(weight_left, self.left._type, self.left.w)
+            weight_left = self._normalize_total_weight(total_weight=weight_left, weight = self.left.w)
+        
+        if self.right is not None:
+            if self.right._history is not None:
+                weight_right = self.right._history.calculate_total_weight(total_weight)               
+            weight_right = self._update_total_weight(weight_right, self.right._type, self.right.w)
+            weight_right = self._normalize_total_weight(total_weight=weight_right, weight = self.right.w)
+        
+        if not set(weight_right.keys()).isdisjoint(weight_left.keys()):
+            raise ValueError("Der Typ darf nur einfach vorkommen in der Gesamtgewichtung.")
+        
+        total_weight.update(weight_right)
+        total_weight.update(weight_left)
+        
+        total_weight = self._normalize_total_weight(total_weight=total_weight, weight = self._get_right_weight() + self._get_left_weight())
+        
+        return total_weight
+
+    def _get_left_weight(self):
+        if self.left == None:
+            return 0
+        else:
+            return self.left.w
+
+    def _get_right_weight(self):
+        if self.right == None:
+            return 0
+        else:
+            return self.right.w
+    
+    @staticmethod
+    def _update_total_weight(total_weight, types, weight):
+        types_count = {}
+        for type_ in types:
+            types_count[type_] = types_count.get(type_, 0) + 1
+    
+        for type_, count_ in types_count.items():
+            if type_ in total_weight.keys():
+                raise ValueError("Der Typ darf nur einfach vorkommen in der Gesamtgewichtung.")
+                
+            total_weight[type_] = total_weight.get(type_, 1) * weight *  count_/len(types)
+        
+        return total_weight
+
+    @staticmethod
+    def _normalize_total_weight(total_weight=None, weight=None):
+        total_sum = sum(weight for _, weight in total_weight.items())
+        for type_, _ in total_weight.items():
+            total_weight[type_] = total_weight.get(type_) / total_sum * weight
+        
+        return total_weight
+    
+        
 class Weight:
     def __init__(self, *noten):
         self.mean = None
         self.w = None
         self._n = len(noten)
         self._type = []
+        self._history = None
         
         if not all(isinstance(obj, LeistungGeneric) or isinstance(obj, NoteEntity) for obj in noten):
             raise TypeError("Nicht alle Objekte sind Instanzen von LeistungGeneric oder NoteEntity")
@@ -360,7 +436,26 @@ class Weight:
             self.mean = self._mean(noten)
         else:
             raise TypeError("Nicht erlaubte Klasse")
-        
+    
+    def calculate_total_weights(self):
+        if self._history==None:
+            history = WeightHistory(left=self)
+            return history.calculate_total_weight()
+        return self._history.calculate_total_weight()
+    
+    def calculate_percents(self):
+        percents = {k.describe():v for k,v in  self._get_normalized_weight(norm=100).items()}
+        return percents
+
+    def _get_normalized_weight(self, norm=1):
+        weights = self.calculate_total_weights()
+        return WeightHistory._normalize_total_weight(total_weight=weights, weight=norm)
+    
+    def add_history(self, history):
+        if not isinstance(history, WeightHistory) :
+            raise TypeError("Es muss ein WeightHistory-Objekt hinzugefügt werden.")
+        self._history = history
+        return self
         
 
     def __add__(self, other):
@@ -375,10 +470,11 @@ class Weight:
         if self.mean is not None and other.mean is not None:
             if self.w is None or other.w is None:
                 raise ValueError("Die Gewichtung muss angegeben sein.")
-
+                
+        
         new_weight = self.w + other.w
         combined = NoteEntity((float(self.mean)*self.w + float(other.mean)*other.w)/new_weight, system=self.mean.system)
-        return_weight = Weight(combined).set_type(list(set(self._type+other._type))).set_weight(new_weight)
+        return_weight = Weight(combined).set_weight(new_weight).add_history(WeightHistory(left=self, right=other))
         return return_weight
 
     def set_weight(self, w):
@@ -529,6 +625,10 @@ class LeistungGeneric:
             'bis': self.bis,
             'due': self.status.due,
         }
+    
+    @classmethod
+    def describe(cls):
+        return f'{cls._art} ({cls._attribut.long})'
 
     def __str__(self):
         return self._print()
