@@ -1,0 +1,139 @@
+\documentclass{article}
+\usepackage{ifthen}
+\usepackage[a4paper, left=1.5cm, right=1.5cm, top=1.6cm, bottom=1.5cm]{geometry}
+\usepackage{amsmath}
+\usepackage{parskip}
+\usepackage{enumitem}
+\usepackage[german]{babel}
+\usepackage{fancyhdr}
+\usepackage{datetime}
+\usepackage{hyperref}
+\usepackage{tikz}
+\hypersetup{
+	colorlinks=true,
+	linkcolor=black,
+	urlcolor=black,
+	citecolor=black
+}
+\usepackage{natbib}
+\usepackage{multicol}
+\usepackage{lastpage}
+
+\usepackage{helvet}
+\renewcommand{\familydefault}{\sfdefault}
+
+\usepackage{titlesec}
+\renewcommand{\thesection}{\Alph{section}}
+\titleformat{\section}
+{\normalsize\bfseries}{\thesection}{1em}{}
+\titlespacing*{\section}{0pt}{0.5ex plus 0.2ex minus 0.1ex}{0.3ex plus 0.1ex}
+
+%%%%%%%%%%%%%%% TOGGLE %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\newboolean{simple}
+\setboolean{simple}{false}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%%%%%%%%%%%%%%% IMPORTING PIPELINE TEX FILE IF PRESENT %%%%%
+\IfFileExists{pipeline.tex}{\input{pipeline.tex}}{}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% NEWCOMMANDS
+\newcommand{\versiondir}{_version}
+\newcommand{\standtex}{\input{\versiondir/timestamp_tex.tex}v\input{\versiondir/commit_count_tex.tex}}
+\newcommand{\onlinedoc}{\href{https://transparenz.hilberg.eu}{https://transparenz.hilberg.eu}}
+
+% NVO
+\newcommand{\nvourl}{https://www.landesrecht-bw.de/bsbw/document/jlr-NotBildVBWrahmen}
+
+% PARAMETERS
+% Mittelwerte
+\newcommand{\mkt}{\overline{m_{\mathrm{KT}}}}
+\newcommand{\mfp}{\overline{m_{\mathrm{P}}}}
+\newcommand{\mka}{\overline{m_{\mathrm{KA}}}}
+\newcommand{\mm}{\overline{m_{\mathrm{m}}}}
+\newcommand{\mseins}{\overline{m_{\mathrm{s}_1}}}
+\newcommand{\ms}{\overline{m_{\mathrm{s}}}}
+\newcommand{\mhalf}{m_{\mathrm{h}}}
+% Anzahlen
+\newcommand{\nkt}{n_{\mathrm{KT}}}
+\newcommand{\nfp}{n_{\mathrm{P}}}
+\newcommand{\nktnull}{n_{\mathrm{KT}_0}}
+\newcommand{\nka}{n_{\mathrm{KA}}}
+\newcommand{\nm}{n_{\mathrm{m}}}
+
+\newcommand{\nvg}{n_{\mathrm{v}_\mathrm{g}}}
+\newcommand{\nveins}{n_{\mathrm{v}_1}}
+\newcommand{\nvzwei}{n_{\mathrm{v}_2}}
+\newcommand{\nvo}{n_{\mathrm{v}_\mathrm{o}}}
+
+% Gewichte
+\newcommand{\wnull}{w_{0}}
+\newcommand{\wsnull}{w_{\mathrm{s}_0}}
+\newcommand{\ws}{w_{\mathrm{s}}}
+\newcommand{\wdis}{w_{\mathrm{d}}}
+\newcommand{\wth}{w_{\mathrm{th}}}
+\newcommand{\wveins}{w_{\mathrm{v}_1}}
+\newcommand{\wvzwei}{w_{\mathrm{v}_2}}
+\newcommand{\wvdrei}{w_{\mathrm{v}_3}}
+\newcommand{\wvvier}{w_{\mathrm{v}_4}}
+\newcommand{\wsm}{w_{\mathrm{sm}}}
+
+
+\fancypagestyle{pagestylesimple}{
+	\fancyhf{}
+	\fancyhead[L]{\large Notentransparenz}
+	\fancyhead[C]{Seite \thepage\ von~\pageref{LastPage}}
+	\fancyhead[R]{}
+	\fancyfoot[L]{\input{\versiondir/VERSION_DOC_LITE.tex}}
+	\fancyfoot[C]{\footnotesize ID: \input{\versiondir/commit_tex.tex} }
+	\fancyfoot[R]{}
+}
+
+\fancypagestyle{pagestylefull}{
+	\fancyhf{}
+	\fancyhead[L]{\large Notentransparenz}
+	\fancyhead[C]{Seite \thepage\ von~\pageref{LastPage}}
+	\fancyhead[R]{Hilberg}
+	\fancyfoot[L]{\input{\versiondir/VERSION_href.tex}}
+	\fancyfoot[C]{\footnotesize ID: \input{\versiondir/commit_repo.tex} }
+	\fancyfoot[R]{\onlinedoc}
+}
+
+\ifthenelse{\boolean{simple}}{
+\pagestyle{pagestylesimple}
+}{
+\pagestyle{pagestylefull}
+}
+
+
+\begin{document}
+	\vspace*{-1cm}
+	In diesem Dokument zur Notentransparenz ist nach \href{\nvourl}{Notenbildungsverordnung (NVO) §7-§10} \cite{nvo} dargelegt, wie in der Regel die verschiedenen Leistungen bei der Notenbildung gewichtet werden.
+
+	Die Notenbildung ist in Abschnitt C exakt definiert. Zur besseren Verständlichkeit wird diese in Abschnitt A vereinfacht und exemplarisch dargestellt. Die Reduktion in Abschnitt A hat keinen Anspruch auf Vollständigkeit.
+
+	\ifthenelse{\boolean{simple}}{
+	\begin{description}
+		\item[Version Notentransparenz] \input{\versiondir/VERSION_DOC_LITE.tex}\\ID: \input{\versiondir/commit_tex.tex}
+	\end{description}
+	}{
+	\begin{description}
+		\item[Version Notentransparenz] \input{\versiondir/VERSION_href.tex}\\abrufbar unter \input{\versiondir/VERSION_href_with_url.tex}\\ ID: \input{\versiondir/commit_repo.tex}
+		\item[Version dieses Dokumentes] \input{\versiondir/VERSION_DOC_href.tex}\\abrufbar unter \input{\versiondir/VERSION_DOC_href_with_url.tex}\\ ID: \input{\versiondir/commit_tex.tex}
+	\end{description}
+	}
+		
+	\rule{\linewidth}{2pt}
+	\renewcommand{\contentsname}{Abschnitte der Notentransparenz}
+	\tableofcontents
+	\rule{\linewidth}{2pt}
+	
+	\input{notentransparenz_simple.tex}
+	
+	\vspace{0.2cm}
+
+	\input{notentransparenz_mdl.tex}
+
+	\clearpage
+	\input{notentransparenz_definition.tex}
+\end{document}
