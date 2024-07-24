@@ -19,9 +19,9 @@ class ExcelSheetConfig:
 
         self.test_types = {
             'KA': LeistungKA,
+            'GFS': LeistungGFS,
             'KT': LeistungKT,
-            'KAP': LeistungKAP,
-            'KTP': LeistungKTP,
+            'P': LeistungP,
             'm': LeistungM,
         }
         self.parse_config = ConfigNVO.get_config()

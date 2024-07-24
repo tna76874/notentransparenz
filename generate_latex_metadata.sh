@@ -2,8 +2,10 @@
 export TEX_DIR='docs/files/tex'
 export VERSION_DIR="${TEX_DIR}/_version"
 export DATE_FORMAT='%d.%m.%Y'
-export FILE_FULL='notentransparenz'
-export FILE_LITE='nt'
+export FILE_FULL_DIRECT='notentransparenz'
+export FILE_LITE_DIRECT='nt'
+export FILE_FULL='nt'
+export FILE_LITE='ntl'
 
 export REPO_COMMIT_URL='https://github.com/tna76874/notentransparenz/commit/'
 
@@ -35,8 +37,10 @@ echo "\href{${REPO_COMMIT_URL}${commit_tex}}{${commit_tex}}" > ${VERSION_DIR}/co
 echo "\href{${REPO_COMMIT_URL}${commit_repo}}{${commit_repo}}" > ${VERSION_DIR}/commit_repo.tex
 
 VERSION_REPO_URL="https://transparenz.hilberg.eu/${VERSION_REPO}"
-VERSION_DOC_URL="https://transparenz.hilberg.eu/${VERSION_REPO}/files/tex/${FILE_FULL}.pdf"
-VERSION_DOC_URL_LITE="https://transparenz.hilberg.eu/${VERSION_REPO}/files/tex/${FILE_LITE}.pdf"
+VERSION_DOC_URL_DIRECT="https://transparenz.hilberg.eu/${VERSION_REPO}/files/tex/${FILE_FULL_DIRECT}.pdf"
+VERSION_DOC_URL_LITE_DIRECT="https://transparenz.hilberg.eu/${VERSION_REPO}/files/tex/${FILE_LITE_DIRECT}.pdf"
+VERSION_DOC_URL="https://transparenz.hilberg.eu/${VERSION_REPO}/${FILE_FULL}.pdf"
+VERSION_DOC_URL_LITE="https://transparenz.hilberg.eu/${VERSION_REPO}/${FILE_LITE}.pdf"
 
 echo "\href{${VERSION_DOC_URL}}{${VERSION_DOC}}" > ${VERSION_DIR}/VERSION_DOC_href.tex
 echo "\href{${VERSION_REPO_URL}}{${VERSION_REPO}}" > ${VERSION_DIR}/VERSION_href.tex

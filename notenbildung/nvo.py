@@ -683,15 +683,6 @@ class LeistungGFS(LeistungGeneric):
         self._art = 'GFS'
         self._attribut = AttributP
 
-class LeistungKAP(LeistungGeneric):
-    _art = 'KAP'
-    _attribut = AttributP
-    def __init__(self, **kwargs):
-        super().__init__(**kwargs)
-        self.status._disable()
-        self._art = 'KAP'
-        self._attribut = AttributP
-
 class LeistungKT(LeistungGeneric):
     _art = 'KT'
     _attribut = AttributS
@@ -709,14 +700,17 @@ class LeistungS(LeistungGeneric):
         self._art = 'S'
         self._attribut = AttributS
 
-class LeistungKTP(LeistungGeneric):
-    _art = 'KTP'
+class LeistungP(LeistungGeneric):
+    _art = 'P'
     _attribut = AttributP
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
         self.status._disable()
-        self._art = 'KTP'
+        self._art = 'P'
         self._attribut = AttributP
+
+class LeistungKTP(LeistungP):
+    pass
 
 class LeistungV(LeistungGeneric):
     _art = 'V'

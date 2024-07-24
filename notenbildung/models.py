@@ -11,8 +11,8 @@ from notenbildung.lerngruppenverwaltung import *
     
 class Notenberechnung(NotenberechnungGeneric):
     _leistungs_types = {
-                        'KA' : [LeistungKA, LeistungGFS, LeistungKAP],
-                        'KT' : [LeistungKT, LeistungS, LeistungKTP],
+                        'KA' : [LeistungKA, LeistungGFS],
+                        'KT' : [LeistungKT, LeistungS, LeistungP],
                         'm'  : [LeistungM],
                         }
     def __init__(self, **kwargs):
@@ -82,7 +82,7 @@ class Notenberechnung(NotenberechnungGeneric):
 class NotenberechnungSimple(NotenberechnungGeneric):
     _leistungs_types = {
                         'KA' : [LeistungKA, LeistungGFS],
-                        'KT' : [LeistungKT],
+                        'KT' : [LeistungKT, LeistungS, LeistungP],
                         'm'  : [LeistungM],
                         }
     def __init__(self, **kwargs):
@@ -133,7 +133,7 @@ if __name__ == "__main__":
     self.note_hinzufuegen(art='KA', date = '2024-03-01', note=4, status='fertig')
     self.note_hinzufuegen(art='GFS', date = '2024-03-05', note=3.25)
     self.note_hinzufuegen(art='KA', date = '2024-03-15', note=5, status='uv')
-    self.note_hinzufuegen(art='KTP', date = '2024-02-01', note=4)
+    self.note_hinzufuegen(art='P', date = '2024-02-01', note=4)
     self.note_hinzufuegen(art='KT', date = '2024-01-01', note=2.75, status='fehlt')
     self.note_hinzufuegen(art='m', date = '2023-10-05', von = '2023-09-01', note=3.0)
     self.note_hinzufuegen(art='m', date = '2023-12-05', von = '2023-10-06', note=3.25)

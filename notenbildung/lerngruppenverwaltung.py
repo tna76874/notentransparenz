@@ -286,14 +286,12 @@ class NotenberechnungGeneric:
                 Leistung = LeistungM(**pars)
             elif art == 'KA':
                 Leistung = LeistungKA(**pars)
-            elif art == 'KAP':
-                Leistung = LeistungKAP(**pars)
             elif art == 'GFS':
                 Leistung = LeistungGFS(**pars)
             elif art == 'KT':
                 Leistung = LeistungKT(**pars)
-            elif art == 'KTP':
-                Leistung = LeistungKTP(**pars)
+            elif art == 'P':
+                Leistung = LeistungP(**pars)
             elif art == 'S':
                 Leistung = LeistungS(**pars)
             else:
@@ -674,7 +672,7 @@ if __name__ == "__main__":
     self.note_hinzufuegen(art='KA', date = '2024-03-01', note=4, status='fertig')
     self.note_hinzufuegen(art='GFS', date = '2024-03-05', note=3.25)
     self.note_hinzufuegen(art='KA', date = '2024-03-15', note=5, status='uv')
-    self.note_hinzufuegen(art='KTP', date = '2024-02-01', note=4)
+    self.note_hinzufuegen(art='P', date = '2024-02-01', note=4)
     self.note_hinzufuegen(art='KT', date = '2024-01-01', note=2.75, status='fehlt')
     self.note_hinzufuegen(art='m', date = '2023-10-05', von = '2023-09-01', note=3.0)
     self.note_hinzufuegen(art='m', date = '2023-12-05', von = '2023-10-06', note=3.25)
