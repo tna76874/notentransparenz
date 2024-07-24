@@ -1,0 +1,905 @@
+
+<!doctype html>
+<html lang="de" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+      
+      
+        <link rel="canonical" href="https://transparenz.hilberg.eu/2024-07-24v1/python/">
+      
+      
+        <link rel="prev" href="../abgabe/">
+      
+      
+      
+      <link rel="icon" href="../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.0, mkdocs-material-9.5.30">
+    
+    
+      
+        <title>Anhang - Notentransparenz</title>
+      
+    
+    
+      <link rel="stylesheet" href="../assets/stylesheets/main.3cba04c6.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+    <script>__md_scope=new URL("..",location),__md_hash=e=>[...e].reduce((e,_)=>(e<<5)-e+_.charCodeAt(0),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+    
+   <link href="../assets/stylesheets/glightbox.min.css" rel="stylesheet"/><style>
+    html.glightbox-open { overflow: initial; height: 100%; }
+    .gslide-title { margin-top: 0px; user-select: text; }
+    .gslide-desc { color: #666; user-select: text; }
+    .gslide-image img { background: white; }
+    .gscrollbar-fixer { padding-right: 15px; }
+    .gdesc-inner { font-size: 0.75rem; }
+    body[data-md-color-scheme="slate"] .gdesc-inner { background: var(--md-default-bg-color);}
+    body[data-md-color-scheme="slate"] .gslide-title { color: var(--md-default-fg-color);}
+    body[data-md-color-scheme="slate"] .gslide-desc { color: var(--md-default-fg-color);}</style> <script src="../assets/javascripts/glightbox.min.js"></script></head>
+  
+  
+    <body dir="ltr">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#noten-berechnen-mit-python" class="md-skip">
+          Zum Inhalt
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+      <div data-md-color-scheme="default" data-md-component="outdated" hidden>
+        
+      </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Kopfzeile">
+    <a href=".." title="Notentransparenz" class="md-header__button md-logo" aria-label="Notentransparenz" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54Z"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3V6m0 5h18v2H3v-2m0 5h18v2H3v-2Z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Notentransparenz
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Anhang
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+    
+      <script>var media,input,key,value,palette=__md_get("__palette");if(palette&&palette.color){"(prefers-color-scheme)"===palette.color.media&&(media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']"),palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent"));for([key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      <label class="md-header__button md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5Z"/></svg>
+      </label>
+      <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Suche" placeholder="Suche" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5Z"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12Z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Suche">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Zurücksetzen" aria-label="Zurücksetzen" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12 19 6.41Z"/></svg>
+        </button>
+      </nav>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Suche wird initialisiert
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href=".." title="Notentransparenz" class="md-nav__button md-logo" aria-label="Notentransparenz" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54Z"/></svg>
+
+    </a>
+    Notentransparenz
+  </label>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href=".." class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Notentransparenz
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../korrektur/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Korrekturzeichen
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../verbesserung/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Verbesserungen
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../abgabe/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    digitale Abgabe
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  <span class="md-ellipsis">
+    Anhang
+  </span>
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  <span class="md-ellipsis">
+    Anhang
+  </span>
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Inhaltsverzeichnis">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Inhaltsverzeichnis
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#installation" class="md-nav__link">
+    <span class="md-ellipsis">
+      Installation
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#excel-import" class="md-nav__link">
+    <span class="md-ellipsis">
+      Excel Import
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#lerngruppe-verwalten" class="md-nav__link">
+    <span class="md-ellipsis">
+      Lerngruppe verwalten
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#lerngruppe-aus-excel-importieren-und-ergebnisse-exportieren" class="md-nav__link">
+    <span class="md-ellipsis">
+      Lerngruppe aus Excel importieren und Ergebnisse exportieren
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Inhaltsverzeichnis">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Inhaltsverzeichnis
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#installation" class="md-nav__link">
+    <span class="md-ellipsis">
+      Installation
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#excel-import" class="md-nav__link">
+    <span class="md-ellipsis">
+      Excel Import
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#lerngruppe-verwalten" class="md-nav__link">
+    <span class="md-ellipsis">
+      Lerngruppe verwalten
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#lerngruppe-aus-excel-importieren-und-ergebnisse-exportieren" class="md-nav__link">
+    <span class="md-ellipsis">
+      Lerngruppe aus Excel importieren und Ergebnisse exportieren
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+<h1 id="noten-berechnen-mit-python">Noten berechnen mit python</h1>
+<p>Als Hilfestellung bei der Berechnung der Noten wird im Rahmen der Notentransparenz ein python-Modul zur Verfügung gestellt. Dieses kann über die "launch binder"-Buttons im Browser und ohne lokale Installation genutzt werden.</p>
+<h2 id="installation">Installation</h2>
+<pre><code>pip install git+https://github.com/tna76874/notentransparenz.git@f1421de394b6d3830d06aa1cf1bc90ffe9ea4a90
+</code></pre>
+<p><a href="https://mybinder.org/v2/gh/tna76874/notebooks-school/stable?labpath=Sonstiges%2FNoten%2FNoten.ipynb"><img alt="badge" src="https://img.shields.io/badge/launch-binder-579aca.svg?logo=data:image/png;base64,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" /></a></p>
+<pre><code>#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+&quot;&quot;&quot;
+Beispiel
+&quot;&quot;&quot;
+
+from notenbildung.notenbildung import *
+
+noten = Notenberechnung(w_s0=1, w_sm=3, system = SystemN, v_enabled=True, w_th = 0.4)
+noten.note_hinzufuegen(art='KA', date = '2024-04-10', note=2, status='fertig')
+noten.note_hinzufuegen(art='KA', date = '2024-04-15', note=2.5, status='fertig')
+noten.note_hinzufuegen(art='KA', date = '2024-03-01', note=3, status='fertig')
+noten.note_hinzufuegen(art='KA', date = '2024-03-15', note=5, status='fertig')
+noten.note_hinzufuegen(art='KT', date = '2024-02-01', note=4, status='fertig')
+noten.note_hinzufuegen(art='KT', date = '2024-01-01', note=2.75, status='fertig')
+noten.note_hinzufuegen(art='m', date = '2023-09-01', note=3.0)
+noten.note_hinzufuegen(art='m', date = '2023-10-01', note=3.25)
+noten.note_hinzufuegen(art='m', date = '2023-11-01', note=3.5)
+
+gesamtnote = noten.berechne_gesamtnote()
+print(gesamtnote)
+noten.plot_time_series()
+</code></pre>
+<h2 id="excel-import">Excel Import</h2>
+<pre><code>#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+&quot;&quot;&quot;
+Beispiel Excel
+&quot;&quot;&quot;
+
+from notenbildung.notenbildung import *
+
+noten = Notenberechnung(w_s0=1, w_sm=3, system = SystemN, v_enabled=True)
+noten.add_from_excel('data.xlsx')
+
+gesamtnote = noten.berechne_gesamtnote()
+print(gesamtnote)
+noten.plot_time_series()
+</code></pre>
+<h2 id="lerngruppe-verwalten">Lerngruppe verwalten</h2>
+<pre><code>#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+&quot;&quot;&quot;
+Beispiel: Noten mit Lerngruppen
+&quot;&quot;&quot;
+from notenbildung.models import *
+
+# es gibt die Fächer FachM, FachPH und FachINF
+# eine fachpraktische Leistung P wird als Kurztest gezählt, zählt jedoch nicht in die Anzahl der schriftlichen Leistungen mit hinein.
+
+meinfach = FachM
+note = Notenberechnung(w_s0=1, w_sm=3, system = SystemN, v_enabled=True, w_th = 0.4, fach=meinfach)
+# note = NotenberechnungSimple(w_s0=1, w_sm=3, system = SystemN, v_enabled=True, w_th = 0.4, fach=meinfach)
+note.note_hinzufuegen(art='KA', date = '2024-04-10', note=3, status='---')
+note.note_hinzufuegen(art='KA', date = '2024-04-15', note=2.5, status='uv')
+note.note_hinzufuegen(art='KA', date = '2024-03-01', note=4, status='fertig')
+note.note_hinzufuegen(art='KTP', date = '2024-03-15', note=5)
+note.note_hinzufuegen(art='KT', date = '2024-02-01', note=4, status='offen', due = '2024-05-05')
+note.note_hinzufuegen(art='S', date = '2024-01-01', note=2.75)
+note.note_hinzufuegen(art='m', date = '2023-09-01', note=3.0)
+note.note_hinzufuegen(art='m', date = '2023-10-01', note=3.25)
+note.note_hinzufuegen(art='m', date = '2023-11-01', note=3.5)
+
+gesamtnote = note.berechne_gesamtnote()
+print(gesamtnote)
+
+schueler1 = SchuelerEntity(sid=1, vorname='Max', nachname='Mustermann')
+schueler1.setze_note(note)
+
+schueler2 = SchuelerEntity(sid='abc', vorname='Mini', nachname='Musterfrau')
+schueler2.setze_note(note)
+
+lerngruppe1 = LerngruppeEntity(stufe=7, fach=meinfach, zug='A')
+
+lerngruppe1.update_sid(schueler1)
+lerngruppe1.update_sid(schueler2)
+
+lerngruppe1.plot_sid(1)
+lerngruppe1.plot_sid('abc')
+
+print(lerngruppe1.get_dataframe())
+print(schueler1.get_dataframe())
+</code></pre>
+<h2 id="lerngruppe-aus-excel-importieren-und-ergebnisse-exportieren">Lerngruppe aus Excel importieren und Ergebnisse exportieren</h2>
+<p>Bei dem Import werden zuerst verschiedene Randbedingungen validiert. Wenn alle Angaben in der richtigen Form sind, dann wird gemäß den Parametern die Note berechnet und in einen Unterordner exportiert.</p>
+<pre><code>#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+&quot;&quot;&quot;
+Beispiel Excel Export
+&quot;&quot;&quot;
+
+from notenbildung.excel import *
+
+ExcelFileLoader(&quot;meine_notenliste.xlsx&quot;).export()
+</code></pre>
+<p><a href="https://mybinder.org/v2/gh/tna76874/notebooks-school/stable?labpath=Sonstiges%2FNoten%2FNoten_Excel.ipynb"><img alt="badge" src="https://img.shields.io/badge/launch-binder-579aca.svg?logo=data:image/png;base64,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" /></a></p>
+<p>Unter der Kommandozeile lässt sich dieser Export mit z.B. <code>notenbildung meine_excelliste.xlsx</code> durchführen.</p>
+<h1 id="notebooks">Notebooks</h1>
+<h2 id="noten-berechnen-in-einem-notebook">Noten berechnen in einem Notebook</h2>
+<pre><code class="language-python">!pip uninstall notenbildung -y &gt; /dev/null 2&gt;&amp;1
+!pip install git+https://github.com/tna76874/notentransparenz.git@92def6cf4d986082cd5a4e82dbdba007e2f7fcd9 &gt; /dev/null 2&gt;&amp;1
+
+from notenbildung.models import *
+</code></pre>
+<p>Noten zwischen den Notensystemen N und NP umgerechnet werden.</p>
+<pre><code class="language-python">eine_note = NoteEntity(15,system = SystemNP)
+print(eine_note)
+eine_note.to(SystemNPS)
+print(eine_note)
+eine_note.to(SystemN)
+print(eine_note)
+eine_note.to(SystemNORM)
+eine_note.to(SystemNP)
+print(eine_note)
+</code></pre>
+<pre><code>15.0
+0.666666666666667
+WARNING: Inkonsistent System conversion
+1.0
+15.0
+</code></pre>
+<p>Das Verrechnen von Noten wird direkt über das '+'-Zeichen erledigt. Dabei wird die Gewichtung mitgerechnet.</p>
+<pre><code class="language-python">ka = Weight(NoteEntity(3), NoteEntity(4), NoteEntity(3.5)).normalize()
+kt = Weight(NoteEntity(3), NoteEntity(1), NoteEntity(2.5)).set_weight(1)
+mündlich = Weight(NoteEntity(2), NoteEntity(1), NoteEntity(3)).set_weight(1)
+
+print(f'KA: {ka}, KT: {kt}, mündlich: {mündlich}')
+
+schriftlich = ka + kt
+
+gesamt = schriftlich.set_weight(3) + mündlich
+
+print(f'schriftlich: {schriftlich}, gesamt: {gesamt}')
+</code></pre>
+<pre><code>KA: 3*3.5, KT: 1*2.1666666666666665, mündlich: 1*2.0
+schriftlich: 3*3.1666666666666665, gesamt: 4*2.875
+</code></pre>
+<p>Die Gesamtnote lässt sich auch im zeitlichen Verlauf visualisieren.</p>
+<pre><code class="language-python">noten = Notenberechnung(w_s0=1, w_sm=3, system = SystemN)
+noten.note_hinzufuegen(art='KA', date = '2024-04-10', note=2, status='fertig')
+noten.note_hinzufuegen(art='KA', date = '2024-04-15', note=2.5, status='fertig')
+noten.note_hinzufuegen(art='KA', date = '2024-03-01', note=4.5, status='fertig')
+noten.note_hinzufuegen(art='KA', date = '2024-03-15', note=5, status='fertig')
+noten.note_hinzufuegen(art='KT', date = '2024-02-01', note=4, status='fehlt')
+noten.note_hinzufuegen(art='KT', date = '2024-01-01', note=2.75, status='fehlt')
+noten.note_hinzufuegen(art='m', date = '2023-09-01', note=3.0)
+noten.note_hinzufuegen(art='m', date = '2023-10-01', note=3.25)
+noten.note_hinzufuegen(art='m', date = '2023-11-01', note=3.5)
+
+gesamtnote = noten.berechne_gesamtnote()
+print(gesamtnote)
+noten.plot_time_series()
+</code></pre>
+<pre><code>m_s1=3.4821428571428568, m_s=3.4290540540540535, m_m=3.25, gesamtnote=3.3842905405405403, datum=15.04.2024
+</code></pre>
+<p><a class="glightbox" href="../Noten_files/Noten_6_1.png" data-type="image" data-width="100%" data-height="auto" data-title="png" data-desc-position="bottom"><img alt="png" src="../Noten_files/Noten_6_1.png" /></a></p>
+<p>Es können alle Noten angezeigt werden, die erteilt wurden.</p>
+<pre><code class="language-python">noten._get_full_dataframe()
+</code></pre>
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>date</th>
+      <th>art</th>
+      <th>status</th>
+      <th>note</th>
+      <th>nr</th>
+      <th>von</th>
+      <th>bis</th>
+      <th>due</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>2023-09-01</td>
+      <td>m</td>
+      <td>---</td>
+      <td>3.0</td>
+      <td>1.0</td>
+      <td>2023-09-01</td>
+      <td>2023-09-01</td>
+      <td>None</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>2023-10-01</td>
+      <td>m</td>
+      <td>---</td>
+      <td>3.25</td>
+      <td>2.0</td>
+      <td>2023-10-01</td>
+      <td>2023-10-01</td>
+      <td>None</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>2023-11-01</td>
+      <td>m</td>
+      <td>---</td>
+      <td>3.5</td>
+      <td>3.0</td>
+      <td>2023-11-01</td>
+      <td>2023-11-01</td>
+      <td>None</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>2024-01-01</td>
+      <td>KT</td>
+      <td>fehlt</td>
+      <td>2.75</td>
+      <td>1.0</td>
+      <td>NaT</td>
+      <td>NaT</td>
+      <td>None</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>NaT</td>
+      <td>V</td>
+      <td>---</td>
+      <td>3.75</td>
+      <td>NaN</td>
+      <td>NaT</td>
+      <td>NaT</td>
+      <td>None</td>
+    </tr>
+    <tr>
+      <th>5</th>
+      <td>2024-02-01</td>
+      <td>KT</td>
+      <td>fehlt</td>
+      <td>4.0</td>
+      <td>2.0</td>
+      <td>NaT</td>
+      <td>NaT</td>
+      <td>None</td>
+    </tr>
+    <tr>
+      <th>6</th>
+      <td>NaT</td>
+      <td>V</td>
+      <td>---</td>
+      <td>3.75</td>
+      <td>NaN</td>
+      <td>NaT</td>
+      <td>NaT</td>
+      <td>None</td>
+    </tr>
+    <tr>
+      <th>7</th>
+      <td>2024-03-01</td>
+      <td>KA</td>
+      <td>fertig</td>
+      <td>4.5</td>
+      <td>1.0</td>
+      <td>NaT</td>
+      <td>NaT</td>
+      <td>None</td>
+    </tr>
+    <tr>
+      <th>8</th>
+      <td>NaT</td>
+      <td>V</td>
+      <td>---</td>
+      <td>3.25</td>
+      <td>NaN</td>
+      <td>NaT</td>
+      <td>NaT</td>
+      <td>None</td>
+    </tr>
+    <tr>
+      <th>9</th>
+      <td>2024-03-15</td>
+      <td>KA</td>
+      <td>fertig</td>
+      <td>5.0</td>
+      <td>2.0</td>
+      <td>NaT</td>
+      <td>NaT</td>
+      <td>None</td>
+    </tr>
+    <tr>
+      <th>10</th>
+      <td>NaT</td>
+      <td>V</td>
+      <td>---</td>
+      <td>3.25</td>
+      <td>NaN</td>
+      <td>NaT</td>
+      <td>NaT</td>
+      <td>None</td>
+    </tr>
+    <tr>
+      <th>11</th>
+      <td>2024-04-10</td>
+      <td>KA</td>
+      <td>fertig</td>
+      <td>2.0</td>
+      <td>3.0</td>
+      <td>NaT</td>
+      <td>NaT</td>
+      <td>None</td>
+    </tr>
+    <tr>
+      <th>12</th>
+      <td>NaT</td>
+      <td>V</td>
+      <td>---</td>
+      <td>3.25</td>
+      <td>NaN</td>
+      <td>NaT</td>
+      <td>NaT</td>
+      <td>None</td>
+    </tr>
+    <tr>
+      <th>13</th>
+      <td>2024-04-15</td>
+      <td>KA</td>
+      <td>fertig</td>
+      <td>2.5</td>
+      <td>4.0</td>
+      <td>NaT</td>
+      <td>NaT</td>
+      <td>None</td>
+    </tr>
+    <tr>
+      <th>14</th>
+      <td>NaT</td>
+      <td>V</td>
+      <td>---</td>
+      <td>3.25</td>
+      <td>NaN</td>
+      <td>NaT</td>
+      <td>NaT</td>
+      <td>None</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+
+<h2 id="noten-berechnen-aus-einer-excel-tabelle">Noten berechnen aus einer Excel-Tabelle</h2>
+<pre><code class="language-python">!pip uninstall notenbildung -y &gt; /dev/null 2&gt;&amp;1
+!pip install git+https://github.com/tna76874/notentransparenz.git@92def6cf4d986082cd5a4e82dbdba007e2f7fcd9 &gt; /dev/null 2&gt;&amp;1
+
+from notenbildung.excel import *
+</code></pre>
+<pre><code class="language-python">ExcelFileLoader(&quot;meine_notenliste.xlsx&quot;).export()
+</code></pre>
+<pre><code>sid: 1
+vorname: Max
+nachname: Mustermann
+Warnung: Zu wenige Leistungen: [&lt;class 'notenbildung.nvo.LeistungKA'&gt;]: Anzahl der Leistungen 1&lt;4
+sid: 2
+vorname: Mini
+nachname: Musterfrau
+Warnung: Zu wenige Leistungen: [&lt;class 'notenbildung.nvo.LeistungKA'&gt;]: Anzahl der Leistungen 1&lt;4
+sid: 3
+vorname: Peter
+nachname: Pan
+Warnung: Zu wenige Leistungen: [&lt;class 'notenbildung.nvo.LeistungKA'&gt;]: Anzahl der Leistungen 1&lt;4
+</code></pre>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+    <div class="md-copyright__highlight">
+      24.07.2024
+    </div>
+  
+  
+</div>
+      
+        <div class="md-social">
+  
+    
+    
+    
+    
+    <a href="https://github.com/tna76874/notentransparenz" target="_blank" rel="noopener" title="tna76874" class="md-social__link">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 496 512"><!--! Font Awesome Free 6.6.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2024 Fonticons, Inc.--><path d="M165.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6zm-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3zm44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9zM244.8 8C106.1 8 0 113.3 0 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C428.2 457.8 496 362.9 496 252 496 113.3 383.5 8 244.8 8zM97.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1zm-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7zm32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1zm-11.4-14.7c-1.6 1-1.6 3.6 0 5.9 1.6 2.3 4.3 3.3 5.6 2.3 1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2z"/></svg>
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    <script id="__config" type="application/json">{"base": "..", "features": [], "search": "../assets/javascripts/workers/search.b8dbb3d2.min.js", "translations": {"clipboard.copied": "In Zwischenablage kopiert", "clipboard.copy": "In Zwischenablage kopieren", "search.result.more.one": "1 weiteres Suchergebnis auf dieser Seite", "search.result.more.other": "# weitere Suchergebnisse auf dieser Seite", "search.result.none": "Keine Suchergebnisse", "search.result.one": "1 Suchergebnis", "search.result.other": "# Suchergebnisse", "search.result.placeholder": "Suchbegriff eingeben", "search.result.term.missing": "Es fehlt", "select.version": "Version ausw\u00e4hlen"}, "version": {"default": "latest", "provider": "mike"}}</script>
+    
+    
+      <script src="../assets/javascripts/bundle.fe8b6f2b.min.js"></script>
+      
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.4/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+      
+    
+  <script id="init-glightbox">const lightbox = GLightbox({"touchNavigation": true, "loop": false, "zoomable": true, "draggable": true, "openEffect": "zoom", "closeEffect": "zoom", "slideEffect": "slide"});
+document$.subscribe(() => { lightbox.reload() });
+</script></body>
+</html>
