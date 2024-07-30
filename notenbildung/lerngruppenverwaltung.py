@@ -533,7 +533,8 @@ class SchuelerEntity:
             raise ValueError("Das übergebene Objekt ist keine Instanz der Klasse Notenberechnung.")
         note._set_parent(self)
         self._notenberechnung = note
-        self.note = self._notenberechnung.berechne_gesamtnote()
+        if not len(self.noten)==0:
+            self.note = self._notenberechnung.berechne_gesamtnote()
 
 class LerngruppeEntity:
     def __init__(self, **kwargs):
