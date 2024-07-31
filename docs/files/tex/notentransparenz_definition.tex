@@ -17,16 +17,17 @@
 \newcommand{\defktp}{\defformat{P}}
 \newcommand{\defsl}{\defformat{S}}
 \newcommand{\defv}{\defformat{V}}
-\newcommand{\defm}{\defformat{m}}
+\newcommand{\defm}{\defformat{M}}
+\newcommand{\defe}{\defformat{E}}
 \newcommand{\defsn}{\defformat{N}}
 \newcommand{\defsnp}{\defformat{NP}}
 
 \newcommand{\catka}{\defka~und~\defgfs}
 \newcommand{\catkt}{\defkt~und~\defsl~und~\defktp}
-\newcommand{\catm}{\defm}
+\newcommand{\catm}{\defm~und~\defe}
 
 \begin{enumerate}[label=\textbf{(\arabic*)}, align=left, leftmargin=*]
-	\item \textbf{Definitionen} { \thisfontsize \mbox{\textbf{\defka}: Klassenarbeit}; \mbox{\textbf{\defgfs}: gleichwertige Feststellung von Leistungen der Schüler}; \mbox{\textbf{\defkt}: schriftliche Wiederholungsarbeit};  \linebreak \mbox{\textbf{\defktp}: praktische Leistung gewichtet wie ein \defkt}; \mbox{\textbf{\defsl}: sonstige schriftliche Leistung gewichtet wie ein \defkt}; \ifthenelse{\boolean{simple}}{}{\mbox{\textbf{\defv}: Verbesserung (schriftliche Leistung)};}  \linebreak \mbox{\textbf{\defm}: mündliche Leistung}; \textit{Notensysteme}: Noten (\textbf{\defsn}), Notenpunkte (\textbf{\defsnp}) }
+	\item \textbf{Definitionen} { \thisfontsize \mbox{\textbf{\defka}: Klassenarbeit}; \mbox{\textbf{\defgfs}: gleichwertige Feststellung von Leistungen der Schüler}; \mbox{\textbf{\defkt}: schriftliche Wiederholungsarbeit};  \linebreak \mbox{\textbf{\defktp}: praktische Leistung gewichtet wie ein \defkt}; \mbox{\textbf{\defsl}: sonstige schriftliche Leistung gewichtet wie ein \defkt}; \ifthenelse{\boolean{simple}}{}{\mbox{\textbf{\defv}: Verbesserung (schriftliche Leistung)};}  \linebreak \mbox{\textbf{\defm}: mündliche Leistung}; \mbox{\textbf{\defe}: gesondert bewertete mündliche Leistung}; \textit{Notensysteme}: Noten (\textbf{\defsn}), Notenpunkte (\textbf{\defsnp}) }
 	
 	\item \textbf{Arithmetische Mittelwerte der Noten}  { \thisfontsize $\mkt$ (\catkt); $\mka$ (\catka); $\mm$ (\catm) }
 	
@@ -34,7 +35,7 @@
 	\item \textbf{Korrekturzeichen} { \thisfontsize  Es werden die Korrekturzeichen der jeweils aktuellen \textit{\glqq Beurteilungs- und Korrekturrichtlinien für die Abiturprüfung\grqq{}} übernommen. }
 	}
 	
-	\item \textbf{Ankündigung von Leistungen} { \thisfontsize \defkt, Nachschreibearbeiten (\defkt und \defka), \defsl, \defktp~und \defm~sind in der Regel unangekündigt.}
+	\item \textbf{Ankündigung von Leistungen} { \thisfontsize \defkt, Nachschreibearbeiten (\defkt und \defka), \defsl, \defktp, \catm~sind in der Regel unangekündigt.}
 	\item \textbf{Anzahl der Leistungen} { \thisfontsize $\nkt$ (\catkt); $\nka$ (\catka); $\nm$ (\catm) \href{\nvourl}{nach NVO} \cite{nvo}}.
 	
 	\ifthenelse{\boolean{simple}}{}{

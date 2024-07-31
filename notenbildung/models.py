@@ -13,7 +13,7 @@ class Notenberechnung(NotenberechnungGeneric):
     _leistungs_types = {
                         'KA' : [LeistungKA, LeistungGFS],
                         'KT' : [LeistungKT, LeistungS, LeistungP],
-                        'm'  : [LeistungM],
+                        'm'  : [LeistungM, LeistungE],
                         }
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
@@ -83,7 +83,7 @@ class NotenberechnungSimple(NotenberechnungGeneric):
     _leistungs_types = {
                         'KA' : [LeistungKA, LeistungGFS],
                         'KT' : [LeistungKT, LeistungS, LeistungP],
-                        'm'  : [LeistungM],
+                        'm'  : [LeistungM, LeistungE],
                         }
     def __init__(self, **kwargs):
         kwargs['v_enabled'] = False

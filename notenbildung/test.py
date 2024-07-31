@@ -63,6 +63,7 @@ note.note_hinzufuegen(art='KT', date = '2024-01-01', note=2.75, status='fertig')
 note.note_hinzufuegen(art='m', date = '2023-09-01', note=3.0)
 note.note_hinzufuegen(art='m', date = '2023-10-01', note=3.25)
 note.note_hinzufuegen(art='m', date = '2023-11-01', note=3.5)
+note.note_hinzufuegen(art='E', date = '2023-12-01', note=1.5)
 
 # note.to(SystemNP)
 

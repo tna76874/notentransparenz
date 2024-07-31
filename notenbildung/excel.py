@@ -22,7 +22,9 @@ class ExcelSheetConfig:
             'GFS': LeistungGFS,
             'KT': LeistungKT,
             'P': LeistungP,
-            'm': LeistungM,
+            'S' : LeistungS,
+            'M': LeistungM,
+            'E': LeistungE,
         }
         self.parse_config = ConfigNVO.get_config()
         self.parse_config.update({'fach' : None})

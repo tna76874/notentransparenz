@@ -648,7 +648,7 @@ class LeistungGeneric:
         return f'({output})'
         
 class LeistungM(LeistungGeneric):
-    _art = 'm'
+    _art = 'M'
     _attribut = AttributM
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
@@ -663,7 +663,17 @@ class LeistungM(LeistungGeneric):
         if self.von != self.bis:
             self._is_punctual = False   
 
-        self._art = 'm'
+        self._art = 'M'
+        self._attribut = AttributM
+
+class LeistungE(LeistungGeneric):
+    _art = 'E'
+    _attribut = AttributM
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+        self.status._disable()          
+        
+        self._art = 'E'
         self._attribut = AttributM
         
 class LeistungKA(LeistungGeneric):

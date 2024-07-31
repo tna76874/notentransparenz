@@ -69,7 +69,11 @@ class NotenberechnungGeneric:
     """
     Mit dieser Klasse werden Noten berechnet und auf Gültigkeit der Notenbildungsverordnung überprüft.
     """
-    _leistungs_types = {}
+    _leistungs_types = {
+                        'KA' : [LeistungKA, LeistungGFS],
+                        'KT' : [LeistungKT, LeistungS, LeistungP],
+                        'm'  : [LeistungM, LeistungE],
+                        }
     def __init__(self,
                  w_sm = ConfigNVO.w_sm,
                  w_th = ConfigNVO.w_th,
@@ -282,17 +286,19 @@ class NotenberechnungGeneric:
                     'due' : kwargs.get('due'),
                     }
             
-            if art == 'm':
+            if art.lower() == 'M'.lower():
                 Leistung = LeistungM(**pars)
-            elif art == 'KA':
+            elif art.lower() == 'E'.lower():
+                Leistung = LeistungE(**pars)
+            elif art.lower() == 'KA'.lower():
                 Leistung = LeistungKA(**pars)
-            elif art == 'GFS':
+            elif art.lower() == 'GFS'.lower():
                 Leistung = LeistungGFS(**pars)
-            elif art == 'KT':
+            elif art.lower() == 'KT'.lower():
                 Leistung = LeistungKT(**pars)
-            elif art == 'P':
+            elif art.lower() == 'P'.lower():
                 Leistung = LeistungP(**pars)
-            elif art == 'S':
+            elif art.lower() == 'S'.lower():
                 Leistung = LeistungS(**pars)
             else:
                 raise ValueError(f'Ungültige Art der Note: {art}')
