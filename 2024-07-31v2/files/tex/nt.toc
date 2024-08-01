@@ -1,4 +1,0 @@
-\babel@toc {german}{}\relax 
-\contentsline {section}{\numberline {A}Notenbildung (verbalisiert, vereinfachte Darstellung)}{1}{section.1}%
-\contentsline {section}{\numberline {B}Kriterien für die Erteilung mündlicher Noten}{1}{section.2}%
-\contentsline {section}{\numberline {C}Notenbildung (exakte Definitionen)}{2}{section.3}%
