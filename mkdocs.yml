@@ -54,7 +54,7 @@ extra:
     markdown_transparenz: files/tex/notentransparenz
     binder_base: https://mybinder.org/v2/gh/tna76874/notebooks-school/stable
     nvo:
-      html: https://www.landesrecht-bw.de/bsbw/document/jlr-NotBildVBWrahmen
+      html: https://www.landesrecht-bw.de/perma?a=NotBildV_BW
       pdf: https://www.landesrecht-bw.de/jportal/recherche3doc/NotBildV_BW.pdf?json=%7B%22format%22%3A%22pdf%22%2C%22params%22%3A%7B%22fixedPart%22%3A%22true%22%7D%2C%22docPart%22%3A%22X%22%2C%22docId%22%3A%22jlr-NotBildVBWrahmen%22%2C%22portalId%22%3A%22bsbw%22%7D&_=%2FNotBildV_BW.pdf
       local: files/resources/NVO_BW.pdf
     bildungsplan:
@@ -85,6 +85,5 @@ copyright: !ENV build_doc_date
 nav:
   - Notentransparenz: index.md
   - Korrekturzeichen: korrektur.md
-  - Verbesserungen: verbesserung.md
   - digitale Abgabe: abgabe.md
   - Anhang: python.md
