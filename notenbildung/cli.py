@@ -11,18 +11,13 @@ from notenbildung.excel import *
 from notenbildung.version import *
 
 def main():
-    parser = argparse.ArgumentParser(description=f'Notentransparenz CLI - Version {PackageInfo.version}')
-    parser.add_argument('-f', '--file', type=str, help='Dateipfad der Excel Datei')
-    parser.add_argument('-d', '--download', action='store_true', help='Dokument zur Notentransparenz herunterladen')
-    
+    parser = argparse.ArgumentParser(description='Get Git version information for a given path')
+    parser.add_argument('path', help='Path to the directory to get Git version information for')
+
     args = parser.parse_args()
     
-    if args.file:
-        excel_loader = ExcelFileLoader(args.file)
-        excel_loader.export()
-        
-    if args.download:
-        TransparenzPDF()
+    version_info = GitVersion(args.path)
+    print(version_info.version())
 
 if __name__ == "__main__":
     main()
