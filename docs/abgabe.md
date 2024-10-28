@@ -1,4 +1,13 @@
-Wird die Verbesserung digital über den Link abgegeben, stellt ein Algorithmus vor dem Upload sicher, dass die Bildqualität entsprechend gut ist. Wenn ein Dokument nicht den visuellen Qualitätsansprüchen genügt, dann wird der Upload automatisiert abgelehnt. Nach erfolgreichem Upload der Abgabe wird ein Zeitstempel angezeigt.
+Wird die Verbesserung digital über den Link abgegeben, stellt ein Algorithmus vor dem Upload sicher, dass die Bildqualität entsprechend gut ist. **Wenn ein Dokument nicht den nachfolgenden Dokumentenrichtlinien entspricht, dann wird der Upload automatisiert abgelehnt.** Nach erfolgreichem Upload der Abgabe wird ein Zeitstempel angezeigt.
+
+## Was wird abgegeben?
+### Was kann hochgeladen werden?
+
+Zu jeder Verbesserung können höchstens 20 Dateien abgegeben werden. Jede dieser Dateien muss kleiner als 15 MB sein. Angenommen werden Bilddateien (JPEG und PNG) sowie PDF-Dokumente. **Es wird empfohlen ein PDF-Dokument zu erstellen, und dieses abzugeben.**
+
+### Aus was besteht eine Abgabe?
+
+Technisch gesehen wird keine Datei abgegeben, sondern die [Prüfsumme](https://emn178.github.io/online-tools/sha256_checksum.html) zu einer Datei. Die Originaldatei muss also auch nach der Abgabe vorgehalten werden. **Es wird also nicht empfohlen, Bilder direkt von der Gerätekamera hochzuladen.** Nach einem erfolgreichen Upload wird eine Bestätigung über den Erhalt einer Datei mit der entsprechenden Prüfsumme angezeigt. Für einen Nachweis der Abgabe muss im Zweifelsfall der entsprechende **Validierungscode** zusammen mit der Originaldatei vorgelegt werden können.
 
 ## Beispiele für gute und schlechte Scans
 ### Schlechte Scans
@@ -12,7 +21,7 @@ Wird die Verbesserung digital über den Link abgegeben, stellt ein Algorithmus v
 ![Angenommener Scan: Das Dokument wurde randlos aufgenommen, ist gut ausgeleuchtet und näherungsweise im A4-Hochkant-Format.](files/images/0_1.jpg)
 ![Angenommener Scan: Das Dokument wurde randlos aufgenommen, ist gut ausgeleuchtet und näherungsweise im A4-Hochkant-Format.](files/images/0_2.jpg)
 
-## Wie erstelle ich gute Scans von Dokumenten
+## Wie erstelle ich gute Scans von Dokumenten?
 
 ### Aufnahme mit einem Scanner
 
