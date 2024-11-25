@@ -536,8 +536,8 @@ class VerbesserungStatus:
             if current_date > self.due and self._text == 'offen':
                 self.text = 'fehlt'
                 self.status = False
-            elif current_date < self.due:
-                self.text = f'offen bis {self.due.strftime("%d.%m.%Y")}'
+            elif current_date < self.due and self._text != 'fertig':
+                self.text = f'{self._text} bis {self.due.strftime("%d.%m.%Y")}'
     
     def _disable(self):
         self.text = '---'
