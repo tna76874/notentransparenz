@@ -212,7 +212,7 @@ class NoteEntity(np.ndarray):
 
     def _get_text(self):
         rounded_note = int(self._get_Z(text=False))
-        if self.system == 'N':
+        if self.system==SystemN:
             if rounded_note == 1:
                 return "sehr gut"
             elif rounded_note == 2:
@@ -225,7 +225,7 @@ class NoteEntity(np.ndarray):
                 return "mangelhaft"
             elif rounded_note == 6:
                 return "ungenügend"
-        elif self.system == 'NP':
+        elif self.system==SystemNP:
             if 13 <= rounded_note <= 15:
                 return "sehr gut"
             elif 10 <= rounded_note <= 12:
@@ -536,8 +536,8 @@ class VerbesserungStatus:
             if current_date > self.due and self._text == 'offen':
                 self.text = 'fehlt'
                 self.status = False
-            elif current_date < self.due and self._text != 'fertig':
-                self.text = f'{self._text} bis {self.due.strftime("%d.%m.%Y")}'
+            elif current_date < self.due:
+                self.text = f'offen bis {self.due.strftime("%d.%m.%Y")}'
     
     def _disable(self):
         self.text = '---'
