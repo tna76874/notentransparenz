@@ -26,6 +26,10 @@
 \newcommand{\catkt}{\defkt~und~\defsl~und~\defktp}
 \newcommand{\catm}{\defm~und~\defe}
 
+\newcommand{\defgn}{GN}
+\newcommand{\defrn}{RN}
+\newcommand{\defzn}{ZN}
+
 \begin{enumerate}[label=\textbf{(\arabic*)}, align=left, leftmargin=*]
 	\item \textbf{Definitionen} { \thisfontsize \mbox{\textbf{\defka}: Klassenarbeit}; \mbox{\textbf{\defgfs}: gleichwertige Feststellung von Leistungen der Schüler}; \mbox{\textbf{\defkt}: schriftliche Wiederholungsarbeit};  \linebreak \mbox{\textbf{\defktp}: praktische Leistung gewichtet wie ein \defkt}; \mbox{\textbf{\defsl}: sonstige schriftliche Leistung gewichtet wie ein \defkt}; \ifthenelse{\boolean{simple}}{}{\mbox{\textbf{\defv}: Verbesserung (schriftliche Leistung)};}  \linebreak \mbox{\textbf{\defm}: mündliche Leistung}; \mbox{\textbf{\defe}: gesondert bewertete mündliche Leistung}; \textit{Notensysteme}: Noten (\textbf{\defsn}), Notenpunkte (\textbf{\defsnp}) }
 	
@@ -58,13 +62,15 @@
 	
 	\item \textbf{Gewichtungsfaktor $\mka$ und $\mkt$}: $\wsnull$; $\nktnull$  (Falls nicht anders mitgeteilt, ist $\wsnull=1$ und $\nktnull=3$)
 	\[
+	\ifthenelse{\boolean{simple}}{}{\hspace*{12cm}}
 	\ws =
 	\begin{cases}
 		\frac{\nkt \cdot \wsnull}{\nktnull} & \text{für }    \nkt < \nktnull \\
 		\wsnull & \text{für }    \nkt \geq \nktnull \\
 	\end{cases}
 	\]
-	\ifthenelse{\boolean{simple}}{}{	
+	\ifthenelse{\boolean{simple}}{}{
+	\vspace*{-1.25cm}	
 	\item \textbf{Schnitt $\mka$ und $\mkt$} \vspace{-0.5cm}
 	\[
 	\mseins = \frac{ \nka \cdot \mka + \ws \cdot \mkt }{\nka + \ws}
@@ -130,11 +136,14 @@
 	\]
 	}
 	\item \textbf{Gewichtungsfaktor schriftlich/mündlich} $\wsm$ (Falls nicht anders mitgeteilt, ist $\wsm=3$)
-	\item \textbf{Gesamtnote $GN$}
+	\item \textbf{Gesamtnote $\defgn$}
 	\vspace*{-0.5cm}
 	\[
-	GN = \frac{\wsm \cdot \ms + \mm}{\wsm+1}
+	\defgn = \frac{\wsm \cdot \ms + \mm}{\wsm+1}
 	\]
+	\item \textbf{Zeugnisnote $\defzn$}
+	{ \thisfontsize Falls die Beurteilungszeiträume von $\defgn$ und $\defzn$ auf dem gleichen Zeitpunkt enden, gilt mit der Note aus dem restlichen Beurteilungszeitraum $\defrn$ (Falls nicht anders mitgeteilt $\wzn=\frac{\mathrm{Zeitdauer}(\defgn) }{\mathrm{Zeitdauer}( \defzn)}$): \,\,
+	$	\defzn = \wzn \defgn + (1 - \wzn) \defrn$}
 \end{enumerate}
 
 \renewcommand\refname{\footnotesize Quellen}

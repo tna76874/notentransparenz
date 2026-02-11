@@ -50,7 +50,7 @@ extra:
       link: https://github.com/tna76874/notentransparenz
       name: "tna76874"
   urls:
-    docfile: files/tex/notentransparenz.pdf
+    docfile: files/tex/nt.pdf
     markdown_transparenz: files/tex/notentransparenz
     binder_base: https://mybinder.org/v2/gh/tna76874/notebooks-school/stable
     nvo:
