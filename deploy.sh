@@ -14,7 +14,7 @@ done
 deploy() {
   if [ -n "$deploy_branch" ]; then
     ./generate_markdown.sh
-    mike deploy --branch ${deploy_branch} --update-aliases --push ${VERSION_REPO} latest ${REPO_COMMIT} || mike deploy --branch ${deploy_branch} --push ${VERSION_REPO} latest ${REPO_COMMIT}
+    mike deploy --branch ${deploy_branch} --update-aliases --push ${VERSION_REPO} latest ${REPO_COMMIT} ${VERSION_REPO}L || mike deploy --branch ${deploy_branch} --push ${VERSION_REPO} latest ${REPO_COMMIT}
     mike set-default --branch ${deploy_branch} --push latest
   else
     ./generate_latex_metadata.sh
