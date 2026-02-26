@@ -141,9 +141,11 @@
 	\[
 	\defgn = \frac{\wsm \cdot \ms + \mm}{\wsm+1}
 	\]
+	\ifthenelse{\boolean{simple}}{}{
+	\vspace*{-0.5cm}}
 	\item \textbf{Zeugnisnote $\defzn$}
 	{ \thisfontsize Falls die Beurteilungszeiträume von $\defgn$ und $\defzn$ auf dem gleichen Zeitpunkt enden, gilt mit der Note aus dem restlichen Beurteilungszeitraum $\defrn$ (Falls nicht anders mitgeteilt $\wzn=\frac{\mathrm{Zeitdauer}(\defgn) }{\mathrm{Zeitdauer}( \defzn)}$): \,\,
-	$	\defzn = \wzn \defgn + (1 - \wzn) \defrn$}
+	$	\defzn = \wzn \defgn + (1 - \wzn) \defrn$. Dabei gilt abweichend, dass bei $\wzn=1$ alle für $\defzn$ erbrachten Leistungen wie hier dargelegt gewichtet werden. }
 \end{enumerate}
 
 \renewcommand\refname{\footnotesize Quellen}
