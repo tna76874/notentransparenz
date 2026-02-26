@@ -1,10 +1,18 @@
 [
   {
+    "version": "2026-02-26v1",
+    "title": "2026-02-26v1",
+    "aliases": [
+      "05226b852d8e761216c471dd745a53273e4e51ef",
+      "latest",
+      "2026-02-26v1L"
+    ]
+  },
+  {
     "version": "2025-08-30v1",
     "title": "2025-08-30v1",
     "aliases": [
-      "fd59e5a922dc92b74e947b7fdf44eb4182f23c79",
-      "latest"
+      "fd59e5a922dc92b74e947b7fdf44eb4182f23c79"
     ]
   },
   {
